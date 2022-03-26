@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 
-const Schema = mongoose.Schema();
+const Schema = mongoose.Schema;
 
-const ScoreSchema = Schema({
+const ScoreSchema = new Schema({
   postID: {
     type: Schema.Types.ObjectId,
     ref: "Post",

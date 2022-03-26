@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 
-const Schema = mongoose.Schema();
+const Schema = mongoose.Schema;
 
-const TransactionSchema = Schema({
+const TransactionSchema = new Schema({
   addres: {
     type: String,
     required: true,
