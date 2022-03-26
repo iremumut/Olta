@@ -7,6 +7,7 @@ const UserSchema = new Schema({
   userName: { type: String, required: true },
   email: { type: String, required: true },
   password: { type: String, required: true },
+  description: { type: String, maxlength: 250 },
   metaMaskAccount: String,
   birthday: Date,
   profilePicture: String,
