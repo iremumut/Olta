@@ -4,16 +4,24 @@ const Schema = mongoose.Schema;
 
 const UserSchema = new Schema(
   {
-    name: { type: String, required: true },
-    userName: { type: String, required: true },
-    email: { type: String, required: true },
-    password: { type: String, required: true },
+    name: { type: String, required: [true, "Name is required"] },
+    userName: {
+      type: String,
+      required: [true, "userName is required"],
+      unique: true,
+    },
+    email: {
+      type: String,
+      required: [true, "Email is required"],
+      unique: true,
+    },
+    password: { type: String, required: [true, "Password is required"] },
     description: { type: String, maxlength: 250 },
     metaMaskAccount: String,
     birthday: Date,
     profilePicture: String,
     subscriptionAmount: { type: Number, default: 0 },
-    openSubscription: Boolean,
+    openSubscription: { type: Boolean, default: false },
     posts: [
       {
         type: Schema.Types.ObjectId,

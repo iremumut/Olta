@@ -1,5 +1,6 @@
 import PostModel from "../models/post.js";
 import asyncHandler from "express-async-handler";
+
 // Get /posts , private
 export const getPosts = asyncHandler(async (req, res) => {
   const allPosts = await PostModel.find();
