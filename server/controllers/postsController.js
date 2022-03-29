@@ -8,7 +8,7 @@ export const getPosts = asyncHandler(async (req, res) => {
   //res.status(404).json({ message: error.message });
 });
 
-//POST /post , private
+//POST /posts , private
 export const createPost = asyncHandler(async (req, res, next) => {
   if (!req.body.title) {
     res.status(400);

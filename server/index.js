@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import cors from "cors";
 import postsRouter from "./routes/postsRouter.js";
+import usersRouter from "./routes/usersRouter.js";
 import { errorHandler } from "./middleware/errorMiddleware.js";
 
 const app = express();
@@ -12,6 +13,7 @@ app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use(cors());
 
 app.use("/posts", postsRouter);
+app.use("/users", usersRouter);
 
 app.use(errorHandler);
 
