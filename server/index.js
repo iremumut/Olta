@@ -2,6 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import cors from "cors";
+import "dotenv/config";
 import postsRouter from "./routes/postsRouter.js";
 import usersRouter from "./routes/usersRouter.js";
 import { errorHandler } from "./middleware/errorMiddleware.js";
@@ -17,13 +18,13 @@ app.use("/users", usersRouter);
 
 app.use(errorHandler);
 
-const CONNECTION_URL =
-  "mongodb+srv://irem:iremOltaDBpass@cluster0.42jxt.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
-
 const PORT = process.env.PORT || 5000;
 
 mongoose
-  .connect(CONNECTION_URL, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(process.env.MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() =>
     app.listen(PORT, () => {
       console.log("Connected to database");
