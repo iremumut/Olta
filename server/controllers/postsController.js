@@ -1,4 +1,5 @@
 import PostModel from "../models/post.js";
+import UserModel from "../models/user.js";
 import asyncHandler from "express-async-handler";
 
 // Get /posts , private
@@ -18,6 +19,7 @@ export const createPost = asyncHandler(async (req, res, next) => {
     title: req.body.title,
     description: "first post text",
     contentType: "text",
+    creator: req.user.id,
   });
 
   res.status(200).json(post);
@@ -28,11 +30,26 @@ export const createPost = asyncHandler(async (req, res, next) => {
 //PUT /posts/:id , private
 export const updatePost = asyncHandler(async (req, res) => {
   const post = await PostModel.findById(req.params.id);
-
+  //console.log("post found: ", post);
   if (!post) {
     res.status(400);
     throw new Error("Post not found");
   }
+
+  const user = await UserModel.findById(req.user.id);
+
+  //Check for user
+  if (!user) {
+    res.status(401);
+    throw new Error("User not found");
+  }
+
+  //Check if user is authenticated
+  if (post.creator.toString() !== user._id.toString()) {
+    res.status(401);
+    throw new Error("User not authorized");
+  }
+
   const updatedPost = await PostModel.findByIdAndUpdate(
     req.params.id,
     req.body,
@@ -50,6 +67,26 @@ export const deletePost = asyncHandler(async (req, res) => {
     throw new Error("Post not found");
   }
 
+  const user = await UserModel.findById(req.user.id);
+
+  //Check for user
+  if (!user) {
+    res.status(401);
+    throw new Error("User not found");
+  }
+
+  //Check if user is authenticated
+  if (post.creator.toString() !== user._id.toString()) {
+    res.status(401);
+    throw new Error("User not authorized");
+  }
+
   await post.remove();
   res.status(200).json(req.params.id);
+});
+
+export const getUserPosts = asyncHandler(async (req, res) => {
+  const posts = await PostModel.find({ creator: req.user.id });
+
+  res.status(200).json(posts);
 });

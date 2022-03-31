@@ -39,6 +39,7 @@ export const registerUser = asyncHandler(async (req, res) => {
       name: user.name,
       email: user.email,
       username: user.username,
+      token: generateToken(user._id),
     });
   } else {
     res.status(400);
@@ -59,6 +60,7 @@ export const loginUser = asyncHandler(async (req, res) => {
       name: user.name,
       email: user.email,
       username: user.username,
+      token: generateToken(user._id),
     });
   } else {
     res.status(400);
@@ -68,5 +70,17 @@ export const loginUser = asyncHandler(async (req, res) => {
 
 //GET /users/me , private
 export const getUser = asyncHandler(async (req, res) => {
-  res.status(200).json({ message: "get user data" });
+  const { _id, name, userName, email } = await UserModel.findById(req.user.id);
+  res.status(200).json({
+    id: _id,
+    email,
+    name,
+    username: userName,
+  });
 });
+
+const generateToken = (id) => {
+  return jwt.sign({ id: id }, process.env.JWT_SECRET, {
+    expiresIn: "30d",
+  });
+};
