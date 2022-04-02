@@ -1,4 +1,5 @@
 import Users from "../models/user.js";
+import Posts from "../models/post.js";
 import asyncHandler from "express-async-handler";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
@@ -84,3 +85,10 @@ const generateToken = (id) => {
     expiresIn: "30d",
   });
 };
+
+//GET /users/posts , private , get the users posts
+export const getUserPosts = asyncHandler(async (req, res) => {
+  const posts = await Posts.find({ creator: req.user.id });
+
+  res.status(200).json(posts);
+});

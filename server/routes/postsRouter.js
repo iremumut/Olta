@@ -4,7 +4,6 @@ import {
   createPost,
   updatePost,
   deletePost,
-  getUserPosts,
 } from "../controllers/postsController.js";
 import { protect } from "../middleware/authMiddleware.js";
 
@@ -17,6 +16,4 @@ router.post("/", protect, createPost);
 router.put("/:id", protect, updatePost);
 
 router.delete("/:id", protect, deletePost);
-
-router.get("/user", protect, getUserPosts);
 export default router;
