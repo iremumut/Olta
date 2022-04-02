@@ -1,10 +1,10 @@
-import PostModel from "../models/post.js";
-import UserModel from "../models/user.js";
+import Posts from "../models/post.js";
+import Users from "../models/user.js";
 import asyncHandler from "express-async-handler";
 
 // Get /posts , private
 export const getPosts = asyncHandler(async (req, res) => {
-  const allPosts = await PostModel.find();
+  const allPosts = await Posts.find();
   res.status(200).json(allPosts);
   //res.status(404).json({ message: error.message });
 });
@@ -15,7 +15,7 @@ export const createPost = asyncHandler(async (req, res, next) => {
     res.status(400);
     throw new Error("Please add a title field");
   }
-  const post = await PostModel.create({
+  const post = await Posts.create({
     title: req.body.title,
     description: "first post text",
     contentType: "text",
@@ -29,14 +29,14 @@ export const createPost = asyncHandler(async (req, res, next) => {
 
 //PUT /posts/:id , private
 export const updatePost = asyncHandler(async (req, res) => {
-  const post = await PostModel.findById(req.params.id);
+  const post = await Posts.findById(req.params.id);
   //console.log("post found: ", post);
   if (!post) {
     res.status(400);
     throw new Error("Post not found");
   }
 
-  const user = await UserModel.findById(req.user.id);
+  const user = await Users.findById(req.user.id);
 
   //Check for user
   if (!user) {
@@ -50,24 +50,22 @@ export const updatePost = asyncHandler(async (req, res) => {
     throw new Error("User not authorized");
   }
 
-  const updatedPost = await PostModel.findByIdAndUpdate(
-    req.params.id,
-    req.body,
-    { new: true }
-  );
+  const updatedPost = await Posts.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+  });
   res.status(200).json(updatedPost);
 });
 
 //DELETE /posts/:id , private
 export const deletePost = asyncHandler(async (req, res) => {
-  const post = await PostModel.findById(req.params.id);
+  const post = await Posts.findById(req.params.id);
 
   if (!post) {
     res.status(400);
     throw new Error("Post not found");
   }
 
-  const user = await UserModel.findById(req.user.id);
+  const user = await Users.findById(req.user.id);
 
   //Check for user
   if (!user) {
@@ -86,7 +84,7 @@ export const deletePost = asyncHandler(async (req, res) => {
 });
 
 export const getUserPosts = asyncHandler(async (req, res) => {
-  const posts = await PostModel.find({ creator: req.user.id });
+  const posts = await Posts.find({ creator: req.user.id });
 
   res.status(200).json(posts);
 });

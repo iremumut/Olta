@@ -1,4 +1,4 @@
-import UserModel from "../models/user.js";
+import Users from "../models/user.js";
 import asyncHandler from "express-async-handler";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
@@ -13,8 +13,8 @@ export const registerUser = asyncHandler(async (req, res) => {
   }
 
   //Check if user exists
-  const userExistsByEmail = await UserModel.findOne({ email: email });
-  const userExistsByUsername = await UserModel.findOne({ userName: username });
+  const userExistsByEmail = await Users.findOne({ email: email });
+  const userExistsByUsername = await Users.findOne({ userName: username });
 
   if (userExistsByEmail || userExistsByUsername) {
     res.status(400);
@@ -26,7 +26,7 @@ export const registerUser = asyncHandler(async (req, res) => {
   const hashedPassword = await bcrypt.hash(password, salt);
 
   //Create user
-  const user = await UserModel.create({
+  const user = await Users.create({
     name: name,
     email: email,
     userName: username,
@@ -52,7 +52,7 @@ export const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
   //Check for user email
-  const user = await UserModel.findOne({ email: email });
+  const user = await Users.findOne({ email: email });
 
   if (user && (await bcrypt.compare(password, user.password))) {
     res.status(200).json({
@@ -70,7 +70,7 @@ export const loginUser = asyncHandler(async (req, res) => {
 
 //GET /users/me , private
 export const getUser = asyncHandler(async (req, res) => {
-  const { _id, name, userName, email } = await UserModel.findById(req.user.id);
+  const { _id, name, userName, email } = await Users.findById(req.user.id);
   res.status(200).json({
     id: _id,
     email,

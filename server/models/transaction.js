@@ -33,7 +33,4 @@ const TransactionSchema = new Schema({
   },
 });
 
-export default TransactionModel = mongoose.model(
-  "Transaction",
-  TransactionSchema
-);
+export default Transactions = mongoose.model("Transaction", TransactionSchema);
