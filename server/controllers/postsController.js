@@ -2,11 +2,14 @@ import Posts from "../models/post.js";
 import Users from "../models/user.js";
 import asyncHandler from "express-async-handler";
 
-// Get /posts , private
+// GET /posts , private, get all posts
 export const getPosts = asyncHandler(async (req, res) => {
   const allPosts = await Posts.find();
+  if (!allPosts) {
+    res.status(404);
+    throw new Error("Resource could not be found");
+  }
   res.status(200).json(allPosts);
-  //res.status(404).json({ message: error.message });
 });
 
 //POST /posts , private
@@ -81,10 +84,4 @@ export const deletePost = asyncHandler(async (req, res) => {
 
   await post.remove();
   res.status(200).json(req.params.id);
-});
-
-export const getUserPosts = asyncHandler(async (req, res) => {
-  const posts = await Posts.find({ creator: req.user.id });
-
-  res.status(200).json(posts);
 });
