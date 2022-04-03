@@ -1,6 +1,7 @@
 import Posts from "../models/post.js";
 import Users from "../models/user.js";
 import asyncHandler from "express-async-handler";
+import { contentTypes } from "../constants.js";
 
 // GET /posts , private, get all posts
 export const getPosts = asyncHandler(async (req, res) => {
@@ -12,22 +13,44 @@ export const getPosts = asyncHandler(async (req, res) => {
   res.status(200).json(allPosts);
 });
 
-//POST /posts , private
-export const createPost = asyncHandler(async (req, res, next) => {
-  if (!req.body.title) {
+//POST /posts , private, create a new post
+export const createPost = asyncHandler(async (req, res) => {
+  const { title, description, tags, price, contentType, filepath } = req.body;
+
+  let { isFree } = req.body;
+  if (!title || !contentType || !contentTypes.includes(contentType)) {
     res.status(400);
-    throw new Error("Please add a title field");
+    throw new Error("Please add requested fields accordingly.");
   }
+
+  if (price && (isNaN(price) || price < 0)) {
+    res.status(400);
+    throw new Error("Please enter a valid number for price.");
+  }
+
+  if (!price || price === 0) {
+    isFree = true;
+  }
+  const user = await Users.findById(req.user.id);
+
+  //Check for user
+  if (!user) {
+    res.status(401);
+    throw new Error("User not found");
+  }
+
   const post = await Posts.create({
-    title: req.body.title,
-    description: "first post text",
-    contentType: "text",
-    creator: req.user.id,
+    title: title,
+    description: description,
+    contentType: contentType,
+    tags: tags ? [...tags] : [],
+    price: price ? price : 0,
+    isFree: isFree ? isFree : true,
+    creator: user._id,
+    contentURL: filepath,
   });
 
   res.status(200).json(post);
-
-  //console.log(req.body);
 });
 
 //PUT /posts/:id , private
