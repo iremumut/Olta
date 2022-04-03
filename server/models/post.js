@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { contentTypes } from "../constants.js";
 
 const Schema = mongoose.Schema;
 
@@ -8,21 +9,22 @@ const PostSchema = new Schema(
     description: String,
     tags: [String],
     price: { type: Number, min: 0, default: 0 },
-    isFree: Boolean,
+    isFree: { type: Boolean, default: true },
     creator: {
       type: Schema.Types.ObjectId,
       ref: "User",
-      //required: [true,"Creator needs to be added."],
+      required: [true, "Creator needs to be added."],
     },
     contentType: {
       type: String,
-      enum: ["video", "sound", "image", "text"],
+      enum: [...contentTypes],
       required: [true, "Content type needs to be added."],
     },
     likeCount: { type: Number, default: 0 },
     commentCount: { type: Number, default: 0 },
     contentURL: {
-      type: String, //required: [true,"Content url needs to be added"]
+      type: String,
+      required: [true, "Content url needs to be added"],
     },
     comments: [
       {
