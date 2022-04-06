@@ -133,7 +133,7 @@ export const deletePost = asyncHandler(async (req, res) => {
 });
 
 //POST /posts/:id/likes , private , like a post
-export const likePost = asyncHandler(async (req, res, next) => {
+export const likePost = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateObjectID(res, id); //check if params id is valid
 
@@ -143,10 +143,12 @@ export const likePost = asyncHandler(async (req, res, next) => {
   const user = await Users.findById(req.user.id);
   checkUserFound(res, user); //Check if user exists
 
-  if (
-    user._id.toString() !== post.creator.toString() &&
-    !post.likes.includes(user._id)
-  ) {
+  if (user._id.toString() === post.creator.toString()) {
+    res.status(400);
+    throw new Error("Users cannot like their own posts");
+  }
+
+  if (!post.likes.includes(user._id)) {
     post.likes.push(user._id);
     await post.save();
     const updatedPost = await Posts.findByIdAndUpdate(
@@ -161,10 +163,60 @@ export const likePost = asyncHandler(async (req, res, next) => {
     res.status(200).json(updatedPost);
   } else {
     res.status(404);
-    throw new Error(
-      "Users cannot like their own post or like the same post twice"
-    );
+    throw new Error("Users cannot like the same post twice");
   }
+});
+
+//DELETE /posts/:id/likes , private , unlike a post
+export const unlikePost = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  validateObjectID(res, id); //check if params id is valid
+
+  const post = await Posts.findById(id);
+  checkPostFound(res, post); //check if the post is found
+
+  const user = await Users.findById(req.user.id);
+  checkUserFound(res, user); //Check if user exists
+
+  if (user._id.toString() === post.creator.toString()) {
+    res.status(400);
+    throw new Error("Users cannot unlike their own posts");
+  }
+
+  if (post.likes.includes(user._id)) {
+    post.likes.remove(user._id);
+    await post.save();
+    const updatedPost = await Posts.findByIdAndUpdate(
+      req.params.id,
+      {
+        likeCount: post.likeCount - 1,
+      },
+      {
+        new: true,
+      }
+    );
+    res.status(200).json(updatedPost);
+  } else {
+    res.status(404);
+    throw new Error("Users cannot unlike a post that they did not like first");
+  }
+});
+
+//GET /posts/:id/likes , private , get likes on a post
+export const getLikes = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  validateObjectID(res, id); //check if params id is valid
+
+  const post = await Posts.findById(id);
+  checkPostFound(res, post); //check if the post is found
+
+  const user = await Users.findById(req.user.id);
+  checkUserFound(res, user); //Check if user exists
+
+  const users = await Users.find().where("_id").in(post.likes);
+
+  res.status(200);
+  res.json(users);
 });
 
 export const validatePostData = (req, res, next) => {
