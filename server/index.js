@@ -5,6 +5,7 @@ import cors from "cors";
 import "dotenv/config";
 import postsRouter from "./routes/postsRouter.js";
 import usersRouter from "./routes/usersRouter.js";
+import commentsRouter from "./routes/commentsRouter.js";
 import { errorHandler } from "./middleware/errorMiddleware.js";
 
 const app = express();
@@ -15,6 +16,7 @@ app.use(cors());
 
 app.use("/posts", postsRouter);
 app.use("/users", usersRouter);
+app.use("/comments", commentsRouter);
 
 app.use(errorHandler);
 

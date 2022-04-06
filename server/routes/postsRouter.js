@@ -29,4 +29,5 @@ router.get("/:id/likes", protect, getLikes);
 router.post("/:id/likes", protect, likePost);
 
 router.delete("/:id/likes", protect, unlikePost);
+
 export default router;
