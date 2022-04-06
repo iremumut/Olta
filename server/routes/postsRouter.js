@@ -12,7 +12,7 @@ import { protect } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.get("/", getPosts);
+router.get("/", protect, getPosts);
 
 router.post("/", protect, validatePostData, createPost);
 

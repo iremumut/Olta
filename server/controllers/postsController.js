@@ -6,6 +6,9 @@ import mongoose from "mongoose";
 
 // GET /posts , private, get all posts
 export const getPosts = asyncHandler(async (req, res) => {
+  const user = await Users.findById(req.user.id);
+  checkUserFound(res, user); //Check if user exists
+
   const allPosts = await Posts.find();
   if (!allPosts) {
     res.status(404);
@@ -17,25 +20,13 @@ export const getPosts = asyncHandler(async (req, res) => {
 //GET /posts/:id , private, get single post
 export const getPost = asyncHandler(async (req, res) => {
   const { id } = req.params;
+  validateObjectID(res, id); //check if params id is valid
 
-  if (!mongoose.isValidObjectId(id)) {
-    res.status(400);
-    throw new Error("Invalid obejctId.");
-  }
   const post = await Posts.findById(id);
-
-  if (!post) {
-    res.status(400);
-    throw new Error("Post not found");
-  }
+  checkPostFound(res, post); //check if the post is found
 
   const user = await Users.findById(req.user.id);
-
-  //Check for user
-  if (!user) {
-    res.status(401);
-    throw new Error("User not found");
-  }
+  checkUserFound(res, user); //Check if user exists
 
   res.status(200);
   res.json(post);
@@ -47,12 +38,7 @@ export const createPost = asyncHandler(async (req, res) => {
     req.body;
 
   const user = await Users.findById(req.user.id);
-
-  //Check for user
-  if (!user) {
-    res.status(401);
-    throw new Error("User not found");
-  }
+  checkUserFound(res, user); //Check if user exists
 
   const post = await Posts.create({
     title: title,
@@ -71,25 +57,13 @@ export const createPost = asyncHandler(async (req, res) => {
 //PUT /posts/:id , private , update a post
 export const updatePost = asyncHandler(async (req, res) => {
   const { id } = req.params;
+  validateObjectID(res, id); //check if params id is valid
 
-  if (!mongoose.isValidObjectId(id)) {
-    res.status(400);
-    throw new Error("Invalid obejctId.");
-  }
   const post = await Posts.findById(id);
-
-  if (!post) {
-    res.status(400);
-    throw new Error("Post not found");
-  }
+  checkPostFound(res, post); //check if the post is found
 
   const user = await Users.findById(req.user.id);
-
-  //Check for user
-  if (!user) {
-    res.status(401);
-    throw new Error("User not found");
-  }
+  checkUserFound(res, user); //Check if user exists
 
   //Check if user is authenticated
   if (post.creator.toString() !== user._id.toString()) {
@@ -140,26 +114,13 @@ export const updatePost = asyncHandler(async (req, res) => {
 //DELETE /posts/:id , private , delete a post
 export const deletePost = asyncHandler(async (req, res) => {
   const { id } = req.params;
-
-  if (!mongoose.isValidObjectId(id)) {
-    res.status(400);
-    throw new Error("Invalid obejctId.");
-  }
+  validateObjectID(res, id); //check if params id is valid
 
   const post = await Posts.findById(id);
-
-  if (!post) {
-    res.status(400);
-    throw new Error("Post not found");
-  }
+  checkPostFound(res, post); //check if the post is found
 
   const user = await Users.findById(req.user.id);
-
-  //Check for user
-  if (!user) {
-    res.status(401);
-    throw new Error("User not found");
-  }
+  checkUserFound(res, user); //Check if user exists
 
   //Check if user is authenticated
   if (post.creator.toString() !== user._id.toString()) {
@@ -172,27 +133,15 @@ export const deletePost = asyncHandler(async (req, res) => {
 });
 
 //POST /posts/:id/likes , private , like a post
-export const likePost = asyncHandler(async (req, res) => {
+export const likePost = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
+  validateObjectID(res, id); //check if params id is valid
 
-  if (!mongoose.isValidObjectId(id)) {
-    res.status(400);
-    throw new Error("Invalid obejctId.");
-  }
   const post = await Posts.findById(id);
-
-  if (!post) {
-    res.status(400);
-    throw new Error("Post not found");
-  }
+  checkPostFound(res, post); //check if the post is found
 
   const user = await Users.findById(req.user.id);
-
-  //Check for user
-  if (!user) {
-    res.status(401);
-    throw new Error("User not found");
-  }
+  checkUserFound(res, user); //Check if user exists
 
   if (
     user._id.toString() !== post.creator.toString() &&
@@ -238,4 +187,25 @@ export const validatePostData = (req, res, next) => {
   }
 
   next();
+};
+
+const validateObjectID = (res, id) => {
+  if (!mongoose.isValidObjectId(id)) {
+    res.status(400);
+    throw new Error("Invalid obejctId.");
+  }
+};
+
+const checkPostFound = (res, post) => {
+  if (!post) {
+    res.status(404);
+    throw new Error("Post not found");
+  }
+};
+
+const checkUserFound = (res, user) => {
+  if (!user) {
+    res.status(401);
+    throw new Error("User not found");
+  }
 };
