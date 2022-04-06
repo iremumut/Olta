@@ -5,6 +5,8 @@ import {
   updatePost,
   deletePost,
   validatePostData,
+  getPost,
+  likePost,
 } from "../controllers/postsController.js";
 import { protect } from "../middleware/authMiddleware.js";
 
@@ -14,7 +16,11 @@ router.get("/", getPosts);
 
 router.post("/", protect, validatePostData, createPost);
 
-router.put("/:id", protect, validatePostData, updatePost);
+router.get("/:id", protect, getPost);
+
+router.put("/:id", protect, updatePost);
 
 router.delete("/:id", protect, deletePost);
+
+router.post("/:id/likes", protect, likePost);
 export default router;

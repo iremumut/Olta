@@ -14,9 +14,37 @@ export const getPosts = asyncHandler(async (req, res) => {
   res.status(200).json(allPosts);
 });
 
+//GET /posts/:id , private, get single post
+export const getPost = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.isValidObjectId(id)) {
+    res.status(400);
+    throw new Error("Invalid obejctId.");
+  }
+  const post = await Posts.findById(id);
+
+  if (!post) {
+    res.status(400);
+    throw new Error("Post not found");
+  }
+
+  const user = await Users.findById(req.user.id);
+
+  //Check for user
+  if (!user) {
+    res.status(401);
+    throw new Error("User not found");
+  }
+
+  res.status(200);
+  res.json(post);
+});
+
 //POST /posts , private, create a new post
 export const createPost = asyncHandler(async (req, res) => {
-  const { title, description, tags, price, contentType, filepath } = req.body;
+  const { title, description, tags, price, contentType, filepath, isFree } =
+    req.body;
 
   const user = await Users.findById(req.user.id);
 
@@ -40,8 +68,8 @@ export const createPost = asyncHandler(async (req, res) => {
   res.status(200).json(post);
 });
 
-//PUT /posts/:id , private
-export const updatePost = asyncHandler(async (req, res, next) => {
+//PUT /posts/:id , private , update a post
+export const updatePost = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
   if (!mongoose.isValidObjectId(id)) {
@@ -69,8 +97,27 @@ export const updatePost = asyncHandler(async (req, res, next) => {
     throw new Error("User not authorized");
   }
 
+  const { price, title } = req.body;
+
+  if (typeof title !== "undefined" && title.length === 0) {
+    res.status(404);
+    throw new Error("Title can't be empty.");
+  }
+
+  if (price && (isNaN(price) || price < 0)) {
+    res.status(400);
+    throw new Error("Please enter a valid number for price.");
+  }
+
+  if (!price || price === 0) {
+    req.body.isFree = true;
+  } else {
+    req.body.isFree = false;
+  }
+
   req.body = {
     ...req.body,
+    _id: post._id,
     creator: post.creator,
     contentType: post.contentType,
     likeCount: post.likeCount,
@@ -90,9 +137,16 @@ export const updatePost = asyncHandler(async (req, res, next) => {
   res.status(200).json(updatedPost);
 });
 
-//DELETE /posts/:id , private
+//DELETE /posts/:id , private , delete a post
 export const deletePost = asyncHandler(async (req, res) => {
-  const post = await Posts.findById(req.params.id);
+  const { id } = req.params;
+
+  if (!mongoose.isValidObjectId(id)) {
+    res.status(400);
+    throw new Error("Invalid obejctId.");
+  }
+
+  const post = await Posts.findById(id);
 
   if (!post) {
     res.status(400);
@@ -117,6 +171,53 @@ export const deletePost = asyncHandler(async (req, res) => {
   res.status(200).json(req.params.id);
 });
 
+//POST /posts/:id/likes , private , like a post
+export const likePost = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.isValidObjectId(id)) {
+    res.status(400);
+    throw new Error("Invalid obejctId.");
+  }
+  const post = await Posts.findById(id);
+
+  if (!post) {
+    res.status(400);
+    throw new Error("Post not found");
+  }
+
+  const user = await Users.findById(req.user.id);
+
+  //Check for user
+  if (!user) {
+    res.status(401);
+    throw new Error("User not found");
+  }
+
+  if (
+    user._id.toString() !== post.creator.toString() &&
+    !post.likes.includes(user._id)
+  ) {
+    post.likes.push(user._id);
+    await post.save();
+    const updatedPost = await Posts.findByIdAndUpdate(
+      req.params.id,
+      {
+        likeCount: post.likeCount + 1,
+      },
+      {
+        new: true,
+      }
+    );
+    res.status(200).json(updatedPost);
+  } else {
+    res.status(404);
+    throw new Error(
+      "Users cannot like their own post or like the same post twice"
+    );
+  }
+});
+
 export const validatePostData = (req, res, next) => {
   const { title, price, contentType } = req.body;
 
@@ -131,7 +232,10 @@ export const validatePostData = (req, res, next) => {
   }
 
   if (!price || price === 0) {
-    req.isFree = true;
+    req.body.isFree = true;
+  } else {
+    req.body.isFree = false;
   }
+
   next();
 };
