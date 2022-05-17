@@ -4,7 +4,7 @@ import asyncHandler from "express-async-handler";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
-//POST /users , public
+//POST /users , public , register a new user
 export const registerUser = asyncHandler(async (req, res) => {
   const { name, username, email, password } = req.body;
 
@@ -48,7 +48,7 @@ export const registerUser = asyncHandler(async (req, res) => {
   }
 });
 
-//POST /users/login , public
+//POST /users/login , public, login user
 export const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
@@ -69,22 +69,13 @@ export const loginUser = asyncHandler(async (req, res) => {
   }
 });
 
-//GET /users/me , private
+//GET /users/me , private , get the logged in user
 export const getUser = asyncHandler(async (req, res) => {
-  const { _id, name, userName, email } = await Users.findById(req.user.id);
+  const user = await Users.findById(req.user.id);
   res.status(200).json({
-    id: _id,
-    email,
-    name,
-    username: userName,
+    ...user._doc,
   });
 });
-
-const generateToken = (id) => {
-  return jwt.sign({ id: id }, process.env.JWT_SECRET, {
-    expiresIn: "30d",
-  });
-};
 
 //GET /users/posts , private , get the users posts
 export const getUserPosts = asyncHandler(async (req, res) => {
@@ -92,3 +83,9 @@ export const getUserPosts = asyncHandler(async (req, res) => {
 
   res.status(200).json(posts);
 });
+
+const generateToken = (id) => {
+  return jwt.sign({ id: id }, process.env.JWT_SECRET, {
+    expiresIn: "30d",
+  });
+};

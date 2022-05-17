@@ -34,7 +34,7 @@ export const getPost = asyncHandler(async (req, res) => {
 
 //POST /posts , private, create a new post
 export const createPost = asyncHandler(async (req, res) => {
-  const { title, description, tags, price, contentType, filepath, isFree } =
+  const { title, description, tags, price, contentType, contentURL, isFree } =
     req.body;
 
   const user = await Users.findById(req.user.id);
@@ -48,8 +48,11 @@ export const createPost = asyncHandler(async (req, res) => {
     price: price ? price : 0,
     isFree: typeof isFree !== "undefined" ? isFree : true,
     creator: user._id,
-    contentURL: filepath,
+    contentURL: contentURL,
   });
+
+  user.posts.push(post._id);
+  await user.save();
 
   res.status(200).json(post);
 });
@@ -128,6 +131,8 @@ export const deletePost = asyncHandler(async (req, res) => {
     throw new Error("User not authorized");
   }
 
+  user.posts.remove(post._id);
+  await user.save();
   await post.remove();
   res.status(200).json(req.params.id);
 });
@@ -160,6 +165,8 @@ export const likePost = asyncHandler(async (req, res) => {
         new: true,
       }
     );
+    user.likedPosts.push(post._id);
+    await user.save();
     res.status(200).json(updatedPost);
   } else {
     res.status(404);
@@ -195,6 +202,8 @@ export const unlikePost = asyncHandler(async (req, res) => {
         new: true,
       }
     );
+    user.likedPosts.remove(post._id);
+    await user.save();
     res.status(200).json(updatedPost);
   } else {
     res.status(404);
