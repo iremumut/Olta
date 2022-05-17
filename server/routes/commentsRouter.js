@@ -1,6 +1,6 @@
-import exprses from "express";
+import express from "express";
 
-const router = exprses.Router();
+const router = express.Router();
 
 router.get("/:commentid", (req, res) => {
   res.json({ message: "get /comments/:commentid" });
