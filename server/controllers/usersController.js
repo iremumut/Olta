@@ -3,6 +3,17 @@ import Posts from "../models/post.js";
 import asyncHandler from "express-async-handler";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import mongoose from "mongoose";
+
+//GET /users, private, get all users
+export const getAllUsers = asyncHandler(async (req, res) => {
+  const users = await Users.find();
+  if (!users) {
+    res.status(404);
+    throw new Error("Resource could not be found");
+  }
+  res.status(200).json(users);
+});
 
 //POST /users , public , register a new user
 export const registerUser = asyncHandler(async (req, res) => {
@@ -52,6 +63,10 @@ export const registerUser = asyncHandler(async (req, res) => {
 export const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
+  if (!email || !password) {
+    res.status(404);
+    throw new Error("Please input email and password.");
+  }
   //Check for user email
   const user = await Users.findOne({ email: email });
 
@@ -72,15 +87,132 @@ export const loginUser = asyncHandler(async (req, res) => {
 //GET /users/me , private , get the logged in user
 export const getUser = asyncHandler(async (req, res) => {
   const user = await Users.findById(req.user.id);
+  checkUserFound(res, user); //check if user is found
+
   res.status(200).json({
     ...user._doc,
   });
 });
 
+//PUT /users , private, update the logged in user
+export const updateUser = asyncHandler(async (req, res) => {
+  const user = await Users.findById(req.user.id);
+  checkUserFound(res, user); //check if user is found
+
+  const { password } = req.body;
+
+  if (password) {
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    req.body = {
+      ...req.body,
+      password: hashedPassword,
+    };
+  } else {
+    req.body = {
+      ...req.body,
+      password: user.password,
+    };
+  }
+
+  req.body = {
+    ...req.body,
+    _id: user._id,
+    userName: user.userName,
+    email: user.email,
+    posts: user.posts,
+    purchasedContent: user.purchasedContent,
+    likedPosts: user.likedPosts,
+    comments: user.comments,
+    followed: user.followed,
+    followers: user.followers,
+    subscribedTo: user.subscribedTo,
+    subscribers: user.subscribers,
+    transactions: user.transactions,
+    createdAt: user.createdAt,
+    updatedAt: user.updatedAt,
+  };
+
+  const updatedUser = await Users.findByIdAndUpdate(req.user.id, req.body, {
+    new: true,
+  });
+  res.status(200).json(updatedUser);
+});
+
+//DELETE /users, private, delete the logged in user
+export const deleteUser = asyncHandler(async (req, res) => {
+  const user = await Users.findByIdAndDelete(req.user.id);
+  checkUserFound(res, user); //check if user is found
+  res.status(200).json(user);
+});
+
+//GET /users/:userid, private , get another user
+export const getAnotherUser = asyncHandler(async (req, res) => {
+  const { userid } = req.params;
+  validateObjectID(res, userid); //check if it's a valid id
+
+  const user = await Users.findById(userid);
+  checkUserFound(res, user); //check if the user is found
+
+  res.status(200).json({
+    name: user.name,
+    userName: user.userName,
+    description: user.description,
+    profilePicture: user.profilePicture,
+    subscriptionAmount: user.subscriptionAmount,
+    openSubscription: user.openSubscription,
+    posts: user.posts,
+    likedPosts: user.likedPosts,
+    comments: user.comments,
+    followed: user.followed,
+    followers: user.followers,
+    subscribedTo: user.subscribedTo,
+    subscribers: user.subscribers,
+  });
+});
+
 //GET /users/posts , private , get the users posts
 export const getUserPosts = asyncHandler(async (req, res) => {
-  const posts = await Posts.find({ creator: req.user.id });
+  const user = await Users.findById(req.user.id);
+  checkUserFound(res, user); //check if the user is found
 
+  const posts = await Posts.find({ creator: req.user.id });
+  checkPostFound(res, posts); //check if the post is found
+
+  res.status(200).json(posts);
+});
+
+//GET /users/:userid/posts , private, get another user's posts
+export const getAnotherUserPosts = asyncHandler(async (req, res) => {
+  const { userid } = req.params;
+  validateObjectID(res, userid); //check if it's a valid id
+
+  const user = await Users.findById(userid);
+  checkUserFound(res, user); //check if the user is found
+
+  const posts = await Posts.find().where("_id").in(user.posts);
+
+  res.status(200).json(posts);
+});
+
+//GET /users/likedPosts, private, get the logged in users liked posts
+export const getLikedPosts = asyncHandler(async (req, res) => {
+  const user = await Users.findById(req.user.id);
+  checkUserFound(res, user); //check if user exists
+
+  const posts = await Posts.find().where("_id").in(user.likedPosts);
+  res.status(200).json(posts);
+});
+
+//GET /users/:userid/likedPosts, private, get the logged in users liked posts
+export const getAnotherUserLikedPosts = asyncHandler(async (req, res) => {
+  const { userid } = req.params;
+  validateObjectID(res, userid); //check if its a valid id
+
+  const user = await Users.findById(userid);
+  checkUserFound(res, user); //check if user exists
+
+  const posts = await Posts.find().where("_id").in(user.likedPosts);
   res.status(200).json(posts);
 });
 
@@ -88,4 +220,25 @@ const generateToken = (id) => {
   return jwt.sign({ id: id }, process.env.JWT_SECRET, {
     expiresIn: "30d",
   });
+};
+
+const checkUserFound = (res, user) => {
+  if (!user) {
+    res.status(401);
+    throw new Error("User not found");
+  }
+};
+
+const checkPostFound = (res, post) => {
+  if (!post) {
+    res.status(404);
+    throw new Error("Post not found");
+  }
+};
+
+const validateObjectID = (res, id) => {
+  if (!mongoose.isValidObjectId(id)) {
+    res.status(400);
+    throw new Error("Invalid obejctId.");
+  }
 };
