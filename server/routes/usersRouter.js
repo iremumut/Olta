@@ -13,6 +13,8 @@ import {
   getAnotherUserLikedPosts,
   getUserComments,
   getAnotherUserComments,
+  followUser,
+  unfollowUser,
 } from "../controllers/usersController.js";
 import { protect } from "../middleware/authMiddleware.js";
 
@@ -24,6 +26,9 @@ Router.get("/me", protect, getUser);
 Router.put("/", protect, updateUser);
 Router.delete("/", protect, deleteUser);
 Router.get("/", protect, getAllUsers);
+
+Router.post("/follows/:userid", protect, followUser);
+Router.delete("/follows/:userid", protect, unfollowUser);
 
 Router.get("/posts", protect, getUserPosts);
 Router.get("/:userid/posts", protect, getAnotherUserPosts);

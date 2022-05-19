@@ -242,6 +242,54 @@ export const getAnotherUserComments = asyncHandler(async (req, res) => {
   res.status(200).json(comments);
 });
 
+//POST /users/follows/:userid , private, follow a user
+export const followUser = asyncHandler(async (req, res) => {
+  const user = await Users.findById(req.user.id);
+  checkUserFound(res, user);
+
+  const { userid } = req.params;
+  validateObjectID(res, userid);
+
+  const userToFollow = await Users.findById(userid);
+  checkUserFound(res, userToFollow);
+
+  if (user.followed.includes(userToFollow._id)) {
+    res.status(404);
+    throw new Error("User already followed");
+  }
+
+  user.followed.push(userToFollow._id);
+  await user.save();
+  userToFollow.followers.push(user);
+  await userToFollow.save();
+
+  res.status(200).json(user);
+});
+
+//DELETE /users/follows/:userid , private, follow a user
+export const unfollowUser = asyncHandler(async (req, res) => {
+  const user = await Users.findById(req.user.id);
+  checkUserFound(res, user);
+
+  const { userid } = req.params;
+  validateObjectID(res, userid);
+
+  const userToUnfollow = await Users.findById(userid);
+  checkUserFound(res, userToUnfollow);
+
+  if (!user.followed.includes(userToUnfollow._id)) {
+    res.status(404);
+    throw new Error("User is already not followed");
+  }
+
+  user.followed.remove(userToUnfollow._id);
+  await user.save();
+  userToUnfollow.followers.remove(user);
+  await userToUnfollow.save();
+
+  res.status(200).json(user);
+});
+
 const generateToken = (id) => {
   return jwt.sign({ id: id }, process.env.JWT_SECRET, {
     expiresIn: "30d",
