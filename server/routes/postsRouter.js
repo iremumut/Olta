@@ -9,6 +9,7 @@ import {
   likePost,
   unlikePost,
   getLikes,
+  getComments,
 } from "../controllers/postsController.js";
 import { protect } from "../middleware/authMiddleware.js";
 
@@ -29,5 +30,7 @@ router.get("/:id/likes", protect, getLikes);
 router.post("/:id/likes", protect, likePost);
 
 router.delete("/:id/likes", protect, unlikePost);
+
+router.get("/:id/comments", protect, getComments);
 
 export default router;

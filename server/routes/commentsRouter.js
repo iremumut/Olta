@@ -1,21 +1,20 @@
 import express from "express";
+import { protect } from "../middleware/authMiddleware.js";
+import {
+  createComment,
+  getComment,
+  deleteComment,
+  updateComment,
+} from "../controllers/commentsController.js";
 
 const router = express.Router();
 
-router.get("/:commentid", (req, res) => {
-  res.json({ message: "get /comments/:commentid" });
-});
+router.get("/:commentid", protect, getComment);
 
-router.post("/:postid", (req, res) => {
-  res.json({ message: "post /comments/:postid" });
-});
+router.post("/:postid", protect, createComment);
 
-router.put("/:commentid", (req, res) => {
-  res.json({ message: "put /comments/:commentid" });
-});
+router.put("/:commentid", protect, updateComment);
 
-router.delete("/:commentid", (req, res) => {
-  res.json({ message: "delete /comments/:commentid" });
-});
+router.delete("/:commentid", protect, deleteComment);
 
 export default router;

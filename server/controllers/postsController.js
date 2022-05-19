@@ -1,8 +1,13 @@
 import Posts from "../models/post.js";
 import Users from "../models/user.js";
+import Comments from "../models/comment.js";
 import asyncHandler from "express-async-handler";
 import { contentTypes } from "../constants.js";
-import mongoose from "mongoose";
+import {
+  validateObjectID,
+  checkPostFound,
+  checkUserFound,
+} from "./errorHandling.js";
 
 // GET /posts , private, get all posts
 export const getPosts = asyncHandler(async (req, res) => {
@@ -228,6 +233,18 @@ export const getLikes = asyncHandler(async (req, res) => {
   res.json(users);
 });
 
+//GET /posts/:id/comments, private, get comments on a post
+export const getComments = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  validateObjectID(res, id);
+
+  const post = await Posts.findById(id);
+  checkPostFound(res, post);
+
+  const comments = await Comments.find().where("_id").in(post.comments);
+  res.status(200).json(comments);
+});
+
 export const validatePostData = (req, res, next) => {
   const { title, price, contentType } = req.body;
 
@@ -248,25 +265,4 @@ export const validatePostData = (req, res, next) => {
   }
 
   next();
-};
-
-const validateObjectID = (res, id) => {
-  if (!mongoose.isValidObjectId(id)) {
-    res.status(400);
-    throw new Error("Invalid obejctId.");
-  }
-};
-
-const checkPostFound = (res, post) => {
-  if (!post) {
-    res.status(404);
-    throw new Error("Post not found");
-  }
-};
-
-const checkUserFound = (res, user) => {
-  if (!user) {
-    res.status(401);
-    throw new Error("User not found");
-  }
 };

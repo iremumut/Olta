@@ -3,7 +3,12 @@ import Posts from "../models/post.js";
 import asyncHandler from "express-async-handler";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import mongoose from "mongoose";
+import {
+  validateObjectID,
+  checkPostFound,
+  checkUserFound,
+} from "./errorHandling.js";
+import Comments from "../models/comment.js";
 
 //GET /users, private, get all users
 export const getAllUsers = asyncHandler(async (req, res) => {
@@ -216,29 +221,29 @@ export const getAnotherUserLikedPosts = asyncHandler(async (req, res) => {
   res.status(200).json(posts);
 });
 
+//GET /users/comments, private, get users comments
+export const getUserComments = asyncHandler(async (req, res) => {
+  const user = await Users.findById(req.user.id);
+  checkUserFound(res, user);
+
+  const comments = await Comments.find().where("_id").in(user.comments);
+  res.status(200).json(comments);
+});
+
+//GET /users/:userid/comments, private, get another users comments
+export const getAnotherUserComments = asyncHandler(async (req, res) => {
+  const { userid } = req.params;
+  validateObjectID(res, userid);
+
+  const user = await Users.findById(userid);
+  checkUserFound(res, user);
+
+  const comments = await Comments.find().where("_id").in(user.comments);
+  res.status(200).json(comments);
+});
+
 const generateToken = (id) => {
   return jwt.sign({ id: id }, process.env.JWT_SECRET, {
     expiresIn: "30d",
   });
-};
-
-const checkUserFound = (res, user) => {
-  if (!user) {
-    res.status(401);
-    throw new Error("User not found");
-  }
-};
-
-const checkPostFound = (res, post) => {
-  if (!post) {
-    res.status(404);
-    throw new Error("Post not found");
-  }
-};
-
-const validateObjectID = (res, id) => {
-  if (!mongoose.isValidObjectId(id)) {
-    res.status(400);
-    throw new Error("Invalid obejctId.");
-  }
 };
