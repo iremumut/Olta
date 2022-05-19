@@ -290,6 +290,52 @@ export const unfollowUser = asyncHandler(async (req, res) => {
   res.status(200).json(user);
 });
 
+//GET /users/followers , private , get user's followers
+export const getUserFollowers = asyncHandler(async (req, res) => {
+  const user = await Users.findById(req.user.id);
+  checkUserFound(res, user);
+
+  const followers = await Users.find().where("_id").in(user.followers);
+
+  res.status(200).json(followers);
+});
+
+//GET /users/followed , private , get the ppl user followes
+export const getUserFollowed = asyncHandler(async (req, res) => {
+  const user = await Users.findById(req.user.id);
+  checkUserFound(res, user);
+
+  const followed = await Users.find().where("_id").in(user.followed);
+
+  res.status(200).json(followed);
+});
+
+//GET /users/:userid/followers , private , get another user's followers
+export const getAnotherUserFollowers = asyncHandler(async (req, res) => {
+  const { userid } = req.params;
+  validateObjectID(res, userid);
+
+  const user = await Users.findById(userid);
+  checkUserFound(res, user);
+
+  const followers = await Users.find().where("_id").in(user.followers);
+
+  res.status(200).json(followers);
+});
+
+//GET /users/:userid/followed , private , get the ppl another user followes
+export const getAnotherUserFollowed = asyncHandler(async (req, res) => {
+  const { userid } = req.params;
+  validateObjectID(res, userid);
+
+  const user = await Users.findById(userid);
+  checkUserFound(res, user);
+
+  const followed = await Users.find().where("_id").in(user.followed);
+
+  res.status(200).json(followed);
+});
+
 const generateToken = (id) => {
   return jwt.sign({ id: id }, process.env.JWT_SECRET, {
     expiresIn: "30d",

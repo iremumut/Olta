@@ -15,6 +15,10 @@ import {
   getAnotherUserComments,
   followUser,
   unfollowUser,
+  getUserFollowers,
+  getUserFollowed,
+  getAnotherUserFollowers,
+  getAnotherUserFollowed,
 } from "../controllers/usersController.js";
 import { protect } from "../middleware/authMiddleware.js";
 
@@ -38,6 +42,12 @@ Router.get("/:userid/likedPosts", protect, getAnotherUserLikedPosts);
 
 Router.get("/comments", protect, getUserComments);
 Router.get("/:userid/comments", protect, getAnotherUserComments);
+
+Router.get("/followers", protect, getUserFollowers);
+Router.get("/followed", protect, getUserFollowed);
+
+Router.get("/:userid/followers", protect, getAnotherUserFollowers);
+Router.get("/:userid/followed", protect, getAnotherUserFollowed);
 
 Router.get("/:userid", protect, getAnotherUser);
 
