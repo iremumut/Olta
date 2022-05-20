@@ -245,6 +245,23 @@ export const getComments = asyncHandler(async (req, res) => {
   res.status(200).json(comments);
 });
 
+//GET /posts/:id/buyers , private , get the buyers of the post
+export const getBuyers = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  validateObjectID(res, id); //check if params id is valid
+
+  const post = await Posts.findById(id);
+  checkPostFound(res, post); //check if the post is found
+
+  const user = await Users.findById(req.user.id);
+  checkUserFound(res, user); //Check if user exists
+
+  const users = await Users.find().where("_id").in(post.buyers);
+
+  res.status(200);
+  res.json(users);
+});
+
 export const validatePostData = (req, res, next) => {
   const { title, price, contentType } = req.body;
 

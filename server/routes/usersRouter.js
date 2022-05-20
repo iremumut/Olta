@@ -19,6 +19,12 @@ import {
   getUserFollowed,
   getAnotherUserFollowers,
   getAnotherUserFollowed,
+  subscribeUser,
+  unsubscribeUser,
+  getUserSubscribers,
+  getUserSubscribedTo,
+  getAnotherUserSubscribers,
+  getAnotherUserSubscribed,
 } from "../controllers/usersController.js";
 import { protect } from "../middleware/authMiddleware.js";
 
@@ -34,6 +40,9 @@ Router.get("/", protect, getAllUsers);
 Router.post("/follows/:userid", protect, followUser);
 Router.delete("/follows/:userid", protect, unfollowUser);
 
+Router.post("/subscribes/:userid", protect, subscribeUser);
+Router.delete("/subscribes/:userid", protect, unsubscribeUser);
+
 Router.get("/posts", protect, getUserPosts);
 Router.get("/:userid/posts", protect, getAnotherUserPosts);
 
@@ -48,6 +57,12 @@ Router.get("/followed", protect, getUserFollowed);
 
 Router.get("/:userid/followers", protect, getAnotherUserFollowers);
 Router.get("/:userid/followed", protect, getAnotherUserFollowed);
+
+Router.get("/subscribers", protect, getUserSubscribers);
+Router.get("/subscribedTo", protect, getUserSubscribedTo);
+
+Router.get("/:userid/subscribers", protect, getAnotherUserSubscribers);
+Router.get("/:userid/subscribed", protect, getAnotherUserSubscribed);
 
 Router.get("/:userid", protect, getAnotherUser);
 

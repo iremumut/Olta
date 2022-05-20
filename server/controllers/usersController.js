@@ -258,6 +258,11 @@ export const followUser = asyncHandler(async (req, res) => {
     throw new Error("User already followed");
   }
 
+  if (user._id.toString() == userToFollow._id.toString()) {
+    res.status(404);
+    throw new Error("Cannot follow yourself");
+  }
+
   user.followed.push(userToFollow._id);
   await user.save();
   userToFollow.followers.push(user);
@@ -334,6 +339,109 @@ export const getAnotherUserFollowed = asyncHandler(async (req, res) => {
   const followed = await Users.find().where("_id").in(user.followed);
 
   res.status(200).json(followed);
+});
+
+//POST /users/subscribes/:userid , private, subscribe to a user
+export const subscribeUser = asyncHandler(async (req, res) => {
+  const user = await Users.findById(req.user.id);
+  checkUserFound(res, user);
+
+  const { userid } = req.params;
+  validateObjectID(res, userid);
+
+  const userToSubscribe = await Users.findById(userid);
+  checkUserFound(res, userToSubscribe);
+
+  if (user.subscribedTo.includes(userToSubscribe._id)) {
+    res.status(404);
+    throw new Error("Already subscribed to the user");
+  }
+
+  if (user._id.toString() == userToSubscribe._id.toString()) {
+    res.status(404);
+    throw new Error("Cannot subscribe to yourself");
+  }
+
+  //@TODO Additional operations to get money for the subscription
+
+  user.subscribedTo.push(userToSubscribe._id);
+  await user.save();
+  userToSubscribe.subscribers.push(user);
+  await userToSubscribe.save();
+
+  res.status(200).json(user);
+});
+
+//DELETE /users/subscribes/:userid , private, unsubscribes from a user
+export const unsubscribeUser = asyncHandler(async (req, res) => {
+  const user = await Users.findById(req.user.id);
+  checkUserFound(res, user);
+
+  const { userid } = req.params;
+  validateObjectID(res, userid);
+
+  const userToUnsubscribe = await Users.findById(userid);
+  checkUserFound(res, userToUnsubscribe);
+
+  if (!user.subscribedTo.includes(userToUnsubscribe._id)) {
+    res.status(404);
+    throw new Error("Already not subscribed to the user");
+  }
+
+  //@TODO Additional operations to not get money for the subscription
+
+  user.subscribedTo.remove(userToUnsubscribe._id);
+  await user.save();
+  userToUnsubscribe.subscribers.remove(user);
+  await userToUnsubscribe.save();
+
+  res.status(200).json(user);
+});
+
+//GET /users/subscribers , private , get user's subscribers
+export const getUserSubscribers = asyncHandler(async (req, res) => {
+  const user = await Users.findById(req.user.id);
+  checkUserFound(res, user);
+
+  const subscribers = await Users.find().where("_id").in(user.subscribers);
+
+  res.status(200).json(subscribers);
+});
+
+//GET /users/subscribedTo , private , get users that the user is subscribed to
+export const getUserSubscribedTo = asyncHandler(async (req, res) => {
+  const user = await Users.findById(req.user.id);
+  checkUserFound(res, user);
+
+  const subscribedTo = await Users.find().where("_id").in(user.subscribedTo);
+
+  res.status(200).json(subscribedTo);
+});
+
+//GET /users/:userid/subscribers , private , get another user's subscribers
+export const getAnotherUserSubscribers = asyncHandler(async (req, res) => {
+  const { userid } = req.params;
+  validateObjectID(res, userid);
+
+  const user = await Users.findById(userid);
+  checkUserFound(res, user);
+
+  const subscribers = await Users.find().where("_id").in(user.subscribers);
+
+  res.status(200).json(subscribers);
+});
+
+//GET /users/:userid/subscribed , private , get another user's subscribed to
+export const getAnotherUserSubscribed = asyncHandler(async (req, res) => {
+  const { userid } = req.params;
+  validateObjectID(res, userid);
+
+  const user = await Users.findById(userid);
+  checkUserFound(res, user);
+
+  const subscribedTos = await Users.find().where("_id").in(user.subscribedTo);
+
+  res.status(200).json(subscribedTos);
 });
 
 const generateToken = (id) => {
