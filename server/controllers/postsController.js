@@ -138,7 +138,19 @@ export const deletePost = asyncHandler(async (req, res) => {
 
   user.posts.remove(post._id);
   await user.save();
-  await post.remove();
+
+  const updatedPost = await Posts.findByIdAndUpdate(
+    req.params.id,
+    {
+      deleted: true,
+      creator: "",
+    },
+    {
+      new: true,
+    }
+  );
+
+  //await post.remove();
   res.status(200).json(req.params.id);
 });
 
