@@ -10,6 +10,8 @@ const PostSchema = new Schema(
     tags: [String],
     price: { type: Number, min: 0, default: 0 },
     isFree: { type: Boolean, default: true },
+    updated: { type: Boolean, default: false },
+    deleted: { type: Boolean, default: false },
     creator: {
       type: Schema.Types.ObjectId,
       ref: "User",

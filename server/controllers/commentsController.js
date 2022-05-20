@@ -49,6 +49,16 @@ export const createComment = asyncHandler(async (req, res) => {
   post.comments.push(comment._id);
   await post.save();
 
+  const updatedPost = await Posts.findByIdAndUpdate(
+    postid,
+    {
+      commentCount: post.commentCount + 1,
+    },
+    {
+      new: true,
+    }
+  );
+
   user.comments.push(comment._id);
   await user.save();
 
@@ -111,6 +121,16 @@ export const deleteComment = asyncHandler(async (req, res) => {
   await user.save();
   post.comments.remove(comment._id);
   await post.save();
+
+  const updatedPost = await Posts.findByIdAndUpdate(
+    comment.postID,
+    {
+      commentCount: post.commentCount - 1,
+    },
+    {
+      new: true,
+    }
+  );
 
   await comment.remove();
 
