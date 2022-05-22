@@ -1,9 +1,13 @@
-const App = () => {
+import "./App.css";
+
+function App() {
   return (
     <div>
-      <h1>Hello its working</h1>
+      <p className="text-3xl text-center font-bold underline bg-cyan-400">
+        Hello OLTA!
+      </p>
     </div>
   );
-};
+}
 
 export default App;
