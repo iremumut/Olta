@@ -9,9 +9,20 @@ const FormInputLabel = ({
   placeholder,
 }) => {
   const [type, setType] = useState(inputType);
+
+  const changeVisibility = (e) => {
+    e.preventDefault();
+    setType((prev) => {
+      if(prev === "password"){
+        setType("text");
+      }else{
+        setType("password");
+      }
+    })
+  }
   return (
     <div className="flex flex-col py-5">
-      <label htmlFor="name" className="text-base py-2">
+      <label htmlFor="name" className="text-base py-2 font-medium">
         {label}
       </label>
       <div className="w-96 border border-[#282828] border-solid border-[0.6px] rounded-md h-14 ">
@@ -23,7 +34,7 @@ const FormInputLabel = ({
           placeholder={placeholder}
         />
         {inputType === "password" ? (
-          <button onClick={setType("text")}>
+          <button  onClick={changeVisibility}>
             {" "}
             <img src={passwordVector} alt="show password" />
           </button>
