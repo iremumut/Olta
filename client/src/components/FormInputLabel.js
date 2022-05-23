@@ -4,7 +4,6 @@ import passwordVector from "../assets/vectors/passwordHide.svg";
 const FormInputLabel = ({
   inputType,
   label,
-  inputName,
   inputId,
   placeholder,
 }) => {
@@ -21,16 +20,16 @@ const FormInputLabel = ({
     })
   }
   return (
-    <div className="flex flex-col py-5">
+    <div className="flex flex-col py-3">
       <label htmlFor="name" className="text-base py-2 font-medium">
         {label}
       </label>
-      <div className="w-96 border border-[#282828] border-solid border-[0.6px] rounded-md h-14 ">
+      <div className="lg:w-96 w-90 border border-[#282828] border-solid border-[0.6px] rounded-md h-14 ">
         <input
           type={type}
-          name={inputName}
+          name={inputId}
           id={inputId}
-          className="w-11/12 border-none rounded-md h-full bg-inherit focus:outline-none py-2 px-4 "
+          className="w-10/12 sm:w-11/12 border-none rounded-md h-full bg-inherit focus:outline-none py-2 px-4 "
           placeholder={placeholder}
         />
         {inputType === "password" ? (
