@@ -1,16 +1,16 @@
-import React from 'react';
-import {Link} from "react-router-dom";
+import React from "react";
+import { Link } from "react-router-dom";
 
-import FormInputLabel from './FormInputLabel';
-import PrimaryButton from './PrimaryButton';
+import FormInputLabel from "./FormInputLabel";
+import PrimaryButton from "./PrimaryButton";
 
-function SignUpForm() {
-    return (
+function RegisterForm() {
+  return (
     <div className="px-8 py-9 flex flex-col mx-2 sm:mx-16 my-20 lg:mx-0 font-sans border border-[#878787] border-[0.5px] rounded-lg shadow-xl">
       <p className="font-light text-2xl py-9">Welcome!</p>
       <p className="signin pb-8 font-medium text-3xl">Sign Up</p>
       <form>
-          <FormInputLabel
+        <FormInputLabel
           inputId={"email"}
           inputType={"email"}
           label="Email"
@@ -41,15 +41,18 @@ function SignUpForm() {
           placeholder="Please enter your password again"
         />
 
-        <PrimaryButton text="Sign Up" witdh="w-full"/>
-        
-        <p className="text-center mt-9 text-slate-500 text-base" >
+        <PrimaryButton text="Sign Up" witdh="w-full" />
+
+        <p className="text-center mt-9 text-slate-500 text-base">
           Already have an account?
-          <Link to={"/signin"} className="text-black font-bold"> Sign In</Link>
+          <Link to={"/login"} className="text-black font-bold">
+            {" "}
+            Sign In
+          </Link>
         </p>
       </form>
     </div>
-    );
+  );
 }
 
-export default SignUpForm;
+export default RegisterForm;
