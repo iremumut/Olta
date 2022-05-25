@@ -23,7 +23,6 @@ export const getAllUsers = asyncHandler(async (req, res) => {
 //POST /users , public , register a new user
 export const registerUser = asyncHandler(async (req, res) => {
   const { name, username, email, password } = req.body;
-
   if (!name || !username || !email || !password) {
     res.status(404);
     throw new Error("Please add all fields");

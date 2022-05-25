@@ -1,4 +1,6 @@
 import { Link, Route, Routes } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import Home from "./pages/Home";
 import Register from "./pages/Register";
@@ -30,6 +32,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
+      <ToastContainer />
     </div>
   );
 }

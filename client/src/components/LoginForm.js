@@ -1,24 +1,85 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { toast } from "react-toastify";
+import { login, reset } from "../features/auth/authSlice";
+
 import FormInputLabel from "./FormInputLabel";
 import PrimaryButton from "./PrimaryButton";
 
 const LoginForm = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { user, isLoading, isError, isSuccess, message } = useSelector(
+    (state) => state.auth
+  );
+
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  useEffect(() => {
+    //dispatch(logout());
+    console.log(user, isLoading, isError, isSuccess, message);
+    if (isError) {
+      toast.error(message);
+    }
+    if (isSuccess || user) {
+      //if its succesful or ther is already a user logged in
+      console.log(user);
+      navigate("/");
+    }
+
+    dispatch(reset());
+  }, [user, isLoading, isError, isSuccess, message, navigate, dispatch]);
+
+  const HandleChange = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const HandleSubmit = (e) => {
+    e.preventDefault();
+    const user = {
+      ...formData,
+    };
+
+    dispatch(login(user));
+
+    setFormData({
+      email: "",
+      password: "",
+    });
+  };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="px-8 py-9 flex flex-col mx-2 sm:mx-16 my-20 lg:mx-0 font-sans border border-[#878787] border-[0.5px] rounded-lg shadow-xl">
       <p className="font-light text-2xl py-9">Welcome!</p>
       <p className="signin pb-8 font-medium text-3xl">Sign In</p>
-      <form>
+      <form onSubmit={HandleSubmit}>
         <FormInputLabel
           inputId={"email"}
           inputType={"email"}
           label=" Email"
           placeholder="Please enter your email"
+          value={formData.email}
+          HandleChange={HandleChange}
         />
         <FormInputLabel
           inputId={"password"}
           inputType={"password"}
           label="Password"
           placeholder="Please enter your password"
+          value={formData.password}
+          HandleChange={HandleChange}
         />
 
         <div className="flex flex-row justify-between pb-9">
