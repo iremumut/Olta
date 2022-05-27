@@ -6,7 +6,7 @@ const NavBar = () => {
       <Link to={"/"}>
         <p className="text-4xl font-semibold xl:mr-28 mr-4">OLTA</p>
       </Link>
-      <div className="w-1/2 3xl:w-96 px-4 bg-neutral-50/[.97] gap-2.5 rounded-xl p-2 items-center xl:mr-12 mr-4 3xl:mr-48 h-9 ">
+      <div className="flex flex-row w-96 px-4 bg-neutral-50/[.97] gap-2.5 rounded-xl p-2 items-center xl:mr-12 mr-4 3xl:mr-48 h-9 ">
         <img src={searchIcon} alt="" className="inline" />
         <input
           type="search"
@@ -14,14 +14,14 @@ const NavBar = () => {
           placeholder="Search"
         />
       </div>
-      <div className="flex flex-row lg:justify-between 3xl:w-1/4 w-1/2 items-center text-[#4A5567] flex-left mx-4 lg:visible invisible ">
+      <div className="flex flex-row lg:justify-between 3xl:w-1/4 w-1/2 items-center text-[#4A5567] flex-left mx-4 lg:flex hidden ">
         <button className="hover:text-[#4A5567]/70 ">Create a Post</button>
         <Link to={"/"}>
           <p className="hover:text-[#4A5567]/70  ">Wallet</p>
         </Link>
         <button className="hover:text-[#4A5567]/70">Sign Out</button>
       </div>
-      <div className="lg:invisible visible">
+      <div className="lg:hidden mx-8">
         <select>
           <option>
             {" "}
@@ -38,12 +38,14 @@ const NavBar = () => {
           </option>
         </select>
       </div>
-      <div className="w-2/5 3xl:w-3/5 flex flex-row ml-4 justify-end items-center">
-        <p className="mx-2 text-[#4E5D78] text-xl font-semibold	">Alex Daniel</p>
+      <div className="lg:w-2/5 w-full 3xl:w-3/5 flex lg:flex-row flex-col ml-4 lg:justify-end lg:items-center items-end">
         <img
           src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8FuEJbKwDdaz1h387130xmYkAIQbZpahhbQ&usqp=CAU"
-          className="h-12 w-12 rounded-xl mx-2"
+          className="lg:h-12 lg:w-12 w-8 h-8 lg:rounded-xl mx-2 rounded-full "
         ></img>
+        <p className="mx-2 text-[#4E5D78] lg:text-xl text-base lg:font-semibold	font-normal">
+          Alex Daniel
+        </p>
       </div>
     </div>
   );
