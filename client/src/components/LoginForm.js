@@ -72,7 +72,7 @@ const LoginForm = () => {
   }
 
   return (
-    <div className="px-8 py-9 flex flex-col mx-2 sm:mx-16 my-20 lg:mx-0 font-sans border border-[#878787] border-[0.5px] rounded-lg shadow-xl">
+    <div className="px-8 py-9 flex flex-col mx-2 sm:mx-16 my-20 lg:mx-0 border border-[#878787] border-[0.5px] rounded-lg shadow-xl">
       <p className="font-light text-2xl py-9">Welcome!</p>
       <p className="signin pb-8 font-medium text-3xl">Sign In</p>
       <form onSubmit={HandleSubmit}>

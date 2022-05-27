@@ -7,11 +7,13 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import PageNotFound from "./pages/PageNotFound";
+import NavBar from "./pages/components/NavBar";
 
 function App() {
   return (
     <div>
       <nav>
+        <NavBar />
         <div>
           <Link to={"/"}>Home Page</Link>
         </div>
