@@ -36,6 +36,14 @@ function RegisterForm() {
     dispatch(reset());
   }, [user, isLoading, isError, isSuccess, message, navigate, dispatch]);
 
+  const validateEmail = (email) => {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+  };
+
   const HandleChange = (e) => {
     setFormData((prev) => ({
       ...prev,
@@ -45,10 +53,19 @@ function RegisterForm() {
 
   const HandleSubmit = (e) => {
     e.preventDefault();
+    let error = false;
+
+    if (!validateEmail(formData.email)) {
+      error = true;
+      toast.error("Please enter a valid email address");
+    }
 
     if (formData.password !== formData.confirmPassword) {
+      error = true;
       toast.error("Passwords do not match");
-    } else {
+    }
+
+    if (!error) {
       const user = {
         name: formData.name,
         username: formData.username,
@@ -56,6 +73,13 @@ function RegisterForm() {
         password: formData.password,
       };
       dispatch(register(user));
+      setFormData({
+        name: "",
+        username: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+      });
     }
   };
 

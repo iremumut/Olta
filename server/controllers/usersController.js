@@ -32,9 +32,14 @@ export const registerUser = asyncHandler(async (req, res) => {
   const userExistsByEmail = await Users.findOne({ email: email });
   const userExistsByUsername = await Users.findOne({ userName: username });
 
-  if (userExistsByEmail || userExistsByUsername) {
+  if (userExistsByEmail) {
     res.status(400);
-    throw new Error("User already exists.");
+    throw new Error("User with the same email already exists.");
+  }
+
+  if (userExistsByUsername) {
+    res.status(400);
+    throw new Error("User with the same username already exists.");
   }
 
   //Hash password

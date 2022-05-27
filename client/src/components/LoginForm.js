@@ -22,7 +22,6 @@ const LoginForm = () => {
 
   useEffect(() => {
     //dispatch(logout());
-    console.log(user, isLoading, isError, isSuccess, message);
     if (isError) {
       toast.error(message);
     }
@@ -35,6 +34,14 @@ const LoginForm = () => {
     dispatch(reset());
   }, [user, isLoading, isError, isSuccess, message, navigate, dispatch]);
 
+  const validateEmail = (email) => {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+  };
+
   const HandleChange = (e) => {
     setFormData((prev) => ({
       ...prev,
@@ -44,16 +51,20 @@ const LoginForm = () => {
 
   const HandleSubmit = (e) => {
     e.preventDefault();
-    const user = {
-      ...formData,
-    };
+    if (!validateEmail(formData.email)) {
+      toast.error("Please enter a valid email address");
+    } else {
+      const user = {
+        ...formData,
+      };
 
-    dispatch(login(user));
+      dispatch(login(user));
 
-    setFormData({
-      email: "",
-      password: "",
-    });
+      setFormData({
+        email: "",
+        password: "",
+      });
+    }
   };
 
   if (isLoading) {
@@ -92,7 +103,7 @@ const LoginForm = () => {
           </Link>
         </div>
 
-        <PrimaryButton text="Giriş Yap" witdh="w-full" />
+        <PrimaryButton text="Sign in" witdh="w-full" />
 
         <p className="text-center mt-9 text-slate-500 text-base">
           Do not have an account?
