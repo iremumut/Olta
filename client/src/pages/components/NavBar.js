@@ -1,15 +1,30 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import searchIcon from "../../assets/vectors/search.svg";
 import dropdownArrow from "../../assets/vectors/dropdown.svg";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { logout, reset } from "../../features/auth/authSlice";
+
 const NavBar = () => {
   const [dropdown, setDropdown] = useState(false);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { user } = useSelector((state) => state.auth);
 
   const changeDropdown = () => {
     setDropdown((prev) => !prev);
   };
+
+  const handleSignOut = async () => {
+    await dispatch(logout());
+    dispatch(reset());
+    navigate("/login");
+  };
+
   return (
-    <div className="py-4 sm:px-16 px-2 flex flex-row items-start ">
+    <div className="py-4 sm:px-16 px-2 flex flex-row items-center ">
       <Link to={"/"}>
         <p className="sm:text-4xl text-2xl font-semibold xl:mr-28 mr-4">OLTA</p>
       </Link>
@@ -21,19 +36,30 @@ const NavBar = () => {
           placeholder="Search"
         />
       </div>
-      <div className="flex flex-row lg:basis-5/12 basis-8/12 justify-between   items-center text-[#4A5567]  mx-4   hidden md:flex">
+      <div className="flex flex-row lg:basis-5/12 basis-8/12 justify-between   items-center text-[#4A5567]  mx-4  hidden md:flex">
         <button className="hover:text-[#4A5567]/70 px-1 ">New Post</button>
         <Link to={"/"}>
           <p className="hover:text-[#4A5567]/70 px-1 ">Wallet</p>
         </Link>
-        <button className="hover:text-[#4A5567]/70 px-1 ">Sign Out</button>
-      </div>
-      <div className="md:hidden mx-4 text-[#4A5567] bg-neutral-50/[.97] rounded-lg py-2 w-32 shadow ">
-        <button className="px-4" onClick={changeDropdown}>
-          <p className="inline">Menu</p>
-          <img src={dropdownArrow} className="inline ml-6" alt="" />
+        <button
+          className="hover:text-[#4A5567]/70 px-1 "
+          onClick={handleSignOut}
+        >
+          Sign Out
         </button>
-        <div className={`self-start ${dropdown ? "inline" : "hidden"}`}>
+      </div>
+      <div className="md:hidden mx-4 text-[#4A5567] ">
+        <button
+          className="xsm:py-2 xsm:px-4 text-center flex flex-row justify-between items-center w-full"
+          onClick={changeDropdown}
+        >
+          <img src={dropdownArrow} className=" inline w-4 h-4" alt="" />
+        </button>
+        <div
+          className={`absolute bg-neutral-50/[.97] text-[#4A5567] w-32  md:text-normal text-small rounded-lg shadow ${
+            dropdown ? "" : "hidden"
+          }`}
+        >
           <Link
             className="hover:text-black hover:bg-neutral-300 px-4 py-2 block"
             to={"/"}
@@ -52,17 +78,17 @@ const NavBar = () => {
           >
             Profile
           </Link>
-          <Link
-            className="hover:text-black hover:bg-neutral-300 px-4 py-2 block"
-            to={"/"}
+          <button
+            className="hover:text-black hover:bg-neutral-300 px-4 py-2 block w-full text-left"
+            onClick={handleSignOut}
           >
             Sign Out
-          </Link>
+          </button>
         </div>
       </div>
       <div className="xl:basis-5/12 md:basis-3/12 flex flex-row ml-auto justify-end items-center items-end xsm:flex hidden ">
         <p className="mx-2 text-[#4E5D78] lg:text-xl text-base lg:font-semibold	font-normal hidden lg:inline hover:text-[#4A5567]/70">
-          Alex Daniel
+          {user && user.name ? user.name : "user name"}
         </p>
         <img
           src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8FuEJbKwDdaz1h387130xmYkAIQbZpahhbQ&usqp=CAU"
@@ -76,72 +102,10 @@ const NavBar = () => {
 
 export default NavBar;
 
-/*className={dropdown ? "inline" : "hidden"}*/
-// "text-[#4A5567]"
-
 /* 
-<div className="py-4 sm:px-16 px-2 flex flex-row items-center ">
-      <Link to={"/"}>
-        <p className="text-4xl font-semibold xl:mr-28 mr-4">OLTA</p>
-      </Link>
-      <div className="flex flex-row w-96 px-4 bg-neutral-50/[.97] gap-2.5 rounded-xl p-2 items-center xl:mr-12 mr-4 3xl:mr-48 h-9 ">
-        <img src={searchIcon} alt="" className="inline" />
-        <input
-          type="search"
-          className="bg-neutral-50/[.97] focus:outline-none inline"
-          placeholder="Search"
-        />
-      </div>
-      <div className="flex flex-row lg:justify-between 3xl:w-1/4 lg:w-1/2 w-full items-center text-[#4A5567] flex-left mx-4 md:flex hidden ">
-        <button className="hover:text-[#4A5567]/70 px-4 ">New Post</button>
-        <Link to={"/"}>
-          <p className="hover:text-[#4A5567]/70 px-4 ">Wallet</p>
-        </Link>
-        <button className="hover:text-[#4A5567]/70 px-4 ">Sign Out</button>
-      </div>
-      <div className="md:hidden mx-8">
-        <select>
-          <option>
-            {" "}
-            <button className="hover:text-[#4A5567]/70 ">Create a Post</button>
-          </option>
-          <option>
-            {" "}
-            <Link to={"/"}>
-              <p className="hover:text-[#4A5567]/70  ">Wallet</p>
-            </Link>
-          </option>
-          <option>
-            <button className="hover:text-[#4A5567]/70">Sign Out</button>
-          </option>
-        </select>
-      </div>
-      <div className="lg:w-1/5  3xl:w-3/5 flex lg:flex-row flex-col ml-4 lg:justify-end lg:items-center items-end">
-        <p className="mx-2 text-[#4E5D78] lg:text-xl text-base lg:font-semibold	font-normal">
-          Alex Daniel
-        </p>
-        <img
-          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8FuEJbKwDdaz1h387130xmYkAIQbZpahhbQ&usqp=CAU"
-          className="lg:h-12 lg:w-12 w-8 h-8 lg:rounded-xl mx-2 rounded-full "
-        ></img>
-      </div>
-    </div>
-
-
-
-    <select>
-          <option>
-            {" "}
-            <button className="hover:text-[#4A5567]/70 ">New Post</button>
-          </option>
-          <option>
-            {" "}
-            <Link to={"/"}>
-              <p className="hover:text-[#4A5567]/70  ">Wallet</p>
-            </Link>
-          </option>
-          <option>
-            <button className="hover:text-[#4A5567]/70">Sign Out</button>
-          </option>
-        </select>
+src={
+            user && user.profilePicture
+              ? user.profilePicture
+              : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8FuEJbKwDdaz1h387130xmYkAIQbZpahhbQ&usqp=CAU"
+          }
 */
