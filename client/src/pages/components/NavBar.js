@@ -23,8 +23,12 @@ const NavBar = () => {
     navigate("/login");
   };
 
+  const goToProfile = () => {
+    navigate("/profile");
+  };
+
   return (
-    <div className="py-4 sm:px-16 px-2 flex flex-row items-center ">
+    <div className="py-4 sm:px-16 px-2 flex flex-row items-center bg-white ">
       <Link to={"/"}>
         <p className="sm:text-4xl text-2xl font-semibold xl:mr-28 mr-4">OLTA</p>
       </Link>
@@ -38,7 +42,7 @@ const NavBar = () => {
       </div>
       <div className="flex flex-row lg:basis-5/12 basis-8/12 justify-between   items-center text-[#4A5567]  mx-4  hidden md:flex">
         <button className="hover:text-[#4A5567]/70 px-1 ">New Post</button>
-        <Link to={"/"}>
+        <Link to={"/user/wallet"}>
           <p className="hover:text-[#4A5567]/70 px-1 ">Wallet</p>
         </Link>
         <button
@@ -68,13 +72,13 @@ const NavBar = () => {
           </Link>
           <Link
             className="hover:text-black hover:bg-neutral-300 px-4 py-2 block"
-            to={"/"}
+            to={"/user/wallet"}
           >
             Wallet
           </Link>
           <Link
             className="hover:text-black hover:bg-neutral-300 px-4 py-2 block"
-            to={"/"}
+            to={"/user/me"}
           >
             Profile
           </Link>
@@ -87,13 +91,21 @@ const NavBar = () => {
         </div>
       </div>
       <div className="xl:basis-5/12 md:basis-3/12 flex flex-row ml-auto justify-end items-center items-end xsm:flex hidden ">
-        <p className="mx-2 text-[#4E5D78] lg:text-xl text-base lg:font-semibold	font-normal hidden lg:inline hover:text-[#4A5567]/70">
+        <p
+          onClick={goToProfile}
+          className="mx-2 text-[#4E5D78] cursor-pointer lg:text-xl text-base lg:font-semibold	font-normal hidden lg:inline hover:text-[#4A5567]/70"
+        >
           {user && user.name ? user.name : "user name"}
         </p>
         <img
-          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8FuEJbKwDdaz1h387130xmYkAIQbZpahhbQ&usqp=CAU"
-          className="lg:h-12 lg:w-12 w-8 h-8 lg:rounded-xl ml-2 rounded-full object-cover"
+          src={
+            user && user.profilePicture
+              ? user.profilePicture
+              : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8FuEJbKwDdaz1h387130xmYkAIQbZpahhbQ&usqp=CAU"
+          }
+          className="lg:h-12 lg:w-12 w-8 h-8 lg:rounded-xl ml-2 rounded-full object-cover cursor-pointer"
           alt="profile"
+          onClick={goToProfile}
         ></img>
       </div>
     </div>
