@@ -20,7 +20,7 @@ function SideBar() {
   };
 
   return (
-    <div className="px-12 py-14 shadow h-screen  ">
+    <div className="px-12 py-14 shadow h-screen ">
       <ul>
         <li className="py-1">
           <Link

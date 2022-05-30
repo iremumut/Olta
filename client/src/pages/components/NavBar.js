@@ -24,7 +24,7 @@ const NavBar = () => {
   };
 
   const goToProfile = () => {
-    navigate("/profile");
+    navigate("/user/me");
   };
 
   return (

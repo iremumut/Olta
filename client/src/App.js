@@ -7,33 +7,32 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import PageNotFound from "./pages/PageNotFound";
-import NavBar from "./pages/components/NavBar";
-import SideBar from "./pages/components/SideBar";
 import Explore from "./pages/Explore";
+import ProtectRoute from "./utils/ProtectRoute";
+import LayoutWithoutNav from "./utils/LayoutWithoutNav";
+import LayoutWithNav from "./utils/LayoutWithNav";
 
 function App() {
   return (
     <div>
-      <nav className="sticky top-0 z-10">
-        <NavBar />
-      </nav>
-      <div className="flex flex-row">
-        <SideBar />
-        <div className="bg-zinc-100 p-4 h-screen w-screen">
-          <Routes>
+      <Routes>
+        <Route element={<LayoutWithoutNav />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="*" element={<PageNotFound />} />
+        </Route>
+        <Route element={<LayoutWithNav />}>
+          <Route element={<ProtectRoute />}>
             <Route path="/" element={<Home />} />
             <Route path="/explore" element={<Explore />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
             <Route path="/user/me" element={<Profile />} />
             <Route path="/user/subscriptions" element={<Profile />} />
             <Route path="/user/wallet" element={<Profile />} />
             <Route path="/user/settings" element={<Profile />} />
-            <Route path="*" element={<PageNotFound />} />
-          </Routes>
-          <ToastContainer />
-        </div>
-      </div>
+          </Route>
+        </Route>
+      </Routes>
+      <ToastContainer />
     </div>
   );
 }
