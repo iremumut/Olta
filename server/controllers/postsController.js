@@ -131,7 +131,7 @@ export const deletePost = asyncHandler(async (req, res) => {
   checkUserFound(res, user); //Check if user exists
 
   //Check if user is authenticated
-  if (post.creator.toString() !== user._id.toString()) {
+  if (post.creator.toString() !== req.user.id.toString()) {
     res.status(401);
     throw new Error("User not authorized");
   }
@@ -140,10 +140,9 @@ export const deletePost = asyncHandler(async (req, res) => {
   await user.save();
 
   const updatedPost = await Posts.findByIdAndUpdate(
-    req.params.id,
+    post._id,
     {
       deleted: true,
-      creator: "",
     },
     {
       new: true,
@@ -151,7 +150,7 @@ export const deletePost = asyncHandler(async (req, res) => {
   );
 
   //await post.remove();
-  res.status(200).json(req.params.id);
+  res.status(200).json(updatedPost);
 });
 
 //POST /posts/:id/likes , private , like a post
@@ -275,8 +274,12 @@ export const getBuyers = asyncHandler(async (req, res) => {
 });
 
 export const validatePostData = (req, res, next) => {
-  const { title, price, contentType } = req.body;
+  const { title, price, contentType, contentURL } = req.body;
 
+  if (!contentURL) {
+    res.status(400);
+    throw new Error("Please add content url.");
+  }
   if (!title || !contentType || !contentTypes.includes(contentType)) {
     res.status(400);
     throw new Error("Please add requested fields accordingly.");
