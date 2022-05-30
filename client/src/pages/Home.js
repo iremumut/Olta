@@ -2,10 +2,11 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import {
-  deletePost,
+  //deletePost,
   /*createPost, */ getAllPosts,
   reset,
 } from "../features/posts/postSlice";
+import Post from "../components/Post";
 
 const Home = () => {
   //const { user } = useSelector((state) => state.auth);
@@ -31,7 +32,7 @@ const Home = () => {
     } else {
       dispatch(getAllPosts());
     }
-    dispatch(deletePost("6294e85dea5218d95f5cc3b3"));
+    //dispatch(deletePost("6294e85dea5218d95f5cc3b3"));
 
     return () => {
       dispatch(reset());
@@ -45,16 +46,20 @@ const Home = () => {
   return (
     <div>
       <p>Home Page</p>
-      <ul>
-        {(posts || isSuccess) &&
-          posts.map((post) => {
-            return (
-              <li key={post._id}>
-                {post.title} - {post.contentType} - {post.description}
-              </li>
-            );
-          })}
-      </ul>
+      <div className="flex flex-row justify-center">
+        <ul className="basis-1/2">
+          {(posts || isSuccess) &&
+            posts.map((post) => {
+              return (
+                <li key={post._id}>
+                  <Post post={post} />
+                </li>
+              );
+            })}
+        </ul>
+
+        <div className="">Profile part</div>
+      </div>
     </div>
   );
 };

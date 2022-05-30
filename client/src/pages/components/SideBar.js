@@ -20,7 +20,7 @@ function SideBar() {
   };
 
   return (
-    <div className="px-12 py-14 shadow h-screen ">
+    <div className="px-12 py-14 shadow h-screen text-[#4E5D78] font-semibold ">
       <ul>
         <li className="py-1">
           <Link
@@ -111,7 +111,9 @@ function SideBar() {
               className="inline  px-1 group-hover:brightness-0 group-hover:invert"
               alt=""
             />
-            <p className="px-2">Sign out</p>
+            <p className="px-2 text-[#4E5D78] font-semibold hover:text-white ">
+              Sign out
+            </p>
           </button>
         </li>
       </ul>

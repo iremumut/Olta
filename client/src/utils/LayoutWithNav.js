@@ -10,7 +10,7 @@ const LayoutWithNav = () => {
       </nav>
       <div className="flex flex-row">
         <SideBar />
-        <div className="p-4">
+        <div className="p-4 bg-neutral-100 w-full">
           <Outlet />
         </div>
       </div>

@@ -28,7 +28,7 @@ const NavBar = () => {
   };
 
   return (
-    <div className="py-4 sm:px-16 px-2 flex flex-row items-center bg-white ">
+    <div className="py-4 sm:px-16 px-2 flex flex-row items-center bg-white">
       <Link to={"/"}>
         <p className="sm:text-4xl text-2xl font-semibold xl:mr-28 mr-4">OLTA</p>
       </Link>
