@@ -84,6 +84,30 @@ const NewPost = () => {
               Subscribers Only
             </button>
           </div>
+
+          <div className="flex flex-row justify-center my-2">
+            <div className="border border-[#4E8BFF] flex flex-col w-1/2 items-center p-2 rounded-xl ">
+              <div className="text-[#4E8BFF] pb-4 pt-2">Pricing</div>
+              <div className=" flex flex-row justify-center w-4/5">
+                <button className="bg-[#4E8BFF] px-6 py-1 text-white rounded-l-lg text-4xl font-extralight">
+                  +
+                </button>
+                <div className="p-1 px-6 items-center flex flex-col bg-[#4E8BFF] text-white border-x-2 border-white ">
+                  <div>0.8</div>
+                  <div>$</div>
+                </div>
+                <button className="bg-[#4E8BFF] px-6 py-1 text-white rounded-r-lg text-4xl font-extralight">
+                  -
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-row justify-center mt-10 yb-6">
+            <button className="bg-[#4E8BFF] text-white rounded-full px-8 py-4 w-full hover:bg-[#4E8BFF]/70">
+              Share
+            </button>
+          </div>
         </div>
       </div>
     </>
