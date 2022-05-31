@@ -6,12 +6,11 @@ import comment from "../assets/vectors/comment.svg";
 import like from "../assets/vectors/like.svg";
 import support from "../assets/vectors/support.svg";
 import send from "../assets/vectors/send.svg";
-import { useState } from "react";
 
 const Post = ({ post }) => {
   const timeFormat = moment(post.createdAt).startOf("hour").fromNow(); //.startOf("day").fromNow();
 
-  const [commentOn, setCommentOn] = useState(false);
+  //const [commentOn, setCommentOn] = useState(false);
 
   return (
     <div className="xl:w-4/5 w-full bg-white my-6 xl:p-4 p-2  flex flex-col rounded-lg">
@@ -104,18 +103,10 @@ const Post = ({ post }) => {
             alt=""
           />
         </div>
-        <div className="mx-4 w-4/5" onChange={() => setCommentOn(true)}>
+        <div className="mx-4 w-4/5">
           <input
             placeholder="Write a comment..."
-            className={`h-10 rounded-lg bg-[#F6F7F8] w-full px-2 focus:outline-none ${
-              commentOn ? "hidden" : "inline"
-            }`}
-          />
-          <textarea
-            placeholder="Write a comment..."
-            className={`rounded-lg bg-[#F6F7F8] w-full p-2 focus:outline-none  ${
-              commentOn ? "inline" : "hidden"
-            }`}
+            className="h-10 rounded-lg bg-[#F6F7F8] w-full px-2 focus:outline-none"
           />
         </div>
         <div>
@@ -129,3 +120,13 @@ const Post = ({ post }) => {
 };
 
 export default Post;
+
+//onFocus={() => setCommentOn(true)}
+/*
+          <textarea
+            placeholder="Write a comment..."
+            className={`rounded-lg bg-[#F6F7F8] w-full p-2 focus:outline-none  ${
+              commentOn ? "inline" : "hidden"
+            }`}
+          />
+*/

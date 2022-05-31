@@ -41,7 +41,9 @@ const NavBar = () => {
         />
       </div>
       <div className="flex flex-row lg:basis-5/12 basis-8/12 justify-between   items-center text-[#4A5567]  mx-4  hidden md:flex">
-        <button className="hover:text-[#4A5567]/70 px-1 ">New Post</button>
+        <Link to={"/posts/new"} className="hover:text-[#4A5567]/70 px-1 ">
+          New Post
+        </Link>
         <Link to={"/user/wallet"}>
           <p className="hover:text-[#4A5567]/70 px-1 ">Wallet</p>
         </Link>
@@ -66,7 +68,7 @@ const NavBar = () => {
         >
           <Link
             className="hover:text-black hover:bg-neutral-300 px-4 py-2 block"
-            to={"/"}
+            to={"/posts/new"}
           >
             New Post
           </Link>
