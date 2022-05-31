@@ -14,7 +14,7 @@ const Home = () => {
     (state) => state.post
   );
   const dispatch = useDispatch();
-
+  const copyPosts = [...posts].reverse();
   /*useEffect(() => {
     const post = {
       title: `${user.name}'s first post created from react app.`,
@@ -47,9 +47,9 @@ const Home = () => {
     <div>
       <p>Home Page</p>
       <div className="flex flex-row justify-center">
-        <ul className="basis-1/2">
-          {(posts || isSuccess) &&
-            posts.map((post) => {
+        <ul className="xl:basis-1/2">
+          {(posts || isSuccess || copyPosts) &&
+            copyPosts.map((post) => {
               return (
                 <li key={post._id}>
                   <Post post={post} />
@@ -58,7 +58,7 @@ const Home = () => {
             })}
         </ul>
 
-        <div className="">Profile part</div>
+        {/*<div className="">Profile part</div>*/}
       </div>
     </div>
   );

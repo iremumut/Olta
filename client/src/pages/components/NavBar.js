@@ -52,15 +52,15 @@ const NavBar = () => {
           Sign Out
         </button>
       </div>
-      <div className="md:hidden mx-4 text-[#4A5567] ">
+      <div className="md:hidden mx-4 text-[#4A5567] relative ">
         <button
-          className="xsm:py-2 xsm:px-4 text-center flex flex-row justify-between items-center w-full"
+          className="xsm:py-2 xsm:px-4 text-center  flex flex-row justify-between items-center w-full relative"
           onClick={changeDropdown}
         >
           <img src={dropdownArrow} className=" inline w-4 h-4" alt="" />
         </button>
         <div
-          className={`absolute bg-neutral-50/[.97] text-[#4A5567] w-32  md:text-normal text-small rounded-lg shadow ${
+          className={`absolute bg-neutral-50/[.97] text-[#4A5567] w-32 sm:left-0 right-0 md:text-normal text-small rounded-lg shadow ${
             dropdown ? "" : "hidden"
           }`}
         >
@@ -113,11 +113,3 @@ const NavBar = () => {
 };
 
 export default NavBar;
-
-/* 
-src={
-            user && user.profilePicture
-              ? user.profilePicture
-              : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8FuEJbKwDdaz1h387130xmYkAIQbZpahhbQ&usqp=CAU"
-          }
-*/

@@ -1,10 +1,20 @@
 import moment from "moment";
 import Content from "./Content";
 
+import share from "../assets/vectors/share.svg";
+import comment from "../assets/vectors/comment.svg";
+import like from "../assets/vectors/like.svg";
+import support from "../assets/vectors/support.svg";
+import send from "../assets/vectors/send.svg";
+import { useState } from "react";
+
 const Post = ({ post }) => {
   const timeFormat = moment(post.createdAt).startOf("hour").fromNow(); //.startOf("day").fromNow();
+
+  const [commentOn, setCommentOn] = useState(false);
+
   return (
-    <div className="w-4/5 bg-white my-6 p-4 flex flex-col rounded-lg">
+    <div className="xl:w-4/5 w-full bg-white my-6 xl:p-4 p-2  flex flex-col rounded-lg">
       <div className="flex flex-row py-4">
         <img
           className="h-16 w-16 rounded-full mr-3 "
@@ -33,7 +43,7 @@ const Post = ({ post }) => {
         />
       </div>
 
-      <div className="flex flex-row w-full justify-between px-2 items-end">
+      <div className="sm:flex hidden flex-row w-full justify-between py-4 items-end">
         <div class="mt-3 flex -space-x-2 overflow-hidden items-center">
           <img
             class="inline-block h-6 w-6 rounded-full ring-1 ring-white"
@@ -64,6 +74,54 @@ const Post = ({ post }) => {
 
         <div className="text-[#A2AAB8] text-sm font-normal ">
           {17} comments {5} likes {10} supporters
+        </div>
+      </div>
+
+      <hr />
+
+      <div className="flex flex-row w-full justify-between py-4">
+        <button>
+          <img src={like} alt="" />
+        </button>
+        <button>
+          <img src={support} alt="" />
+        </button>
+        <button>
+          <img src={comment} alt="" />
+        </button>
+        <button>
+          <img src={share} alt="" />
+        </button>
+      </div>
+
+      <hr />
+
+      <div className="flex flex-row w-full py-4 items-center">
+        <div className="">
+          <img
+            className="h-10 w-10 rounded-full  "
+            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8FuEJbKwDdaz1h387130xmYkAIQbZpahhbQ&usqp=CAU"
+            alt=""
+          />
+        </div>
+        <div className="mx-4 w-4/5" onChange={() => setCommentOn(true)}>
+          <input
+            placeholder="Write a comment..."
+            className={`h-10 rounded-lg bg-[#F6F7F8] w-full px-2 focus:outline-none ${
+              commentOn ? "hidden" : "inline"
+            }`}
+          />
+          <textarea
+            placeholder="Write a comment..."
+            className={`rounded-lg bg-[#F6F7F8] w-full p-2 focus:outline-none  ${
+              commentOn ? "inline" : "hidden"
+            }`}
+          />
+        </div>
+        <div>
+          <button className="w-9 h-9 rounded bg-[#EBF2FF] p-1 px-2">
+            <img src={send} className="" alt="" />
+          </button>
         </div>
       </div>
     </div>

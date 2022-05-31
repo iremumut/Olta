@@ -20,8 +20,8 @@ function SideBar() {
   };
 
   return (
-    <div className="px-12 py-14 shadow h-screen text-[#4E5D78] font-semibold ">
-      <ul>
+    <div className="md:px-12 py-14 px-2 xsm:block hidden shadow min-h-screen text-[#4E5D78] font-semibold ">
+      <ul className="">
         <li className="py-1">
           <Link
             to="/"
