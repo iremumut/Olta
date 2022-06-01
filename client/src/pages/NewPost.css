@@ -1,0 +1,15 @@
+.turn-button-blue {
+  filter: invert(44%) sepia(87%) saturate(1313%) hue-rotate(201deg)
+    brightness(100%) contrast(103%);
+}
+
+.background {
+  background: url("../assets/images/create-post.png") no-repeat;
+  background-position: right 0% bottom 10%;
+}
+
+@media (min-width: 1800px) {
+  .background {
+    background-position: right 20% bottom 10%;
+  }
+}

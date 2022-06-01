@@ -39,8 +39,7 @@ export const getPost = asyncHandler(async (req, res) => {
 
 //POST /posts , private, create a new post
 export const createPost = asyncHandler(async (req, res) => {
-  const { title, description, tags, price, contentType, contentURL, isFree } =
-    req.body;
+  const { title, description, tags, price, contentType, isFree } = req.body;
 
   const user = await Users.findById(req.user.id);
   checkUserFound(res, user); //Check if user exists
@@ -53,7 +52,7 @@ export const createPost = asyncHandler(async (req, res) => {
     price: price ? price : 0,
     isFree: typeof isFree !== "undefined" ? isFree : true,
     creator: user._id,
-    contentURL: contentURL,
+    contentURL: "change this later",
   });
 
   user.posts.push(post._id);
@@ -274,12 +273,9 @@ export const getBuyers = asyncHandler(async (req, res) => {
 });
 
 export const validatePostData = (req, res, next) => {
-  const { title, price, contentType, contentURL } = req.body;
-
-  if (!contentURL) {
-    res.status(400);
-    throw new Error("Please add content url.");
-  }
+  const { title, price, contentType } = req.body;
+  //console.log(!contentTypes.includes(contentType));
+  //console.log(!title || !contentType || !contentTypes.includes(contentType));
   if (!title || !contentType || !contentTypes.includes(contentType)) {
     res.status(400);
     throw new Error("Please add requested fields accordingly.");
