@@ -28,13 +28,18 @@ const Home = () => {
   }, [user, dispatch]);*/
 
   useEffect(() => {
-    if (isError) {
-      toast.error(message);
-    } else {
-      dispatch(getAllPosts());
-    }
-    //dispatch(deletePost("6294e85dea5218d95f5cc3b3"));
+    const fetch = async () => {
+      if (isError) {
+        toast.error(message);
+      } else {
+        await dispatch(getAllPosts());
+        await dispatch(reset());
+      }
+    };
 
+    fetch();
+
+    //dispatch(deletePost("6294e85dea5218d95f5cc3b3"));
     return () => {
       dispatch(reset());
     };
@@ -46,9 +51,8 @@ const Home = () => {
 
   return (
     <div>
-      <p>Home Page</p>
       <div className="flex flex-row justify-center">
-        <ul className="xl:basis-1/2">
+        <ul className="xl:basis-2/3">
           {(posts || isSuccess || copyPosts) &&
             copyPosts.map((post) => {
               return (

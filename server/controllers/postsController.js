@@ -11,7 +11,7 @@ import {
 
 import multer from "multer";
 const upload = multer({ dest: "uploads/" });
-
+import fs from "fs";
 import { UploadFile } from "./s3.js";
 
 // GET /posts , private, get all posts
@@ -46,31 +46,40 @@ export const getPost = asyncHandler(async (req, res) => {
 export const createPost = asyncHandler(async (req, res) => {
   const { title, description, tags, price, contentType, isFree } = req.body;
   const file = req.file;
-  //console.log("where is he problem");
-  //console.log(file);
 
   const user = await Users.findById(req.user.id);
   checkUserFound(res, user); //Check if user exists
-  //console.log("here");
+
   let result = "";
-  try {
-    result = await UploadFile(file);
-  } catch (error) {
-    res.status(404);
-    throw new Error("Uploading the file is unsuccessful");
+
+  if (file) {
+    try {
+      result = await UploadFile(file);
+    } catch (error) {
+      res.status(404);
+      throw new Error("Uploading the file was unsuccessful");
+    }
   }
 
-  //console.log(result);
+  fs.unlink(file.path, (err) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    //file removed
+  });
+
+  const tagsArray = JSON.parse(tags);
 
   const post = await Posts.create({
     title: title,
     description: description,
     contentType: contentType,
-    tags: tags ? [...tags] : [],
+    tags: tags ? [...tagsArray] : [],
     price: price ? price : 0,
     isFree: typeof isFree !== "undefined" ? isFree : true,
     creator: user._id,
-    contentURL: result.Location,
+    contentURL: result ? result.Location : " ",
   });
 
   user.posts.push(post._id);

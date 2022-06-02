@@ -1,4 +1,4 @@
-const NewPostFromTag = ({ tag, removeTag }) => {
+const NewPostFormTag = ({ tag, removeTag }) => {
   return (
     <p className="bg-[#4E8BFF] px-6 py-2 inline-block rounded-3xl text-white mr-2 mb-2 ">
       # {tag}
@@ -9,4 +9,4 @@ const NewPostFromTag = ({ tag, removeTag }) => {
   );
 };
 
-export default NewPostFromTag;
+export default NewPostFormTag;

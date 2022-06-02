@@ -27,7 +27,7 @@ const LoginForm = () => {
     }
     if (isSuccess || user) {
       //if its succesful or ther is already a user logged in
-      console.log(user);
+      //console.log(user);
       navigate("/");
     }
 

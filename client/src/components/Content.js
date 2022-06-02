@@ -1,15 +1,42 @@
-function Content({ contentURL, contentType, title, description }) {
+import uuid from "react-uuid";
+import Tag from "./Tag";
+
+function Content({ contentURL, contentType, title, description, tags }) {
   return (
     <div>
       {contentType === "image" ? (
-        <img src={contentURL} alt="" className="" />
+        <img src={contentURL} alt="" className="rounded-xl" />
       ) : (
         ""
       )}
-      <p className="capitalize text-lg font-semibold text-[#4E5D78] py-2">
+
+      {contentType === "video" ? (
+        <video width="750" height="500" controls className="rounded-xl">
+          <source src={contentURL} type="video/mp4" />
+        </video>
+      ) : (
+        ""
+      )}
+
+      {contentType === "sound" ? (
+        <figure>
+          <audio controls src={contentURL} className="w-full ">
+            Your browser does not support the
+            <code>audio</code> element.
+          </audio>
+        </figure>
+      ) : (
+        ""
+      )}
+      <p className="capitalize text-lg font-semibold text-[#4E5D78] mt-4 p-1">
         {title}
       </p>
-      <div className="p-2 rounded-lg border py-4">{description}</div>
+      {description ? <div className="p-2 rounded-lg ">{description}</div> : ""}
+      <div className="my-2">
+        {tags.map((tag) => {
+          return <Tag key={uuid()} tag={tag} />;
+        })}
+      </div>
     </div>
   );
 }

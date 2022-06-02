@@ -10,10 +10,8 @@ import send from "../assets/vectors/send.svg";
 const Post = ({ post }) => {
   const timeFormat = moment(post.createdAt).startOf("hour").fromNow(); //.startOf("day").fromNow();
 
-  //const [commentOn, setCommentOn] = useState(false);
-
   return (
-    <div className="xl:w-4/5 w-full bg-white my-6 xl:p-4 p-2  flex flex-col rounded-lg">
+    <div className="xl:w-4/5 w-full bg-white my-6 md:p-4 md:px-10 p-4  flex flex-col rounded-lg">
       <div className="flex flex-row py-4">
         <img
           className="h-16 w-16 rounded-full mr-3 "
@@ -39,6 +37,7 @@ const Post = ({ post }) => {
           contentType={post.contentType}
           contentURL={post.contentURL}
           description={post.description}
+          tags={post.tags}
         />
       </div>
 
@@ -72,7 +71,8 @@ const Post = ({ post }) => {
         </div>
 
         <div className="text-[#A2AAB8] text-sm font-normal ">
-          {17} comments {5} likes {10} supporters
+          {post.commentCount} comments {post.likeCount} likes{" "}
+          {post.buyers.length} supporters
         </div>
       </div>
 

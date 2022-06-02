@@ -8,11 +8,11 @@ import "./NewPost.css";
 import FileUpload from "../components/FileUpload";
 import TextContentUpload from "../components/TextContentUpload";
 
-import { useState } from "react";
-import NewPostFromTag from "../components/NewPostFromTag";
+import { useEffect, useState } from "react";
+import NewPostFormTag from "../components/NewPostFormTag";
 
 import uuid from "react-uuid";
-import { createPost } from "../features/posts/postSlice";
+import { createPost, reset } from "../features/posts/postSlice";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -102,14 +102,13 @@ const NewPost = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
     const post = {
       title: formData.title,
       description: formData.description,
       contentType: contentType,
-      tags: [],
       price: price,
       isFree: isFree,
     };
@@ -119,21 +118,26 @@ const NewPost = () => {
     formdata.append("title", post.title);
     formdata.append("description", post.description);
     formdata.append("contentType", post.contentType);
-    formdata.append("tags", post.tags);
+    formdata.append("tags", JSON.stringify(tags));
     formdata.append("price", post.price);
     formdata.append("isFree", post.isFree);
+    //tags.forEach((item) => formData.append("tags[]", item))
 
     //console.log(post);
-    await dispatch(createPost(formdata));
+    dispatch(createPost(formdata));
+  };
+
+  useEffect(() => {
     if (isError) {
+      console.log("error here");
       toast.error(message);
     }
     if (isSuccess) {
-      //console.log("here");
       toast.success("Content is posted!");
+      dispatch(reset);
       navigate("/");
     }
-  };
+  }, [isError, isSuccess, navigate, message, dispatch]);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -246,7 +250,7 @@ const NewPost = () => {
           <div className="my-8 mt-9">
             {tags.map((tag) => {
               return (
-                <NewPostFromTag key={uuid()} tag={tag} removeTag={removeTag} />
+                <NewPostFormTag key={uuid()} tag={tag} removeTag={removeTag} />
               );
             })}
           </div>
