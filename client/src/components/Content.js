@@ -1,6 +1,11 @@
 function Content({ contentURL, contentType, title, description }) {
   return (
     <div>
+      {contentType === "image" ? (
+        <img src={contentURL} alt="" className="" />
+      ) : (
+        ""
+      )}
       <p className="capitalize text-lg font-semibold text-[#4E5D78] py-2">
         {title}
       </p>

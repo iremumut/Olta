@@ -11,7 +11,7 @@ const FileUpload = ({ valueDesc, handleChange, valueFilepath }) => {
       </div>
       <input
         type="file"
-        name="filepath"
+        name="file"
         onChange={handleChange}
         id="uploadFile"
         className="opacity-0 hidden"

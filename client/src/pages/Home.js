@@ -7,6 +7,7 @@ import {
   reset,
 } from "../features/posts/postSlice";
 import Post from "../components/Post";
+import uuid from "react-uuid";
 
 const Home = () => {
   //const { user } = useSelector((state) => state.auth);
@@ -51,7 +52,7 @@ const Home = () => {
           {(posts || isSuccess || copyPosts) &&
             copyPosts.map((post) => {
               return (
-                <li key={post._id}>
+                <li key={uuid()}>
                   <Post post={post} />
                 </li>
               );

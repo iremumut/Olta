@@ -9,6 +9,11 @@ import {
   checkUserFound,
 } from "./errorHandling.js";
 
+import multer from "multer";
+const upload = multer({ dest: "uploads/" });
+
+import { UploadFile } from "./s3.js";
+
 // GET /posts , private, get all posts
 export const getPosts = asyncHandler(async (req, res) => {
   const user = await Users.findById(req.user.id);
@@ -40,9 +45,22 @@ export const getPost = asyncHandler(async (req, res) => {
 //POST /posts , private, create a new post
 export const createPost = asyncHandler(async (req, res) => {
   const { title, description, tags, price, contentType, isFree } = req.body;
+  const file = req.file;
+  //console.log("where is he problem");
+  //console.log(file);
 
   const user = await Users.findById(req.user.id);
   checkUserFound(res, user); //Check if user exists
+  //console.log("here");
+  let result = "";
+  try {
+    result = await UploadFile(file);
+  } catch (error) {
+    res.status(404);
+    throw new Error("Uploading the file is unsuccessful");
+  }
+
+  //console.log(result);
 
   const post = await Posts.create({
     title: title,
@@ -52,7 +70,7 @@ export const createPost = asyncHandler(async (req, res) => {
     price: price ? price : 0,
     isFree: typeof isFree !== "undefined" ? isFree : true,
     creator: user._id,
-    contentURL: "change this later",
+    contentURL: result.Location,
   });
 
   user.posts.push(post._id);
@@ -276,6 +294,7 @@ export const validatePostData = (req, res, next) => {
   const { title, price, contentType } = req.body;
   //console.log(!contentTypes.includes(contentType));
   //console.log(!title || !contentType || !contentTypes.includes(contentType));
+
   if (!title || !contentType || !contentTypes.includes(contentType)) {
     res.status(400);
     throw new Error("Please add requested fields accordingly.");

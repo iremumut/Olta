@@ -7,6 +7,8 @@ const createPost = async (post, token) => {
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
+      "Content-Type": "multipart/form-data",
+      //{ headers: {'Content-Type': 'multipart/form-data'}}
     },
   };
 

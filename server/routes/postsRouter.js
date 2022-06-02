@@ -14,11 +14,14 @@ import {
 } from "../controllers/postsController.js";
 import { protect } from "../middleware/authMiddleware.js";
 
+import multer from "multer";
+const upload = multer({ dest: "uploads/" });
+
 const router = express.Router();
 
 router.get("/", protect, getPosts);
 
-router.post("/", protect, validatePostData, createPost);
+router.post("/", protect, upload.single("file"), validatePostData, createPost);
 
 router.get("/:id", protect, getPost);
 

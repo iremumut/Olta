@@ -4,7 +4,6 @@ import image from "../assets/vectors/image.svg";
 import sound from "../assets/vectors/sound.svg";
 
 import "./NewPost.css";
-//import createPostImg from "../assets/images/create-post.png";
 
 import FileUpload from "../components/FileUpload";
 import TextContentUpload from "../components/TextContentUpload";
@@ -37,7 +36,7 @@ const NewPost = () => {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    filepath: "",
+    file: "",
   });
   const [tags, setTags] = useState([]);
   const [tag, setTag] = useState("");
@@ -62,8 +61,8 @@ const NewPost = () => {
   };
 
   const handleFormChange = (e) => {
-    if (e.target.name === "filepath") {
-      setFormData((prev) => ({ ...prev, [e.target.name]: e.target.files }));
+    if (e.target.name === "file") {
+      setFormData((prev) => ({ ...prev, file: e.target.files[0] }));
     } else {
       setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     }
@@ -114,14 +113,23 @@ const NewPost = () => {
       price: price,
       isFree: isFree,
     };
+    //console.log(post);
+    const formdata = new FormData();
+    formdata.append("file", formData.file);
+    formdata.append("title", post.title);
+    formdata.append("description", post.description);
+    formdata.append("contentType", post.contentType);
+    formdata.append("tags", post.tags);
+    formdata.append("price", post.price);
+    formdata.append("isFree", post.isFree);
 
-    console.log(post);
-    await dispatch(createPost(post));
+    //console.log(post);
+    await dispatch(createPost(formdata));
     if (isError) {
       toast.error(message);
     }
     if (isSuccess) {
-      console.log("here");
+      //console.log("here");
       toast.success("Content is posted!");
       navigate("/");
     }
@@ -248,13 +256,17 @@ const NewPost = () => {
           <div className="flex flex-row my-4 ">
             <button
               onClick={() => setIsFree(true)}
-              className="bg-[#F6F7F8] text-[#A2AAB8] rounded-3xl px-6 py-2 w-full mr-4 hover:border hover:border-[#4E8BFF] hover:text-[#4E8BFF] focus:border focus:border-[#4E8BFF] focus:text-[#4E8BFF]"
+              className={`bg-[#F6F7F8] text-[#A2AAB8] rounded-3xl px-6 py-2 w-full mr-4 hover:border hover:border-[#4E8BFF] hover:text-[#4E8BFF] ${
+                isFree ? "border border-[#4E8BFF] text-[#4E8BFF]" : ""
+              }`}
             >
               Public
             </button>
             <button
               onClick={() => setIsFree(false)}
-              className="bg-[#F6F7F8] text-[#A2AAB8] rounded-3xl px-6 py-2 w-full mr-4 hover:border hover:border-[#4E8BFF] hover:text-[#4E8BFF]  focus:border  focus:border-[#4E8BFF] focus:text-[#4E8BFF]"
+              className={`bg-[#F6F7F8] text-[#A2AAB8] rounded-3xl px-6 py-2 w-full mr-4 hover:border hover:border-[#4E8BFF] hover:text-[#4E8BFF] ${
+                !isFree ? "border border-[#4E8BFF] text-[#4E8BFF]" : ""
+              }`}
             >
               Subscribers Only
             </button>
