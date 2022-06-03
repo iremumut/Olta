@@ -12,6 +12,7 @@ import ProtectRoute from "./utils/ProtectRoute";
 import LayoutWithoutNav from "./utils/LayoutWithoutNav";
 import LayoutWithNav from "./utils/LayoutWithNav";
 import NewPost from "./pages/NewPost";
+import Post from "./components/Post";
 
 function App() {
   return (
@@ -29,11 +30,13 @@ function App() {
             <Route path="/posts">
               <Route path="new" element={<NewPost />} />
             </Route>
-            <Route path="/user" element={<Profile />}>
-              <Route path="me" element={<Profile />} />
-              <Route path="subscriptions" element={<Profile />} />
-              <Route path="wallet" element={<Profile />} />
-              <Route path="settings" element={<Profile />} />
+            <Route path="/user">
+              <Route path="me" element={<Profile />}>
+                <Route path="posts" />
+                <Route path="subscriptions" element={<Profile />} />
+                <Route path="wallet" element={<Profile />} />
+                <Route path="settings" element={<Profile />} />
+              </Route>
             </Route>
           </Route>
         </Route>

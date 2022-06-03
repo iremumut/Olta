@@ -110,26 +110,22 @@ const NewPost = () => {
       description: formData.description,
       contentType: contentType,
       price: price,
-      isFree: isFree,
     };
-    //console.log(post);
+
     const formdata = new FormData();
     formdata.append("file", formData.file);
     formdata.append("title", post.title);
     formdata.append("description", post.description);
     formdata.append("contentType", post.contentType);
     formdata.append("tags", JSON.stringify(tags));
-    formdata.append("price", post.price);
-    formdata.append("isFree", post.isFree);
-    //tags.forEach((item) => formData.append("tags[]", item))
+    formdata.append("price", JSON.stringify(post.price));
+    formdata.append("isFree", JSON.stringify(isFree));
 
-    //console.log(post);
     dispatch(createPost(formdata));
   };
 
   useEffect(() => {
     if (isError) {
-      console.log("error here");
       toast.error(message);
     }
     if (isSuccess) {

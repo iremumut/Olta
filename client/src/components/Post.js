@@ -7,8 +7,10 @@ import like from "../assets/vectors/like.svg";
 import support from "../assets/vectors/support.svg";
 import send from "../assets/vectors/send.svg";
 
-const Post = ({ post }) => {
+const Post = ({ post, users }) => {
   const timeFormat = moment(post.createdAt).startOf("hour").fromNow(); //.startOf("day").fromNow();
+
+  const creator = users.find((x) => x._id === post.creator);
 
   return (
     <div className="xl:w-4/5 w-full bg-white my-6 md:p-4 md:px-10 p-4  flex flex-col rounded-lg">
@@ -20,7 +22,7 @@ const Post = ({ post }) => {
         />
         <div>
           <p className="text-[#4E5D78] text-base font-medium">
-            {/*post.creator*/} Benjamin Case
+            {creator && creator.name ? creator.name : "Alex Heart"}
           </p>{" "}
           {/*@TODO create user slice and find the users name and photo from the server*/}
           <p className="text-[#A2AAB8] text-sm font-normal">

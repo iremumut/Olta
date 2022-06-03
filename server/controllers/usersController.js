@@ -81,13 +81,7 @@ export const loginUser = asyncHandler(async (req, res) => {
 
   if (user && (await bcrypt.compare(password, user.password))) {
     res.status(200).json({
-      name: user.name,
-      followers: user.followers.length,
-      subscribers: user.subscribers.length,
-      followed: user.followed.length,
-      email: user.email,
-      profilePicture: user.profilePicture,
-      username: user.username,
+      ...user._doc,
       token: generateToken(user._id),
     });
   } else {

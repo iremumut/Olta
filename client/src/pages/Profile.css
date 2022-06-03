@@ -1,0 +1,9 @@
+.header-bg {
+  background: url("../assets/images/header.png") no-repeat;
+  background-size: cover;
+}
+
+.page-bg {
+  background: url("../assets/images/profilePageBg.png") no-repeat;
+  background-position: right 0% top 10%;
+}

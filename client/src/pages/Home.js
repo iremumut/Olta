@@ -1,35 +1,24 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import {
-  //deletePost,
-  /*createPost, */ getAllPosts,
-  reset,
-} from "../features/posts/postSlice";
+import { getAllPosts, reset } from "../features/posts/postSlice";
+import { getAllUsers, reset as userReset } from "../features/users/userSlice";
 import Post from "../components/Post";
 import uuid from "react-uuid";
 
 const Home = () => {
-  //const { user } = useSelector((state) => state.auth);
   const { posts, isLoading, isError, isSuccess, message } = useSelector(
     (state) => state.post
   );
+
+  const user = useSelector((state) => state.user);
+
   const dispatch = useDispatch();
   const copyPosts = [...posts].reverse();
-  /*useEffect(() => {
-    const post = {
-      title: `${user.name}'s first post created from react app.`,
-      contentType: "text",
-      contentURL: "url here",
-      description: "Hope this works. Fingers crossed",
-      tags: ["Hello", "FirstPost", "SunnyDay"],
-    };
-    dispatch(createPost(post));
-  }, [user, dispatch]);*/
 
   useEffect(() => {
-    const fetch = async () => {
-      if (isError) {
+    const fetchPosts = async () => {
+      if (isError || user.isError) {
         toast.error(message);
       } else {
         await dispatch(getAllPosts());
@@ -37,15 +26,25 @@ const Home = () => {
       }
     };
 
-    fetch();
+    const fetchUsers = async () => {
+      if (user.isError) {
+        toast.error(message);
+      } else {
+        await dispatch(getAllUsers());
+        await dispatch(userReset());
+      }
+    };
 
-    //dispatch(deletePost("6294e85dea5218d95f5cc3b3"));
+    fetchPosts();
+    fetchUsers();
+
     return () => {
       dispatch(reset());
+      dispatch(userReset());
     };
-  }, [dispatch, isError, message]);
+  }, [dispatch, isError, message, user.isError]);
 
-  if (isLoading) {
+  if (isLoading || user.isLoading) {
     return <p>Loading</p>;
   }
 
@@ -57,7 +56,7 @@ const Home = () => {
             copyPosts.map((post) => {
               return (
                 <li key={uuid()}>
-                  <Post post={post} />
+                  <Post post={post} users={user.users} />
                 </li>
               );
             })}

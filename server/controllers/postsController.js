@@ -59,17 +59,17 @@ export const createPost = asyncHandler(async (req, res) => {
       res.status(404);
       throw new Error("Uploading the file was unsuccessful");
     }
+    fs.unlink(file.path, (err) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      //file removed
+    });
   }
 
-  fs.unlink(file.path, (err) => {
-    if (err) {
-      console.error(err);
-      return;
-    }
-    //file removed
-  });
-
   const tagsArray = JSON.parse(tags);
+  const parsedIsFree = JSON.parse(isFree);
 
   const post = await Posts.create({
     title: title,
@@ -77,7 +77,7 @@ export const createPost = asyncHandler(async (req, res) => {
     contentType: contentType,
     tags: tags ? [...tagsArray] : [],
     price: price ? price : 0,
-    isFree: typeof isFree !== "undefined" ? isFree : true,
+    isFree: typeof parsedIsFree !== "undefined" ? parsedIsFree : true,
     creator: user._id,
     contentURL: result ? result.Location : " ",
   });
@@ -299,6 +299,23 @@ export const getBuyers = asyncHandler(async (req, res) => {
   res.json(users);
 });
 
+//GET /posts/:id/creator , private, get the creator of the post
+export const getCreator = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  validateObjectID(res, id); //check if params id is valid
+
+  const post = await Posts.findById(id);
+  checkPostFound(res, post); //check if the post is found
+
+  const user = await Users.findById(req.user.id);
+  checkUserFound(res, user); //Check if user exists
+
+  const creator = await Users.find().where("_id").in(post.creator);
+
+  res.status(200);
+  res.json(creator);
+});
+
 export const validatePostData = (req, res, next) => {
   const { title, price, contentType } = req.body;
   //console.log(!contentTypes.includes(contentType));
@@ -314,7 +331,7 @@ export const validatePostData = (req, res, next) => {
     throw new Error("Please enter a valid number for price.");
   }
 
-  if (!price || price === 0) {
+  if (!price || price == 0) {
     req.body.isFree = true;
   } else {
     req.body.isFree = false;
