@@ -40,6 +40,6 @@ router.get("/:id/comments", protect, getComments);
 
 router.get("/:id/buyers", protect, getBuyers);
 
-router.get("/:id/creator", protect, getComments);
+router.get("/:id/creator", protect, getCreator);
 
 export default router;

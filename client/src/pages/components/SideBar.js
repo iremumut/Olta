@@ -50,7 +50,7 @@ function SideBar() {
         </li>
         <li className="py-1">
           <Link
-            to="/user/me"
+            to="/users/me/posts"
             className="flex flex-row items-center w-40 p-2 rounded-lg group hover:text-white hover:bg-[#4E5D78]"
           >
             <img

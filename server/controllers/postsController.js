@@ -310,7 +310,7 @@ export const getCreator = asyncHandler(async (req, res) => {
   const user = await Users.findById(req.user.id);
   checkUserFound(res, user); //Check if user exists
 
-  const creator = await Users.find().where("_id").in(post.creator);
+  const creator = await Users.findById(post.creator);
 
   res.status(200);
   res.json(creator);

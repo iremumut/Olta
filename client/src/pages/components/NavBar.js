@@ -24,7 +24,7 @@ const NavBar = () => {
   };
 
   const goToProfile = () => {
-    navigate("/user/me");
+    navigate("/users/me/posts");
   };
 
   return (
@@ -44,7 +44,7 @@ const NavBar = () => {
         <Link to={"/posts/new"} className="hover:text-[#4A5567]/70 px-1 ">
           New Post
         </Link>
-        <Link to={"/user/wallet"}>
+        <Link to={"/users/me/wallet"}>
           <p className="hover:text-[#4A5567]/70 px-1 ">Wallet</p>
         </Link>
         <button
@@ -74,13 +74,13 @@ const NavBar = () => {
           </Link>
           <Link
             className="hover:text-black hover:bg-neutral-300 px-4 py-2 block"
-            to={"/user/wallet"}
+            to={"/users/me/wallet"}
           >
             Wallet
           </Link>
           <Link
             className="hover:text-black hover:bg-neutral-300 px-4 py-2 block"
-            to={"/user/me"}
+            to={"/users/me/posts"}
           >
             Profile
           </Link>

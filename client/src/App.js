@@ -13,6 +13,7 @@ import LayoutWithoutNav from "./utils/LayoutWithoutNav";
 import LayoutWithNav from "./utils/LayoutWithNav";
 import NewPost from "./pages/NewPost/NewPost";
 import UserPosts from "./components/UserPosts";
+import SinglePost from "./pages/SinglePost";
 
 function App() {
   return (
@@ -29,8 +30,9 @@ function App() {
             <Route path="/explore" element={<Explore />} />
             <Route path="/posts">
               <Route path="new" element={<NewPost />} />
+              <Route path=":postid" element={<SinglePost />} />
             </Route>
-            <Route path="/user">
+            <Route path="/users">
               <Route path="me" element={<Profile />}>
                 <Route path="posts" element={<UserPosts />} />
                 <Route path="subscriptions" element={<Profile />} />

@@ -52,15 +52,17 @@ const Home = () => {
     <div>
       <div className="flex flex-row justify-center">
         <ul className="xl:basis-2/3">
-          {(posts || isSuccess || copyPosts) &&
-            copyPosts.map((post) => {
-              const creator = user.users.find((x) => x._id === post.creator);
-              return (
-                <li key={uuid()}>
-                  <Post post={post} creator={creator} />
-                </li>
-              );
-            })}
+          <div className="xl:w-4/5  w-full">
+            {(posts || isSuccess || copyPosts) &&
+              copyPosts.map((post) => {
+                const creator = user.users.find((x) => x._id === post.creator);
+                return (
+                  <li key={uuid()}>
+                    <Post post={post} creator={creator} />
+                  </li>
+                );
+              })}
+          </div>
         </ul>
 
         {/*<div className="">Profile part</div>*/}
