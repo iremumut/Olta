@@ -54,9 +54,10 @@ const Home = () => {
         <ul className="xl:basis-2/3">
           {(posts || isSuccess || copyPosts) &&
             copyPosts.map((post) => {
+              const creator = user.users.find((x) => x._id === post.creator);
               return (
                 <li key={uuid()}>
-                  <Post post={post} users={user.users} />
+                  <Post post={post} creator={creator} />
                 </li>
               );
             })}

@@ -5,14 +5,14 @@ import "react-toastify/dist/ReactToastify.css";
 import Home from "./pages/Home";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
-import Profile from "./pages/Profile";
+import Profile from "./pages/Profile/Profile";
 import PageNotFound from "./pages/PageNotFound";
 import Explore from "./pages/Explore";
 import ProtectRoute from "./utils/ProtectRoute";
 import LayoutWithoutNav from "./utils/LayoutWithoutNav";
 import LayoutWithNav from "./utils/LayoutWithNav";
-import NewPost from "./pages/NewPost";
-import Post from "./components/Post";
+import NewPost from "./pages/NewPost/NewPost";
+import UserPosts from "./components/UserPosts";
 
 function App() {
   return (
@@ -32,7 +32,7 @@ function App() {
             </Route>
             <Route path="/user">
               <Route path="me" element={<Profile />}>
-                <Route path="posts" />
+                <Route path="posts" element={<UserPosts />} />
                 <Route path="subscriptions" element={<Profile />} />
                 <Route path="wallet" element={<Profile />} />
                 <Route path="settings" element={<Profile />} />

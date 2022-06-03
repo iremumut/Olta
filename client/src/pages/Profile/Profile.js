@@ -1,7 +1,10 @@
+import { useSelector } from "react-redux";
 import { Link, Outlet } from "react-router-dom";
 import "./Profile.css";
 
 const Profile = () => {
+  const { user } = useSelector((state) => state.auth);
+
   return (
     <div className="flex flex-row p-4 page-bg">
       {/*links */}
@@ -34,7 +37,7 @@ const Profile = () => {
       {/*profile part */}
       <div className="flex flex-col rounded-xl basis-1/2 bg-white ml-6">
         {/*header part */}
-        <div className="flex flex-row items-center justify-between header-bg object-fill px-12 py-8 rounded-t-lg">
+        <div className="flex flex-row items-center justify-between header-bg object-fill px-10 py-8 rounded-t-lg">
           <div className="flex flex-row items-center">
             <img
               className="h-20 w-20 rounded-full mr-3 ring ring-[#4E5D78]"
@@ -42,7 +45,7 @@ const Profile = () => {
               alt=""
             />
             <p className="text-[#4E5D78] font-semibold	text-xl w-12 ">
-              Alex Daniel
+              {user.name}
             </p>
           </div>
           <div className="flex flex-row ">
@@ -75,8 +78,7 @@ const Profile = () => {
 
         {/*others */}
         <div className="bg-[#EAEEF3] px-12 py-6">
-          Hello posts here
-          <Outlet />
+          <Outlet user={user} />
         </div>
       </div>
     </div>

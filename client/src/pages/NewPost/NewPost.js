@@ -1,18 +1,18 @@
-import video from "../assets/vectors/video.svg";
-import text from "../assets/vectors/text.svg";
-import image from "../assets/vectors/image.svg";
-import sound from "../assets/vectors/sound.svg";
+import video from "../../assets/vectors/video.svg";
+import text from "../../assets/vectors/text.svg";
+import image from "../../assets/vectors/image.svg";
+import sound from "../../assets/vectors/sound.svg";
 
 import "./NewPost.css";
 
-import FileUpload from "../components/FileUpload";
-import TextContentUpload from "../components/TextContentUpload";
+import FileUpload from "../../components/FileUpload";
+import TextContentUpload from "../../components/TextContentUpload";
 
 import { useEffect, useState } from "react";
-import NewPostFormTag from "../components/NewPostFormTag";
+import NewPostFormTag from "../../components/NewPostFormTag";
 
 import uuid from "react-uuid";
-import { createPost, reset } from "../features/posts/postSlice";
+import { createPost, reset } from "../../features/posts/postSlice";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";

@@ -7,10 +7,8 @@ import like from "../assets/vectors/like.svg";
 import support from "../assets/vectors/support.svg";
 import send from "../assets/vectors/send.svg";
 
-const Post = ({ post, users }) => {
+const Post = ({ post, creator }) => {
   const timeFormat = moment(post.createdAt).startOf("hour").fromNow(); //.startOf("day").fromNow();
-
-  const creator = users.find((x) => x._id === post.creator);
 
   return (
     <div className="xl:w-4/5 w-full bg-white my-6 md:p-4 md:px-10 p-4  flex flex-col rounded-lg">

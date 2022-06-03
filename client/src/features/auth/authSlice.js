@@ -6,6 +6,7 @@ const user = JSON.parse(localStorage.getItem("user"));
 
 const initialState = {
   user: user ? user : null,
+  posts: [],
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -48,6 +49,26 @@ export const login = createAsyncThunk("auth/login", async (user, thunkAPI) => {
     return thunkAPI.rejectWithValue(message);
   }
 });
+
+//get users posts
+export const getPosts = createAsyncThunk(
+  "auth/getPosts",
+  async (_, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await authService.getPosts(token);
+    } catch (error) {
+      console.log(error.response.data);
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 
 export const authSlice = createSlice({
   name: "auth",
@@ -92,6 +113,20 @@ export const authSlice = createSlice({
         state.isError = true;
         state.message = payload;
         state.user = null;
+      })
+      .addCase(getPosts.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getPosts.fulfilled, (state, { payload }) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.posts = payload;
+      })
+      .addCase(getPosts.rejected, (state, { payload }) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = payload;
+        state.posts = null;
       });
   },
 });
