@@ -117,10 +117,10 @@ export const authSlice = createSlice({
       .addCase(getPosts.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(getPosts.fulfilled, (state, { payload }) => {
+      .addCase(getPosts.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.posts = payload;
+        state.posts = action.payload;
       })
       .addCase(getPosts.rejected, (state, { payload }) => {
         state.isLoading = false;

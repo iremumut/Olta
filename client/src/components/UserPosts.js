@@ -12,6 +12,7 @@ const UserPosts = () => {
     posts: loggedInUserPosts,
     isLoading: loggedInUserLoading,
     isError,
+    isSucces,
     message,
   } = useSelector((state) => state.auth);
 
@@ -70,17 +71,14 @@ const UserPosts = () => {
     }
   }, [posts]);
 
+  //console.log(posts);
   if (loggedInUserLoading || loading) {
     return <p>Loading...</p>;
   }
 
   return (
     <div className="w-full">
-      {!loggedInUserLoading && !loading && posts.length === 0 ? (
-        <p>No posts found</p>
-      ) : (
-        ""
-      )}
+      {isSucces && posts.length === 0 ? <p>No posts found</p> : ""}
       {posts.length !== 0
         ? posts.map((post) => {
             return <Post key={uuid()} post={post} creator={user} />;

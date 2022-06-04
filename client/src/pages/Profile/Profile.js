@@ -49,6 +49,7 @@ const Profile = () => {
     return <p>Loading...</p>;
   }
 
+  console.log(user);
   return (
     <div className="flex flex-row p-4 page-bg">
       {/*links */}
@@ -88,9 +89,12 @@ const Profile = () => {
               src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8FuEJbKwDdaz1h387130xmYkAIQbZpahhbQ&usqp=CAU"
               alt=""
             />
-            <p className="text-[#4E5D78] font-semibold	text-xl w-12 ">
-              {user.name}
-            </p>
+            <div>
+              <p className="text-[#4E5D78] font-semibold	text-xl w-12 ">
+                {user.name}
+              </p>
+              <p>{user.username}</p>
+            </div>
           </div>
           <div className="flex flex-row ">
             <div className="text-center font-semibold text-lg px-2">

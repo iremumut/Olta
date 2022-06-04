@@ -137,24 +137,18 @@ const Post = ({ post, creator }) => {
             <img src={like} alt="" className="" />
             <p className="pl-2 font-medium text-lg  text-[#5C6A83]"> Like</p>
           </button>
-          <button
-            onClick={handleLikePost}
-            className="flex flex-row items-center"
-          >
+          <button className="flex flex-row items-center">
             <img src={comment} alt="" className="" />
-            <p className="pl-2 font-medium text-lg  text-[#5C6A83]"> Comment</p>
+            <p className="pl-2 font-medium text-lg  text-[#5C6A83]">
+              {" "}
+              Comments
+            </p>
           </button>
-          <button
-            onClick={handleLikePost}
-            className="flex flex-row items-center"
-          >
+          <button className="flex flex-row items-center">
             <img src={support} alt="" className="" />
             <p className="pl-2 font-medium text-lg  text-[#5C6A83]"> Support</p>
           </button>
-          <button
-            onClick={handleLikePost}
-            className="flex flex-row items-center"
-          >
+          <button className="flex flex-row items-center">
             <img src={share} alt="" className="" />
             <p className="pl-2 font-medium text-lg  text-[#5C6A83]"> Share</p>
           </button>

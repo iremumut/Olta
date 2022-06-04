@@ -76,13 +76,11 @@ const postSlice = createSlice({
       state.isSuccess = false;
       state.message = "";
     },
-    likePost: (state, payload) => {
-      //console.log(payload.payload.postid);
+    likePost: (state, action) => {
       state.posts.forEach((post) => {
-        if (post._id === payload.payload.postid) {
-          console.log("here");
+        if (post._id === action.payload.postid) {
           post.likeCount++;
-          post.likes.push(payload.userid);
+          post.likes.push(action.payload.userid);
         }
       });
     },
