@@ -7,23 +7,65 @@ import like from "../assets/vectors/like.svg";
 import support from "../assets/vectors/support.svg";
 import send from "../assets/vectors/send.svg";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { likePost } from "../features/posts/postSlice";
 
 const Post = ({ post, creator }) => {
   const timeFormat = moment(post.createdAt).startOf("hour").fromNow(); //.startOf("day").fromNow();
-  //console.log(creator);
+  const { user } = useSelector((state) => state.auth);
+
+  const dispatch = useDispatch();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  useEffect(() => {
+    if (creator._id === user._id) {
+      setIsLoggedIn(true);
+    }
+  }, [creator._id, user._id]);
+
+  const handleLikePost = async () => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+      },
+    };
+    try {
+      const res = await axios.post(
+        `http://localhost:5000/posts/${post._id}/likes`,
+        {},
+        config
+      );
+      console.log(res);
+      dispatch(likePost({ postid: post._id, userid: user._id }));
+      toast.success("Liked the post");
+    } catch (error) {
+      console.log("here");
+      toast.error(error.response.data.message);
+    }
+  };
   return (
     <>
       <div className=" bg-white  md:p-4 md:px-10 p-4 my-6 flex flex-col rounded-lg">
         <div className="flex flex-row py-4">
-          <img
-            className="h-16 w-16 rounded-full mr-3 "
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8FuEJbKwDdaz1h387130xmYkAIQbZpahhbQ&usqp=CAU"
-            alt=""
-          />
+          <Link
+            to={isLoggedIn ? "/users/me/posts" : `users/${creator._id}/posts`}
+          >
+            <img
+              className="h-16 w-16 rounded-full mr-3 "
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8FuEJbKwDdaz1h387130xmYkAIQbZpahhbQ&usqp=CAU"
+              alt=""
+            />
+          </Link>
           <div>
-            <p className="text-[#4E5D78] text-base font-medium">
-              {creator && creator.name ? creator.name : "Alex Heart"}
-            </p>{" "}
+            <Link
+              to={isLoggedIn ? "/users/me/posts" : `users/${creator._id}/posts`}
+            >
+              <p className="text-[#4E5D78] text-base font-medium">
+                {creator && creator.name ? creator.name : "User"}
+              </p>{" "}
+            </Link>
             {/*@TODO create user slice and find the users name and photo from the server*/}
             <p className="text-[#A2AAB8] text-sm font-normal">
               {timeFormat}
@@ -80,7 +122,7 @@ const Post = ({ post, creator }) => {
         <hr />
 
         <div className="flex flex-row w-full justify-between py-4">
-          <button>
+          <button onClick={handleLikePost}>
             <img src={like} alt="" />
           </button>
           <button>

@@ -23,7 +23,6 @@ const SinglePost = () => {
     };
 
     const fetchPost = async () => {
-      console.log("in fetch post");
       const response = await axios
         .get(`http://localhost:5000/posts/${postid}`, config)
         .then((res) => res.data);
@@ -31,7 +30,6 @@ const SinglePost = () => {
     };
 
     const fetchCreator = async () => {
-      console.log("in fetch creator");
       const response = await axios
         .get(`http://localhost:5000/posts/${postid}/creator`, config)
         .then((res) => res.data);
@@ -45,14 +43,12 @@ const SinglePost = () => {
       setCreator(creator);
       setIsLoading(false);
     } else {
-      console.log("here");
       setIsLoading(true);
       Promise.all([fetchPost(), fetchCreator()]).then(() => {
-        console.log("does this work");
         setIsLoading(false);
       });
     }
-  }, []);
+  }, [post.creator, postid, posts, user.token, users]);
 
   if (isLoading) {
     return <p>Loading...</p>;

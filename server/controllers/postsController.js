@@ -209,6 +209,7 @@ export const likePost = asyncHandler(async (req, res) => {
     );
     user.likedPosts.push(post._id);
     await user.save();
+
     res.status(200).json(updatedPost);
   } else {
     res.status(404);

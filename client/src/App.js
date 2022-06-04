@@ -39,6 +39,9 @@ function App() {
                 <Route path="wallet" element={<Profile />} />
                 <Route path="settings" element={<Profile />} />
               </Route>
+              <Route path=":userid" element={<Profile />}>
+                <Route path="posts" element={<UserPosts />} />
+              </Route>
             </Route>
           </Route>
         </Route>

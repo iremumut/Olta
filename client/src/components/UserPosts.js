@@ -1,16 +1,27 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getPosts, reset } from "../features/auth/authSlice";
 import { toast } from "react-toastify";
 import Post from "./Post";
 import uuid from "react-uuid";
 import { useOutletContext } from "react-router-dom";
+import axios from "axios";
 
 const UserPosts = () => {
-  const { posts, isLoading, isError, isSuccess, message } = useSelector(
-    (state) => state.auth
-  );
+  const {
+    posts: loggedInUserPosts,
+    isLoading: loggedInUserLoading,
+    isError,
+    isSuccess,
+    message,
+  } = useSelector((state) => state.auth);
+
+  const [posts, setPosts] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const dispatch = useDispatch();
+
+  const { user: loggedInUser } = useSelector((state) => state.auth);
 
   const { user } = useOutletContext();
   useEffect(() => {
@@ -22,10 +33,36 @@ const UserPosts = () => {
         await dispatch(reset());
       }
     };
-    fetchPosts();
-  }, [isError, dispatch, message]);
 
-  if (isLoading) {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${loggedInUser.token}`,
+      },
+    };
+
+    const fetchUsersPosts = async () => {
+      try {
+        const response = await axios
+          .get(`http://localhost:5000/users/${user._id}/posts`, config)
+          .then((res) => res.data);
+        setPosts(response);
+        setLoading(false);
+      } catch (error) {
+        toast.error(error.response.data.message);
+      }
+    };
+
+    if (user.token) {
+      fetchPosts();
+      setPosts(loggedInUserPosts);
+    } else {
+      setLoading(true);
+      fetchUsersPosts();
+      setLoading(false);
+    }
+  }, []);
+
+  if (loggedInUserLoading || loading) {
     return <p>Loading...</p>;
   }
 

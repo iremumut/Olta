@@ -161,6 +161,7 @@ export const getAnotherUser = asyncHandler(async (req, res) => {
   checkUserFound(res, user); //check if the user is found
 
   res.status(200).json({
+    _id: user._id,
     name: user.name,
     userName: user.userName,
     description: user.description,

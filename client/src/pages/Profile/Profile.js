@@ -1,9 +1,54 @@
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import "./Profile.css";
 
 const Profile = () => {
-  const { user } = useSelector((state) => state.auth);
+  const { user: loggedInUser } = useSelector((state) => state.auth);
+  const { users } = useSelector((state) => state.user);
+
+  const [user, setUser] = useState(loggedInUser);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const { userid } = useParams();
+
+  useEffect(() => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${loggedInUser.token}`,
+      },
+    };
+
+    const fetchUser = async () => {
+      try {
+        const response = await axios
+          .get(`http://localhost:5000/users/${userid}`, config)
+          .then((res) => res.data);
+        setUser(response);
+        setIsLoading(false);
+      } catch (error) {
+        toast.error(error.response.data.message);
+      }
+    };
+    if (userid) {
+      const found = users.find((x) => x._id === userid);
+      if (found) {
+        setUser(found);
+        setIsLoading(false);
+      } else {
+        fetchUser();
+      }
+    } else {
+      setUser(user);
+      setIsLoading(false);
+    }
+  }, []);
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <div className="flex flex-row p-4 page-bg">
@@ -50,13 +95,16 @@ const Profile = () => {
           </div>
           <div className="flex flex-row ">
             <div className="text-center font-semibold text-lg px-2">
-              234 <p className="font-normal">Followers</p>
+              {user.followers ? user.followers.length : 0}{" "}
+              <p className="font-normal">Followers</p>
             </div>
             <div className="text-center font-semibold text-lg px-2">
-              24 <p className="font-normal">Subs</p>
+              {user.subscribers ? user.subscribers.length : 0}{" "}
+              <p className="font-normal">Subs</p>
             </div>
             <div className="text-center font-semibold text-lg px-2">
-              124 <p className="font-normal">Following</p>
+              {user.followed ? user.followed.length : 0}{" "}
+              <p className="font-normal">Following</p>
             </div>
           </div>
         </div>

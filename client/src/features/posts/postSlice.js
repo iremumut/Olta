@@ -76,6 +76,14 @@ const postSlice = createSlice({
       state.isSuccess = false;
       state.message = "";
     },
+    likePost: (state, payload) => {
+      state.posts.forEach((post) => {
+        if (post._id === payload.postid) {
+          post.likeCount++;
+          post.likes.push(payload.userid);
+        }
+      });
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -123,5 +131,5 @@ const postSlice = createSlice({
   },
 });
 
-export const { reset } = postSlice.actions;
+export const { reset, likePost } = postSlice.actions;
 export default postSlice.reducer;
