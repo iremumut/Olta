@@ -14,6 +14,7 @@ import LayoutWithNav from "./utils/LayoutWithNav";
 import NewPost from "./pages/NewPost/NewPost";
 import UserPosts from "./components/UserPosts";
 import SinglePost from "./pages/SinglePost";
+import MyProfile from "./pages/MyProfile/MyProfile";
 
 function App() {
   return (
@@ -33,7 +34,7 @@ function App() {
               <Route path=":postid" element={<SinglePost />} />
             </Route>
             <Route path="/users">
-              <Route path="me" element={<Profile />}>
+              <Route path="me" element={<MyProfile />}>
                 <Route path="posts" element={<UserPosts />} />
                 <Route path="subscriptions" element={<Profile />} />
                 <Route path="wallet" element={<Profile />} />

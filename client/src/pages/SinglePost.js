@@ -12,8 +12,8 @@ const SinglePost = () => {
   const { users } = useSelector((state) => state.user);
 
   const [isLoading, setIsLoading] = useState(true);
-  const [post, setPost] = useState("");
-  const [creator, setCreator] = useState();
+  const [post, setPost] = useState([]);
+  const [creator, setCreator] = useState([]);
 
   useEffect(() => {
     const config = {
@@ -37,11 +37,17 @@ const SinglePost = () => {
     };
 
     const postFound = posts.find((post) => post._id === postid);
+
     if (postFound) {
       setPost(postFound);
-      const creator = users.find((x) => x._id === post.creator);
-      setCreator(creator);
-      setIsLoading(false);
+
+      const creator = users.filter((user) => {
+        return user._id === post.creator;
+      });
+      if (creator) {
+        setCreator(creator);
+        setIsLoading(false);
+      }
     } else {
       setIsLoading(true);
       Promise.all([fetchPost(), fetchCreator()]).then(() => {
@@ -53,12 +59,15 @@ const SinglePost = () => {
   if (isLoading) {
     return <p>Loading...</p>;
   }
-  console.log(post);
-  console.log(creator);
+
   return (
     <div className="flex flex-row justify-center ">
       <div className="w-1/2">
-        <Post post={post} creator={creator} />
+        {post.length !== 0 && creator.length !== 0 ? (
+          <Post post={post} creator={creator} />
+        ) : (
+          ""
+        )}
       </div>
     </div>
   );

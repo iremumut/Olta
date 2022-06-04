@@ -17,8 +17,15 @@ const Post = ({ post, creator }) => {
   const timeFormat = moment(post.createdAt).startOf("hour").fromNow(); //.startOf("day").fromNow();
   const { user } = useSelector((state) => state.auth);
 
+  const [likeCount, setLikeCount] = useState(post.likeCount);
+
+  if (creator && creator.constructor === Array) {
+    creator = creator[0];
+  }
+
   const dispatch = useDispatch();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   useEffect(() => {
     if (creator._id === user._id) {
       setIsLoggedIn(true);
@@ -31,20 +38,21 @@ const Post = ({ post, creator }) => {
         Authorization: `Bearer ${user.token}`,
       },
     };
+
     try {
-      const res = await axios.post(
+      await axios.post(
         `http://localhost:5000/posts/${post._id}/likes`,
         {},
         config
       );
-      console.log(res);
       dispatch(likePost({ postid: post._id, userid: user._id }));
+      setLikeCount((prev) => prev + 1);
       toast.success("Liked the post");
     } catch (error) {
-      console.log("here");
       toast.error(error.response.data.message);
     }
   };
+
   return (
     <>
       <div className=" bg-white  md:p-4 md:px-10 p-4 my-6 flex flex-col rounded-lg">
@@ -114,25 +122,41 @@ const Post = ({ post, creator }) => {
           </div>
 
           <div className="text-[#A2AAB8] text-sm font-normal ">
-            {post.commentCount} comments {post.likeCount} likes{" "}
-            {post.buyers.length} supporters
+            {post.commentCount} comments {likeCount} likes {post.buyers.length}{" "}
+            supporters
           </div>
         </div>
 
         <hr />
 
         <div className="flex flex-row w-full justify-between py-4">
-          <button onClick={handleLikePost}>
-            <img src={like} alt="" />
+          <button
+            onClick={handleLikePost}
+            className="flex flex-row items-center"
+          >
+            <img src={like} alt="" className="" />
+            <p className="pl-2 font-medium text-lg  text-[#5C6A83]"> Like</p>
           </button>
-          <button>
-            <img src={support} alt="" />
+          <button
+            onClick={handleLikePost}
+            className="flex flex-row items-center"
+          >
+            <img src={comment} alt="" className="" />
+            <p className="pl-2 font-medium text-lg  text-[#5C6A83]"> Comment</p>
           </button>
-          <button>
-            <img src={comment} alt="" />
+          <button
+            onClick={handleLikePost}
+            className="flex flex-row items-center"
+          >
+            <img src={support} alt="" className="" />
+            <p className="pl-2 font-medium text-lg  text-[#5C6A83]"> Support</p>
           </button>
-          <button>
-            <img src={share} alt="" />
+          <button
+            onClick={handleLikePost}
+            className="flex flex-row items-center"
+          >
+            <img src={share} alt="" className="" />
+            <p className="pl-2 font-medium text-lg  text-[#5C6A83]"> Share</p>
           </button>
         </div>
 
@@ -141,7 +165,7 @@ const Post = ({ post, creator }) => {
         <div className="flex flex-row w-full py-4 items-center">
           <div className="">
             <img
-              className="h-10 w-10 rounded-full  "
+              className="h-12 w-12 rounded-full  "
               src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8FuEJbKwDdaz1h387130xmYkAIQbZpahhbQ&usqp=CAU"
               alt=""
             />
@@ -149,11 +173,11 @@ const Post = ({ post, creator }) => {
           <div className="mx-4 w-4/5">
             <input
               placeholder="Write a comment..."
-              className="h-10 rounded-lg bg-[#F6F7F8] w-full px-2 focus:outline-none"
+              className="h-12 rounded-lg bg-[#F6F7F8] w-full px-2 focus:outline-none"
             />
           </div>
           <div>
-            <button className="w-9 h-9 rounded bg-[#EBF2FF] p-1 px-2">
+            <button className="w-12 h-12 rounded bg-[#EBF2FF] p-1 px-3">
               <img src={send} className="" alt="" />
             </button>
           </div>

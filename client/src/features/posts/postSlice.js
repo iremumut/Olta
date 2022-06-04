@@ -77,8 +77,10 @@ const postSlice = createSlice({
       state.message = "";
     },
     likePost: (state, payload) => {
+      //console.log(payload.payload.postid);
       state.posts.forEach((post) => {
-        if (post._id === payload.postid) {
+        if (post._id === payload.payload.postid) {
+          console.log("here");
           post.likeCount++;
           post.likes.push(payload.userid);
         }

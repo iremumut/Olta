@@ -1,53 +1,9 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Link, Outlet, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
-import "./Profile.css";
+import { Link, Outlet } from "react-router-dom";
+import "./MyProfile.css";
 
-const Profile = () => {
-  const { user: loggedInUser } = useSelector((state) => state.auth);
-  const { users } = useSelector((state) => state.user);
-
-  const [user, setUser] = useState(loggedInUser);
-  const [isLoading, setIsLoading] = useState(true);
-
-  const { userid } = useParams();
-
-  useEffect(() => {
-    const config = {
-      headers: {
-        Authorization: `Bearer ${loggedInUser.token}`,
-      },
-    };
-
-    const fetchUser = async () => {
-      try {
-        const response = await axios
-          .get(`http://localhost:5000/users/${userid}`, config)
-          .then((res) => res.data);
-        setUser(response);
-        setIsLoading(false);
-      } catch (error) {
-        toast.error(error.response.data.message);
-      }
-    };
-
-    if (userid) {
-      console.log(userid);
-      const found = users.find((x) => x._id === userid);
-      if (found) {
-        setUser(found);
-        setIsLoading(false);
-      } else {
-        fetchUser();
-      }
-    }
-  }, [loggedInUser.token, user, userid, users]);
-
-  if (isLoading) {
-    return <p>Loading...</p>;
-  }
+const MyProfile = () => {
+  const { user } = useSelector((state) => state.auth);
 
   return (
     <div className="flex flex-row p-4 page-bg">
@@ -140,4 +96,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default MyProfile;

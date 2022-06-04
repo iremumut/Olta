@@ -12,18 +12,18 @@ const UserPosts = () => {
     posts: loggedInUserPosts,
     isLoading: loggedInUserLoading,
     isError,
-    isSuccess,
     message,
   } = useSelector((state) => state.auth);
 
-  const [posts, setPosts] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const dispatch = useDispatch();
 
   const { user: loggedInUser } = useSelector((state) => state.auth);
 
   const { user } = useOutletContext();
+
   useEffect(() => {
     const fetchPosts = async () => {
       if (isError) {
@@ -55,12 +55,20 @@ const UserPosts = () => {
     if (user.token) {
       fetchPosts();
       setPosts(loggedInUserPosts);
+      setLoading(false);
     } else {
       setLoading(true);
       fetchUsersPosts();
       setLoading(false);
     }
+    // eslint-disable-next-line
   }, []);
+
+  useEffect(() => {
+    if (posts.length !== 0) {
+      setLoading(false);
+    }
+  }, [posts]);
 
   if (loggedInUserLoading || loading) {
     return <p>Loading...</p>;
@@ -68,10 +76,16 @@ const UserPosts = () => {
 
   return (
     <div className="w-full">
-      {(isSuccess || posts) &&
-        posts.map((post) => {
-          return <Post key={uuid()} post={post} creator={user} />;
-        })}
+      {!loggedInUserLoading && !loading && posts.length === 0 ? (
+        <p>No posts found</p>
+      ) : (
+        ""
+      )}
+      {posts.length !== 0
+        ? posts.map((post) => {
+            return <Post key={uuid()} post={post} creator={user} />;
+          })
+        : ""}
     </div>
   );
 };

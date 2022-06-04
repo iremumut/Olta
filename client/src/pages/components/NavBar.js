@@ -23,10 +23,6 @@ const NavBar = () => {
     navigate("/login");
   };
 
-  const goToProfile = () => {
-    navigate("/users/me/posts");
-  };
-
   return (
     <div className="py-4 sm:px-16 px-2 flex flex-row items-center bg-white">
       <Link to={"/"}>
@@ -93,22 +89,22 @@ const NavBar = () => {
         </div>
       </div>
       <div className="xl:basis-5/12 md:basis-3/12 flex flex-row ml-auto justify-end items-center items-end xsm:flex hidden ">
-        <p
-          onClick={goToProfile}
-          className="mx-2 text-[#4E5D78] cursor-pointer lg:text-xl text-base lg:font-semibold	font-normal hidden lg:inline hover:text-[#4A5567]/70"
-        >
-          {user && user.name ? user.name : "user name"}
-        </p>
-        <img
-          src={
-            user && user.profilePicture
-              ? user.profilePicture
-              : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8FuEJbKwDdaz1h387130xmYkAIQbZpahhbQ&usqp=CAU"
-          }
-          className="lg:h-12 lg:w-12 w-8 h-8 lg:rounded-xl ml-2 rounded-full object-cover cursor-pointer"
-          alt="profile"
-          onClick={goToProfile}
-        ></img>
+        <Link to={"/users/me/posts"}>
+          <p className="mx-2 text-[#4E5D78] cursor-pointer lg:text-xl text-base lg:font-semibold	font-normal hidden lg:inline hover:text-[#4A5567]/70">
+            {user && user.name ? user.name : "user name"}
+          </p>
+        </Link>
+        <Link to={"/users/me/posts"}>
+          <img
+            src={
+              user && user.profilePicture
+                ? user.profilePicture
+                : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8FuEJbKwDdaz1h387130xmYkAIQbZpahhbQ&usqp=CAU"
+            }
+            className="lg:h-12 lg:w-12 w-8 h-8 lg:rounded-xl ml-2 rounded-full object-cover cursor-pointer"
+            alt="profile"
+          ></img>
+        </Link>
       </div>
     </div>
   );
