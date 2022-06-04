@@ -26,7 +26,7 @@ const MyProfile = () => {
             <Link to={"/users/me/purchased"}>Purchased Content</Link>
           </li>
           <li className="py-2 hover:text-black/70">
-            <Link to={"/users/me/purchased"}>Purchased Content</Link>
+            <Link to={"/users/me/following"}>Followings</Link>
           </li>
           <li className="py-2 hover:text-black/70">
             <Link to={"/users/me/transactions"}>Earnings</Link>
@@ -44,9 +44,14 @@ const MyProfile = () => {
               src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8FuEJbKwDdaz1h387130xmYkAIQbZpahhbQ&usqp=CAU"
               alt=""
             />
-            <p className="text-[#4E5D78] font-semibold	text-xl w-12 ">
-              {user.name}
-            </p>
+            <div>
+              <p className="text-[#4E5D78] font-semibold	text-xl w-12 ">
+                {user.name}
+              </p>
+              <p className=" font-semibold">
+                @{user.userName ? user.userName : ""}
+              </p>
+            </div>
           </div>
           <div className="flex flex-row ">
             <div className="text-center font-semibold text-lg px-2">

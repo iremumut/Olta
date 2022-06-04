@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Link, Outlet, useParams } from "react-router-dom";
+import { Outlet, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import "./Profile.css";
 
@@ -34,7 +34,7 @@ const Profile = () => {
     };
 
     if (userid) {
-      console.log(userid);
+      //console.log(userid);
       const found = users.find((x) => x._id === userid);
       if (found) {
         setUser(found);
@@ -49,36 +49,9 @@ const Profile = () => {
     return <p>Loading...</p>;
   }
 
-  console.log(user);
+  //console.log(user);
   return (
-    <div className="flex flex-row p-4 page-bg">
-      {/*links */}
-      <div className="flex flex-col bg-white p-6 py-4 w-60 rounded-xl h-80">
-        <ul>
-          <li className="py-2 hover:text-black/70">
-            <Link to={"/users/me/posts"}>My Posts</Link>
-          </li>
-          <li className="py-2 hover:text-black/70">
-            <Link to={"/users/me/comments"}>My Comments</Link>
-          </li>
-          <li className="py-2 hover:text-black/70">
-            <Link to={"/users/me/subscriptions"}>Subscriptions</Link>
-          </li>
-          <li className="py-2 hover:text-black/70">
-            <Link to={"/users/me/likedPosts"}>Liked Content</Link>
-          </li>
-          <li className="py-2 hover:text-black/70">
-            <Link to={"/users/me/purchased"}>Purchased Content</Link>
-          </li>
-          <li className="py-2 hover:text-black/70">
-            <Link to={"/users/me/purchased"}>Purchased Content</Link>
-          </li>
-          <li className="py-2 hover:text-black/70">
-            <Link to={"/users/me/transactions"}>Earnings</Link>
-          </li>
-        </ul>
-      </div>
-
+    <div className="flex flex-row p-4 page-bg justify-center">
       {/*profile part */}
       <div className="flex flex-col rounded-xl basis-1/2 bg-white ml-6">
         {/*header part */}
@@ -93,7 +66,7 @@ const Profile = () => {
               <p className="text-[#4E5D78] font-semibold	text-xl w-12 ">
                 {user.name}
               </p>
-              <p>{user.username}</p>
+              <p>@{user.userName ? user.userName : ""}</p>
             </div>
           </div>
           <div className="flex flex-row ">

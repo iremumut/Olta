@@ -15,6 +15,7 @@ import NewPost from "./pages/NewPost/NewPost";
 import UserPosts from "./components/UserPosts";
 import SinglePost from "./pages/SinglePost";
 import MyProfile from "./pages/MyProfile/MyProfile";
+import LikedPosts from "./components/LikedPosts";
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
                 <Route path="subscriptions" element={<Profile />} />
                 <Route path="wallet" element={<Profile />} />
                 <Route path="settings" element={<Profile />} />
+                <Route path="likedPosts" element={<LikedPosts />} />
               </Route>
               <Route path=":userid" element={<Profile />}>
                 <Route path="posts" element={<UserPosts />} />
