@@ -7,6 +7,7 @@ const user = JSON.parse(localStorage.getItem("user"));
 const initialState = {
   user: user ? user : null,
   posts: [],
+  comment: "",
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -146,6 +147,48 @@ export const unfollow = createAsyncThunk(
   }
 );
 
+//like a post
+export const likePost = createAsyncThunk(
+  "auth/likePost",
+  async (postid, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await authService.likePost(postid, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+//create a comment
+export const createComment = createAsyncThunk(
+  "auth/createComment",
+  async (params, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await authService.createComment(
+        params.postid,
+        params.comment,
+        token
+      );
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export const authSlice = createSlice({
   name: "auth",
   initialState: initialState,
@@ -263,6 +306,41 @@ export const authSlice = createSlice({
         localStorage.setItem("user", JSON.stringify(state.user));
       })
       .addCase(unfollow.rejected, (state, { payload }) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = payload;
+        state.posts = null;
+      })
+      .addCase(likePost.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(likePost.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.user.likedPosts.push(action.payload._id);
+        localStorage.removeItem("user");
+        localStorage.setItem("user", JSON.stringify(state.user));
+      })
+      .addCase(likePost.rejected, (state, { payload }) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = payload;
+        state.posts = null;
+      })
+      .addCase(createComment.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(createComment.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.user.comments.push(action.payload._id);
+        state.comment = action.payload;
+        localStorage.removeItem("user");
+        localStorage.setItem("user", JSON.stringify(state.user));
+      })
+      .addCase(createComment.rejected, (state, { payload }) => {
+        console.log("here");
+        console.log(payload);
         state.isLoading = false;
         state.isError = true;
         state.message = payload;

@@ -95,6 +95,39 @@ const unfollow = async (userid, token) => {
   return response.data;
 };
 
+//like a post
+const likePost = async (postid, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const response = await axios.post(
+    `http://localhost:5000/posts/${postid}/likes`,
+    {},
+    config
+  );
+  return response.data;
+};
+
+//create a comment
+const createComment = async (postid, comment, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const response = await axios.post(
+    `http://localhost:5000/comments/${postid}`,
+    comment,
+    config
+  );
+  console.log(response);
+  return response.data;
+};
+
 const authService = {
   register,
   logout,
@@ -104,6 +137,8 @@ const authService = {
   unsubscribe,
   follow,
   unfollow,
+  likePost,
+  createComment,
 };
 
 export default authService;

@@ -5,19 +5,22 @@ import share from "../assets/vectors/share.svg";
 import comment from "../assets/vectors/comment.svg";
 import like from "../assets/vectors/like.svg";
 import support from "../assets/vectors/support.svg";
-import send from "../assets/vectors/send.svg";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { toast } from "react-toastify";
 import { likePost } from "../features/posts/postSlice";
+import { likePost as likePostAuth, reset } from "../features/auth/authSlice";
+import uuid from "react-uuid";
+import PostComment from "./PostComment";
+import CreateComment from "./CreateComment.";
 
-const Post = ({ post, creator }) => {
+const Post = ({ post, creator, singlePage, comments, setComments }) => {
   const timeFormat = moment(post.createdAt).startOf("hour").fromNow(); //.startOf("day").fromNow();
-  const { user } = useSelector((state) => state.auth);
+  const { user, message } = useSelector((state) => state.auth);
 
   const [likeCount, setLikeCount] = useState(post.likeCount);
+  const [commentCount, setCommentCount] = useState(post.commentCount);
 
   if (creator && creator.constructor === Array) {
     creator = creator[0];
@@ -33,24 +36,17 @@ const Post = ({ post, creator }) => {
   }, [creator._id, user._id]);
 
   const handleLikePost = async () => {
-    const config = {
-      headers: {
-        Authorization: `Bearer ${user.token}`,
-      },
-    };
-
-    try {
-      await axios.post(
-        `http://localhost:5000/posts/${post._id}/likes`,
-        {},
-        config
-      );
-      dispatch(likePost({ postid: post._id, userid: user._id }));
-      setLikeCount((prev) => prev + 1);
-      toast.success("Liked the post");
-    } catch (error) {
-      toast.error(error.response.data.message);
-    }
+    dispatch(likePostAuth(post._id)).then((res) => {
+      if (res.error) {
+        toast.error(message);
+        dispatch(reset());
+      } else {
+        toast.success("Liked the post");
+        dispatch(likePost({ postid: post._id, userid: user._id }));
+        setLikeCount((prev) => prev + 1);
+        dispatch(reset);
+      }
+    });
   };
 
   return (
@@ -122,7 +118,7 @@ const Post = ({ post, creator }) => {
           </div>
 
           <div className="text-[#A2AAB8] text-sm font-normal ">
-            {post.commentCount} comments {likeCount} likes {post.buyers.length}{" "}
+            {commentCount} comments {likeCount} likes {post.buyers.length}{" "}
             supporters
           </div>
         </div>
@@ -156,26 +152,28 @@ const Post = ({ post, creator }) => {
 
         <hr />
 
-        <div className="flex flex-row w-full py-4 items-center">
-          <div className="">
-            <img
-              className="h-12 w-12 rounded-full  "
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8FuEJbKwDdaz1h387130xmYkAIQbZpahhbQ&usqp=CAU"
-              alt=""
-            />
+        {/**comments part */}
+
+        {singlePage ? (
+          <div className="flex flex-col my-2">
+            {comments.length !== 0 ? (
+              comments.map((comment) => {
+                return <PostComment key={uuid()} comment={comment} />;
+              })
+            ) : (
+              <p className="pb-2 text-[#A2AAB8]  font-light">No comments</p>
+            )}
+            <hr />
           </div>
-          <div className="mx-4 w-4/5">
-            <input
-              placeholder="Write a comment..."
-              className="h-12 rounded-lg bg-[#F6F7F8] w-full px-2 focus:outline-none"
-            />
-          </div>
-          <div>
-            <button className="w-12 h-12 rounded bg-[#EBF2FF] p-1 px-3">
-              <img src={send} className="" alt="" />
-            </button>
-          </div>
-        </div>
+        ) : (
+          ""
+        )}
+
+        <CreateComment
+          setComments={setComments}
+          postid={post._id}
+          setCommentCount={setCommentCount}
+        />
       </div>
     </>
   );

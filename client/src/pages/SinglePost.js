@@ -14,6 +14,7 @@ const SinglePost = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [post, setPost] = useState([]);
   const [creator, setCreator] = useState([]);
+  const [comments, setComments] = useState([]);
 
   useEffect(() => {
     const config = {
@@ -36,6 +37,13 @@ const SinglePost = () => {
       setCreator(response);
     };
 
+    const fetchComments = async () => {
+      const response = await axios
+        .get(`http://localhost:5000/posts/${postid}/comments`, config)
+        .then((res) => res.data);
+      setComments(response);
+    };
+
     const postFound = posts.find((post) => post._id === postid);
 
     if (postFound) {
@@ -46,11 +54,12 @@ const SinglePost = () => {
       });
       if (creator) {
         setCreator(creator);
+        fetchComments();
         setIsLoading(false);
       }
     } else {
       setIsLoading(true);
-      Promise.all([fetchPost(), fetchCreator()]).then(() => {
+      Promise.all([fetchPost(), fetchCreator(), fetchComments()]).then(() => {
         setIsLoading(false);
       });
     }
@@ -64,7 +73,13 @@ const SinglePost = () => {
     <div className="flex flex-row justify-center ">
       <div className="w-1/2">
         {post.length !== 0 && creator.length !== 0 ? (
-          <Post post={post} creator={creator} />
+          <Post
+            post={post}
+            creator={creator}
+            singlePage={true}
+            comments={comments}
+            setComments={setComments}
+          />
         ) : (
           ""
         )}
