@@ -3,14 +3,19 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Outlet, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import FollowSubscribe from "../../components/FollowSubscribe";
 import "./Profile.css";
 
 const Profile = () => {
   const { user: loggedInUser } = useSelector((state) => state.auth);
   const { users } = useSelector((state) => state.user);
 
-  const [user, setUser] = useState(loggedInUser);
+  const [user, setUser] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  const [followerCount, setFollowerCount] = useState(0);
+  const [subCount, setSubCount] = useState(0);
+  const [followedCount, setFollowedCount] = useState(0);
 
   const { userid } = useParams();
 
@@ -23,6 +28,7 @@ const Profile = () => {
 
     const fetchUser = async () => {
       try {
+        console.log("here");
         const response = await axios
           .get(`http://localhost:5000/users/${userid}`, config)
           .then((res) => res.data);
@@ -33,17 +39,24 @@ const Profile = () => {
       }
     };
 
-    if (userid) {
-      //console.log(userid);
-      const found = users.find((x) => x._id === userid);
-      if (found) {
-        setUser(found);
-        setIsLoading(false);
-      } else {
-        fetchUser();
-      }
+    const found = users.find((x) => x._id === userid);
+    if (found) {
+      setUser(found);
+      setIsLoading(false);
+    } else {
+      fetchUser();
     }
-  }, [loggedInUser.token, user, userid, users]);
+    // eslint-disable-next-line
+  }, []);
+
+  useEffect(() => {
+    if (user.length !== 0) {
+      setFollowedCount(user.followed.length);
+      setFollowerCount(user.followers.length);
+      setSubCount(user.subscribers.length);
+    }
+    // eslint-disable-next-line
+  }, [user.length]);
 
   if (isLoading) {
     return <p>Loading...</p>;
@@ -71,41 +84,33 @@ const Profile = () => {
           </div>
           <div className="flex flex-row ">
             <div className="text-center font-semibold text-lg px-2">
-              {user.followers ? user.followers.length : 0}{" "}
-              <p className="font-normal">Followers</p>
+              {followerCount} <p className="font-normal">Followers</p>
             </div>
             <div className="text-center font-semibold text-lg px-2">
-              {user.subscribers ? user.subscribers.length : 0}{" "}
-              <p className="font-normal">Subs</p>
+              {subCount} <p className="font-normal">Subs</p>
             </div>
             <div className="text-center font-semibold text-lg px-2">
-              {user.followed ? user.followed.length : 0}{" "}
-              <p className="font-normal">Following</p>
+              {followedCount} <p className="font-normal">Following</p>
             </div>
           </div>
         </div>
         {/*description part */}
-        <div className="px-12 py-4 flex flex-row justify-between items-center">
-          <div className="w-2/3">
-            {user.description ? user.description : ""}
-          </div>
-          <div className="flex flex-col ">
-            {user.token ? (
-              <button className="px-4 py-2 w-28 border border-[#4E8BFF] rounded-xl text-[#4E8BFF] m-2 hover:bg-[#4E8BFF] hover:text-white">
-                Edit
-              </button>
-            ) : (
-              <>
-                {" "}
-                <button className="px-4 py-2 w-28 m-2 text-white rounded-xl bg-[#4E8BFF] hover:bg-[#4E8BFF]/70">
-                  Subscribe
-                </button>
-                <button className="px-4 py-2 w-28 border border-[#4E8BFF] rounded-xl text-[#4E8BFF] m-2 hover:bg-[#4E8BFF] hover:text-white">
-                  Follow
-                </button>{" "}
-              </>
-            )}
-          </div>
+        <div className="px-12 py-4 flex flex-col justify-center items-center">
+          {user.description ? (
+            <div className="text-center py-4"> {user.description} </div>
+          ) : (
+            ""
+          )}
+          {user ? (
+            <FollowSubscribe
+              userToFollow={user}
+              setFollowedCount={setFollowedCount}
+              setFollowerCount={setFollowerCount}
+              setSubCount={setSubCount}
+            />
+          ) : (
+            ""
+          )}
         </div>
 
         {/*others */}

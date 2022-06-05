@@ -70,6 +70,82 @@ export const getPosts = createAsyncThunk(
   }
 );
 
+//subscribe to a user
+export const subscribe = createAsyncThunk(
+  "auth/subscribe",
+  async (userid, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await authService.subscribe(userid, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+//unsubscribe from a user
+export const unsubscribe = createAsyncThunk(
+  "auth/unsubscribe",
+  async (userid, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await authService.unsubscribe(userid, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+//follow to a user
+export const follow = createAsyncThunk(
+  "auth/follow",
+  async (userid, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await authService.follow(userid, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+//unfollow from a user
+export const unfollow = createAsyncThunk(
+  "auth/unfollow",
+  async (userid, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await authService.unfollow(userid, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export const authSlice = createSlice({
   name: "auth",
   initialState: initialState,
@@ -123,6 +199,70 @@ export const authSlice = createSlice({
         state.posts = action.payload;
       })
       .addCase(getPosts.rejected, (state, { payload }) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = payload;
+        state.posts = null;
+      })
+      .addCase(subscribe.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(subscribe.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.user.subscribedTo = action.payload.subscribedTo;
+        localStorage.removeItem("user");
+        localStorage.setItem("user", JSON.stringify(state.user));
+      })
+      .addCase(subscribe.rejected, (state, { payload }) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = payload;
+        state.posts = null;
+      })
+      .addCase(unsubscribe.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(unsubscribe.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.user.subscribedTo = action.payload.subscribedTo;
+        localStorage.removeItem("user");
+        localStorage.setItem("user", JSON.stringify(state.user));
+      })
+      .addCase(unsubscribe.rejected, (state, { payload }) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = payload;
+        state.posts = null;
+      })
+      .addCase(follow.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(follow.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.user.followed = action.payload.followed;
+        localStorage.removeItem("user");
+        localStorage.setItem("user", JSON.stringify(state.user));
+      })
+      .addCase(follow.rejected, (state, { payload }) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = payload;
+        state.posts = null;
+      })
+      .addCase(unfollow.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(unfollow.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.user.followed = action.payload.followed;
+        localStorage.removeItem("user");
+        localStorage.setItem("user", JSON.stringify(state.user));
+      })
+      .addCase(unfollow.rejected, (state, { payload }) => {
         state.isLoading = false;
         state.isError = true;
         state.message = payload;

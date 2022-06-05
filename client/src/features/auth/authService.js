@@ -40,11 +40,70 @@ const getPosts = async (token) => {
   return response.data;
 };
 
+//subscribe to a user
+const subscribe = async (userid, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const response = await axios.post(
+    `${API_URL}/subscribes/${userid}`,
+    {},
+    config
+  );
+  return response.data;
+};
+
+//unsubscribe from a user
+const unsubscribe = async (userid, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const response = await axios.delete(
+    `${API_URL}/subscribes/${userid}`,
+    config
+  );
+  return response.data;
+};
+
+//follow to a user
+const follow = async (userid, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const response = await axios.post(`${API_URL}/follows/${userid}`, {}, config);
+  return response.data;
+};
+
+//unsubscribe from a user
+const unfollow = async (userid, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const response = await axios.delete(`${API_URL}/follows/${userid}`, config);
+  return response.data;
+};
+
 const authService = {
   register,
   logout,
   login,
   getPosts,
+  subscribe,
+  unsubscribe,
+  follow,
+  unfollow,
 };
 
 export default authService;

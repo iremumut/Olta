@@ -69,26 +69,14 @@ const MyProfile = () => {
           </div>
         </div>
         {/*description part */}
-        <div className="px-12 py-4 flex flex-row justify-between items-center">
-          <div className="w-2/3">
+        <div className="px-12 py-4 flex flex-col justify-center items-center">
+          <div className="text-center">
             {user.description ? user.description : ""}
           </div>
-          <div className="flex flex-col ">
-            {user.token ? (
-              <button className="px-4 py-2 w-28 border border-[#4E8BFF] rounded-xl text-[#4E8BFF] m-2 hover:bg-[#4E8BFF] hover:text-white">
-                Edit
-              </button>
-            ) : (
-              <>
-                {" "}
-                <button className="px-4 py-2 w-28 m-2 text-white rounded-xl bg-[#4E8BFF] hover:bg-[#4E8BFF]/70">
-                  Subscribe
-                </button>
-                <button className="px-4 py-2 w-28 border border-[#4E8BFF] rounded-xl text-[#4E8BFF] m-2 hover:bg-[#4E8BFF] hover:text-white">
-                  Follow
-                </button>{" "}
-              </>
-            )}
+          <div className="flex flex-row ">
+            <button className="px-4 py-2 w-28 border border-[#4E8BFF] rounded-xl text-[#4E8BFF] m-2 hover:bg-[#4E8BFF] hover:text-white">
+              Edit
+            </button>
           </div>
         </div>
 
