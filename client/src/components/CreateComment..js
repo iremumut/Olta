@@ -27,8 +27,6 @@ const CreateComment = ({ setComments, postid, setCommentCount }) => {
     dispatch(createComment(params));
   };
 
-  console.log(isError, isSuccess);
-
   useEffect(() => {
     if (isError) {
       console.log(message);

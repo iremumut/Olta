@@ -16,8 +16,21 @@ import UserPosts from "./components/UserPosts";
 import SinglePost from "./pages/SinglePost";
 import MyProfile from "./pages/MyProfile/MyProfile";
 import LikedPosts from "./components/LikedPosts";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import {
+  checkIfWalletConnected,
+  connectWallet,
+  sendTransaction,
+} from "./features/transactions/transactionSlice";
 
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(connectWallet());
+  }, []);
+
   return (
     <div>
       <Routes>
