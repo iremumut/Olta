@@ -4,10 +4,11 @@ import { ethers } from "ethers";
 import { contractABI, contractAddress } from "../../utils/constants";
 
 const { ethereum } = window;
+const user = JSON.parse(localStorage.getItem("user"));
 
 const initialState = {
   transactions: [],
-  account: "",
+  account: user ? (user.metaMaskAccount ? user.metaMaskAccount : "") : "",
   transactionCount: "",
   isError: false,
   isSuccess: false,

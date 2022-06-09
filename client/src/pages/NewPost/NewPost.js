@@ -30,6 +30,8 @@ const NewPost = () => {
     (state) => state.post
   );
 
+  const { user } = useSelector((state) => state.auth);
+
   const [buttons, setButtons] = useState({ ...buttonsInital, text: true });
 
   const [fileUpload, setFileUpload] = useState(false);
@@ -42,7 +44,7 @@ const NewPost = () => {
   const [tag, setTag] = useState("");
 
   const [isFree, setIsFree] = useState(true);
-  const [price, setPrice] = useState(0);
+  const [price, setPrice] = useState(0.0);
 
   const [contentType, setContentType] = useState("text");
 
@@ -202,7 +204,9 @@ const NewPost = () => {
                 src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8FuEJbKwDdaz1h387130xmYkAIQbZpahhbQ&usqp=CAU"
                 alt=""
               />
-              <p className="font-semibold text-xl text-[#4E5D78]">Alex Ryan</p>
+              <p className="font-semibold text-xl text-[#4E5D78]">
+                {user.name}
+              </p>
             </div>
 
             <div className="my-4">
@@ -281,7 +285,7 @@ const NewPost = () => {
               <div className="text-[#4E8BFF] pb-4 pt-2">Pricing</div>
               <div className=" flex flex-row justify-center w-4/5">
                 <button
-                  onClick={() => setPrice((prev) => prev + 1)}
+                  onClick={() => setPrice((prev) => prev + 0.001)}
                   className="bg-[#4E8BFF] xsm:px-6 px-2 py-1 text-white rounded-l-lg text-4xl font-extralight"
                 >
                   +
@@ -291,7 +295,11 @@ const NewPost = () => {
                   <div>$</div>
                 </div>
                 <button
-                  onClick={() => setPrice((prev) => prev - 1)}
+                  onClick={() => {
+                    if (price !== 0) {
+                      setPrice((prev) => prev - 0.001);
+                    }
+                  }}
                   className="bg-[#4E8BFF] xsm:px-6 px-2 py-1 text-white rounded-r-lg text-4xl font-extralight"
                 >
                   -

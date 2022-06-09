@@ -17,7 +17,7 @@ import CreateComment from "./CreateComment.";
 
 const Post = ({ post, creator, singlePage, comments, setComments }) => {
   const timeFormat = moment(post.createdAt).startOf("hour").fromNow(); //.startOf("day").fromNow();
-  const { user, message } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.auth);
 
   const [likeCount, setLikeCount] = useState(post.likeCount);
   const [commentCount, setCommentCount] = useState(post.commentCount);
@@ -26,6 +26,8 @@ const Post = ({ post, creator, singlePage, comments, setComments }) => {
     creator = creator[0];
   }
 
+  //console.log(creator);
+  //console.log(user);
   const dispatch = useDispatch();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -36,17 +38,19 @@ const Post = ({ post, creator, singlePage, comments, setComments }) => {
   }, [creator._id, user._id]);
 
   const handleLikePost = async () => {
-    dispatch(likePostAuth(post._id)).then((res) => {
-      if (res.error) {
-        toast.error(message);
+    Promise.all([dispatch(likePostAuth(post._id))])
+      .then((res) => {
+        if (res[0].error) {
+          toast.error(res[0].payload);
+        } else {
+          toast.success("Liked the post");
+          dispatch(likePost({ postid: post._id, userid: user._id }));
+          setLikeCount((prev) => prev + 1);
+        }
+      })
+      .then(() => {
         dispatch(reset());
-      } else {
-        toast.success("Liked the post");
-        dispatch(likePost({ postid: post._id, userid: user._id }));
-        setLikeCount((prev) => prev + 1);
-        dispatch(reset);
-      }
-    });
+      });
   };
 
   return (
@@ -140,10 +144,14 @@ const Post = ({ post, creator, singlePage, comments, setComments }) => {
               Comments
             </p>
           </button>
-          <button className="flex flex-row items-center">
+          <Link
+            to={`/transaction/${post._id}`}
+            state={{ post: post, creator: creator }}
+            className="flex flex-row items-center"
+          >
             <img src={support} alt="" className="" />
             <p className="pl-2 font-medium text-lg  text-[#5C6A83]"> Support</p>
-          </button>
+          </Link>
           <button className="flex flex-row items-center">
             <img src={share} alt="" className="" />
             <p className="pl-2 font-medium text-lg  text-[#5C6A83]"> Share</p>
@@ -173,6 +181,7 @@ const Post = ({ post, creator, singlePage, comments, setComments }) => {
           setComments={setComments}
           postid={post._id}
           setCommentCount={setCommentCount}
+          singlePage={singlePage}
         />
       </div>
     </>

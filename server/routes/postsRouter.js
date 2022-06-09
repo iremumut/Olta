@@ -12,6 +12,7 @@ import {
   getComments,
   getBuyers,
   getCreator,
+  purchasePost,
 } from "../controllers/postsController.js";
 import { protect } from "../middleware/authMiddleware.js";
 
@@ -41,5 +42,7 @@ router.get("/:id/comments", protect, getComments);
 router.get("/:id/buyers", protect, getBuyers);
 
 router.get("/:id/creator", protect, getCreator);
+
+router.post("/:id/purchase", protect, purchasePost);
 
 export default router;

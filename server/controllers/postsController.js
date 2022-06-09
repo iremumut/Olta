@@ -82,6 +82,8 @@ export const createPost = asyncHandler(async (req, res) => {
     contentURL: result ? result.Location : " ",
   });
 
+  console.log(post);
+
   user.posts.push(post._id);
   await user.save();
 
@@ -315,6 +317,33 @@ export const getCreator = asyncHandler(async (req, res) => {
 
   res.status(200);
   res.json(creator);
+});
+
+//POST /posts/:id/purchase
+export const purchasePost = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  validateObjectID(res, id); //check if params id is valid
+
+  const post = await Posts.findById(id);
+  checkPostFound(res, post); //check if the post is found
+
+  const user = await Users.findById(req.user.id);
+  checkUserFound(res, user); //Check if user exists
+
+  if (user.purchasedContent.includes(post._id)) {
+    res.status(404);
+    throw new Error("Already purchased the content");
+  } else if (user._id.toString() === post.creator._id.toString()) {
+    res.status(404);
+    throw new Error("Cannot purchase your own contnet");
+  } else {
+    post.buyers.push(user._id);
+    user.purchasedContent.push(post._id);
+    await post.save();
+    await user.save();
+
+    res.status(200).json(post);
+  }
 });
 
 export const validatePostData = (req, res, next) => {

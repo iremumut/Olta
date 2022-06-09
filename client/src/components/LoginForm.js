@@ -6,6 +6,7 @@ import { login, reset } from "../features/auth/authSlice";
 
 import FormInputLabel from "./FormInputLabel";
 import PrimaryButton from "./PrimaryButton";
+import { connectWallet } from "../features/transactions/transactionSlice";
 
 const LoginForm = () => {
   const dispatch = useDispatch();
@@ -13,6 +14,10 @@ const LoginForm = () => {
 
   const { user, isLoading, isError, isSuccess, message } = useSelector(
     (state) => state.auth
+  );
+
+  const { account, isError: transError } = useSelector(
+    (state) => state.transaction
   );
 
   const [formData, setFormData] = useState({
@@ -49,7 +54,7 @@ const LoginForm = () => {
     }));
   };
 
-  const HandleSubmit = (e) => {
+  const HandleSubmit = async (e) => {
     e.preventDefault();
     if (!validateEmail(formData.email)) {
       toast.error("Please enter a valid email address");
@@ -58,7 +63,15 @@ const LoginForm = () => {
         ...formData,
       };
 
-      dispatch(login(user));
+      await dispatch(connectWallet());
+
+      if (transError) {
+        toast.error(transError);
+      }
+
+      if (account && !transError) {
+        dispatch(login(user));
+      }
 
       setFormData({
         email: "",

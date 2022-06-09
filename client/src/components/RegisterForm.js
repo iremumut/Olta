@@ -6,6 +6,7 @@ import { register, reset } from "../features/auth/authSlice";
 
 import FormInputLabel from "./FormInputLabel";
 import PrimaryButton from "./PrimaryButton";
+import { connectWallet } from "../features/transactions/transactionSlice";
 
 function RegisterForm() {
   const dispatch = useDispatch();
@@ -13,6 +14,10 @@ function RegisterForm() {
 
   const { user, isLoading, isError, isSuccess, message } = useSelector(
     (state) => state.auth
+  );
+
+  const { account, isError: transError } = useSelector(
+    (state) => state.transaction
   );
 
   const [formData, setFormData] = useState({
@@ -51,7 +56,7 @@ function RegisterForm() {
     }));
   };
 
-  const HandleSubmit = (e) => {
+  const HandleSubmit = async (e) => {
     e.preventDefault();
     let error = false;
 
@@ -72,7 +77,17 @@ function RegisterForm() {
         email: formData.email,
         password: formData.password,
       };
-      dispatch(register(user));
+      await dispatch(connectWallet());
+
+      if (transError) {
+        toast.error(transError);
+      }
+
+      if (account && !transError) {
+        user.metaMaskAccount = account;
+        dispatch(register(user));
+      }
+
       setFormData({
         name: "",
         username: "",

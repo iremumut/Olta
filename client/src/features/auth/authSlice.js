@@ -189,6 +189,25 @@ export const createComment = createAsyncThunk(
   }
 );
 
+//purchase content
+export const purchaseContent = createAsyncThunk(
+  "auth/purchaseContent",
+  async (postid, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await authService.purchaseContent(postid, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export const authSlice = createSlice({
   name: "auth",
   initialState: initialState,
@@ -339,8 +358,23 @@ export const authSlice = createSlice({
         localStorage.setItem("user", JSON.stringify(state.user));
       })
       .addCase(createComment.rejected, (state, { payload }) => {
-        console.log("here");
-        console.log(payload);
+        state.isLoading = false;
+        state.isError = true;
+        state.message = payload;
+        state.posts = null;
+      })
+      .addCase(purchaseContent.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(purchaseContent.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        console.log(action.payload);
+        state.user.purchasedContent = action.payload._id;
+        localStorage.removeItem("user");
+        localStorage.setItem("user", JSON.stringify(state.user));
+      })
+      .addCase(purchaseContent.rejected, (state, { payload }) => {
         state.isLoading = false;
         state.isError = true;
         state.message = payload;

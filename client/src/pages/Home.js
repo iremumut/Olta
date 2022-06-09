@@ -58,7 +58,7 @@ const Home = () => {
                 const creator = user.users.find((x) => x._id === post.creator);
                 return (
                   <li key={uuid()}>
-                    <Post post={post} creator={creator} />
+                    <Post post={post} creator={creator} singlePage={false} />
                   </li>
                 );
               })}

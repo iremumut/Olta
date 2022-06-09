@@ -23,12 +23,13 @@ import {
   connectWallet,
   sendTransaction,
 } from "./features/transactions/transactionSlice";
+import Transaction from "./pages/Transaction";
 
 function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(connectWallet());
+    //dispatch(connectWallet());
   }, []);
 
   return (
@@ -47,6 +48,7 @@ function App() {
               <Route path="new" element={<NewPost />} />
               <Route path=":postid" element={<SinglePost />} />
             </Route>
+            <Route path="/transaction/:postid" element={<Transaction />} />
             <Route path="/users">
               <Route path="me" element={<MyProfile />}>
                 <Route path="posts" element={<UserPosts />} />

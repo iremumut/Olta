@@ -1,15 +1,18 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import send from "../assets/vectors/send.svg";
 import { createComment, reset } from "../features/auth/authSlice";
 
-const CreateComment = ({ setComments, postid, setCommentCount }) => {
+const CreateComment = ({
+  setComments = () => {},
+  postid,
+  setCommentCount,
+  singlePage,
+}) => {
   const [text, setText] = useState("");
 
-  const { isError, isSuccess, message, comment } = useSelector(
-    (state) => state.auth
-  );
+  const { comment } = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
 
@@ -24,25 +27,23 @@ const CreateComment = ({ setComments, postid, setCommentCount }) => {
       comment: newComment,
       postid: postid,
     };
-    dispatch(createComment(params));
+    Promise.all([dispatch(createComment(params))])
+      .then((res) => {
+        if (res[0].error) {
+          toast.error(res[0].payload);
+        } else {
+          setText("");
+          toast.success("Comment posted!");
+          if (singlePage) {
+            setComments((prev) => [...prev, comment]);
+            setCommentCount((prev) => prev + 1);
+          }
+        }
+      })
+      .then(() => {
+        dispatch(reset());
+      });
   };
-
-  useEffect(() => {
-    if (isError) {
-      console.log(message);
-      toast.error(message);
-      dispatch(reset());
-    }
-
-    if (isSuccess) {
-      setText("");
-      toast.success("Comment posted!");
-      setComments((prev) => [...prev, comment]);
-      setCommentCount((prev) => prev + 1);
-      dispatch(reset());
-    }
-    // eslint-disable-next-line
-  }, [isError, isSuccess]);
 
   return (
     <form

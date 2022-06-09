@@ -124,7 +124,23 @@ const createComment = async (postid, comment, token) => {
     comment,
     config
   );
-  console.log(response);
+  //console.log(response);
+  return response.data;
+};
+
+//purchased content
+const purchaseContent = async (postid, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const response = await axios.post(
+    `http://localhost:5000/posts/${postid}/purchase`,
+    {},
+    config
+  );
   return response.data;
 };
 
@@ -139,6 +155,7 @@ const authService = {
   unfollow,
   likePost,
   createComment,
+  purchaseContent,
 };
 
 export default authService;
