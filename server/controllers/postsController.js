@@ -19,7 +19,7 @@ export const getPosts = asyncHandler(async (req, res) => {
   const user = await Users.findById(req.user.id);
   checkUserFound(res, user); //Check if user exists
 
-  const allPosts = await Posts.find();
+  const allPosts = await Posts.find().sort({ createdAt: -1 });
   if (!allPosts) {
     res.status(404);
     throw new Error("Resource could not be found");
@@ -319,7 +319,7 @@ export const getCreator = asyncHandler(async (req, res) => {
   res.json(creator);
 });
 
-//POST /posts/:id/purchase
+//POST /posts/:id/purchase , private,  purchase a post
 export const purchasePost = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateObjectID(res, id); //check if params id is valid
@@ -344,6 +344,26 @@ export const purchasePost = asyncHandler(async (req, res) => {
 
     res.status(200).json(post);
   }
+});
+
+//GET /posts/followed , private, get the posts of the ppl you follow
+export const getFollowedPosts = asyncHandler(async (req, res) => {
+  const user = await Users.findById(req.user.id);
+  checkUserFound(res, user); //Check if user exists
+
+  const posts = await Posts.find({
+    $or: [{ id: { $in: user.followed } }, { id: { $in: user._id } }],
+  }).sort({ createdAt: -1 });
+
+  /*const usersPosts = await Posts.find()
+    .where("creator")
+    .in(user._id)
+    .sort({ createdAt: -1 });
+
+  const newArray = [...posts, ...usersPosts];*/
+
+  //posts = posts.sort({ createdAt: -1 });
+  res.status(200).json(posts);
 });
 
 export const validatePostData = (req, res, next) => {

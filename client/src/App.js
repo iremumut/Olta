@@ -16,22 +16,10 @@ import UserPosts from "./components/UserPosts";
 import SinglePost from "./pages/SinglePost";
 import MyProfile from "./pages/MyProfile/MyProfile";
 import LikedPosts from "./components/LikedPosts";
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import {
-  checkIfWalletConnected,
-  connectWallet,
-  sendTransaction,
-} from "./features/transactions/transactionSlice";
 import Transaction from "./pages/Transaction";
+import MyComments from "./components/MyComments";
 
 function App() {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    //dispatch(connectWallet());
-  }, []);
-
   return (
     <div>
       <Routes>
@@ -52,6 +40,7 @@ function App() {
             <Route path="/users">
               <Route path="me" element={<MyProfile />}>
                 <Route path="posts" element={<UserPosts />} />
+                <Route path="comments" element={<MyComments />} />
                 <Route path="subscriptions" element={<Profile />} />
                 <Route path="wallet" element={<Profile />} />
                 <Route path="settings" element={<Profile />} />

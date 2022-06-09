@@ -8,9 +8,11 @@ import uuid from "react-uuid";
 
 const LikedPosts = () => {
   const [posts, setPosts] = useState([]);
-  const [users, setUsers] = useState([]);
+
   const [noPost, setNoPost] = useState(false);
 
+  const [doneFetching, setDoneFetching] = useState(false);
+  const [creators, setCreators] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
@@ -25,17 +27,29 @@ const LikedPosts = () => {
   };
 
   useEffect(() => {
+    //console.log("here");
     const fetchPosts = async () => {
       await axios
         .get(`http://localhost:5000/users/${user._id}/likedPosts`, config)
         .then((res) => res.data)
         .then((data) => {
           if (typeof data === "undefined" || data.length === 0) {
-            console.log("here");
             setNoPost(true);
           } else {
-            setPosts(data);
+            data.forEach(async (post) => {
+              await axios
+                .get(`http://localhost:5000/users/${post.creator}`, config)
+                .then((res) => {
+                  setCreators((prev) => [...prev, res.data]);
+                })
+                .catch((error) => {
+                  setError(true);
+                  toast.error(error.response.data.message);
+                });
+            });
+            //setUsers(usersAll);
             setNoPost(false);
+            setPosts(data);
           }
         })
         .catch((error) => {
@@ -45,46 +59,36 @@ const LikedPosts = () => {
         });
     };
 
-    fetchPosts();
+    Promise.all([fetchPosts()]).then(() => {
+      setDoneFetching(true);
+    });
 
-    const fetchUsers = async (userid) => {
-      await axios
-        .get(`http://localhost:5000/users/${userid}`, config)
-        .then((res) => res.data)
-        .then((data) => setUsers((prev) => [...prev, data]))
-        .catch((error) => {
-          setError(true);
-          toast.error(error.response.data.message);
-        });
-    };
+    // eslint-disable-next-line
+  }, []);
 
-    const findUsers = async () => {
-      await posts.forEach((post) => {
-        fetchUsers(post.creator);
-      });
-    };
-
-    findUsers();
-
+  useEffect(() => {
+    //console.log("here");
     if (
-      (!noPost && posts.length !== 0 && users.length !== 0) ||
-      (noPost && posts.length === 0)
+      posts.length !== 0 &&
+      creators.length !== 0 &&
+      posts.length === creators.length
     ) {
       setLoading(false);
     }
-    // eslint-disable-next-line
-  }, [posts, noPost]);
+  }, [posts, creators]);
 
+  //console.log(loading);
   if (loading) {
     return <p>Loading...</p>;
   }
-
   return (
     <div className="w-full">
       {noPost ? <p>No posts found</p> : ""}
-      {!error && posts.length !== 0 && users.length !== 0 && !noPost
+      {!loading && !noPost && doneFetching
         ? posts.map((post) => {
-            const creator = users.filter((user) => user._id === post.creator);
+            const creator = creators.filter((user) => {
+              return user._id === post.creator;
+            });
             return <Post key={uuid()} post={post} creator={creator} />;
           })
         : ""}

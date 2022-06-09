@@ -13,6 +13,7 @@ import {
   getBuyers,
   getCreator,
   purchasePost,
+  getFollowedPosts,
 } from "../controllers/postsController.js";
 import { protect } from "../middleware/authMiddleware.js";
 
@@ -24,6 +25,8 @@ const router = express.Router();
 router.get("/", protect, getPosts);
 
 router.post("/", protect, upload.single("file"), validatePostData, createPost);
+
+router.get("/followed", protect, getFollowedPosts);
 
 router.get("/:id", protect, getPost);
 

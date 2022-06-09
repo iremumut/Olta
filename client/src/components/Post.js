@@ -26,8 +26,6 @@ const Post = ({ post, creator, singlePage, comments, setComments }) => {
     creator = creator[0];
   }
 
-  //console.log(creator);
-  //console.log(user);
   const dispatch = useDispatch();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -58,7 +56,7 @@ const Post = ({ post, creator, singlePage, comments, setComments }) => {
       <div className=" bg-white  md:p-4 md:px-10 p-4 my-6 flex flex-col rounded-lg">
         <div className="flex flex-row py-4">
           <Link
-            to={isLoggedIn ? "/users/me/posts" : `users/${creator._id}/posts`}
+            to={isLoggedIn ? "/users/me/posts" : `/users/${creator._id}/posts`}
           >
             <img
               className="h-16 w-16 rounded-full mr-3 "
@@ -68,7 +66,9 @@ const Post = ({ post, creator, singlePage, comments, setComments }) => {
           </Link>
           <div>
             <Link
-              to={isLoggedIn ? "/users/me/posts" : `users/${creator._id}/posts`}
+              to={
+                isLoggedIn ? "/users/me/posts" : `/users/${creator._id}/posts`
+              }
             >
               <p className="text-[#4E5D78] text-base font-medium">
                 {creator && creator.name ? creator.name : "User"}

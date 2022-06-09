@@ -25,9 +25,9 @@ const FollowSubscribe = ({
   const [subscriber, setSubscribe] = useState(false);
 
   useEffect(() => {
-    console.log(user);
+    //console.log(user);
     if (user.followed.includes(userToFollow._id)) {
-      console.log("here");
+      //console.log("here");
       setFollow(true);
     }
 
