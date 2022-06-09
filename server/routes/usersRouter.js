@@ -25,6 +25,7 @@ import {
   getUserSubscribedTo,
   getAnotherUserSubscribers,
   getAnotherUserSubscribed,
+  getPurchasedContent,
 } from "../controllers/usersController.js";
 import { protect } from "../middleware/authMiddleware.js";
 
@@ -35,6 +36,7 @@ Router.post("/login", loginUser);
 Router.get("/me", protect, getUser);
 Router.put("/", protect, updateUser);
 Router.delete("/", protect, deleteUser);
+Router.get("/purchased", protect, getPurchasedContent);
 Router.get("/", protect, getAllUsers);
 
 Router.post("/follows/:userid", protect, followUser);

@@ -32,7 +32,7 @@ const Comment = ({ comment, user }) => {
         <div className="text-[#A2AAB8] font-normal py-2">{comment.text}</div>
         <Link to={`/posts/${comment.postID}`}>
           {" "}
-          <img src={arrow} />
+          <img src={arrow} alt="" />
         </Link>
       </div>
     </div>

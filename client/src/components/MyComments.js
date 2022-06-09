@@ -34,6 +34,7 @@ const MyComments = () => {
     };
 
     fetchComments();
+    // eslint-disable-next-line
   }, []);
 
   if (loading) {

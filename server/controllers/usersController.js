@@ -199,7 +199,10 @@ export const getAnotherUserPosts = asyncHandler(async (req, res) => {
   const user = await Users.findById(userid);
   checkUserFound(res, user); //check if the user is found
 
-  const posts = await Posts.find().where("_id").in(user.posts);
+  const posts = await Posts.find()
+    .where("_id")
+    .in(user.posts)
+    .sort({ createdAt: -1 });
 
   res.status(200).json(posts);
 });
@@ -221,7 +224,10 @@ export const getAnotherUserLikedPosts = asyncHandler(async (req, res) => {
   const user = await Users.findById(userid);
   checkUserFound(res, user); //check if user exists
 
-  const posts = await Posts.find().where("_id").in(user.likedPosts);
+  const posts = await Posts.find()
+    .where("_id")
+    .in(user.likedPosts)
+    .sort({ createdAt: -1 });
   res.status(200).json(posts);
 });
 
@@ -230,7 +236,10 @@ export const getUserComments = asyncHandler(async (req, res) => {
   const user = await Users.findById(req.user.id);
   checkUserFound(res, user);
 
-  const comments = await Comments.find().where("_id").in(user.comments);
+  const comments = await Comments.find()
+    .where("_id")
+    .in(user.comments)
+    .sort({ createdAt: -1 });
   res.status(200).json(comments);
 });
 
@@ -448,6 +457,17 @@ export const getAnotherUserSubscribed = asyncHandler(async (req, res) => {
   res.status(200).json(subscribedTos);
 });
 
+//GET /users/purchased, private, get the content user purchased
+export const getPurchasedContent = asyncHandler(async (req, res) => {
+  const user = await Users.findById(req.user.id);
+  checkUserFound(res, user); //check if the user is found
+
+  const posts = await Posts.where("_id")
+    .in(user.purchasedContent)
+    .sort({ createdAt: -1 });
+
+  res.status(200).json(posts);
+});
 const generateToken = (id) => {
   return jwt.sign({ id: id }, process.env.JWT_SECRET, {
     expiresIn: "30d",

@@ -1,12 +1,11 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useOutletContext } from "react-router-dom";
 import { toast } from "react-toastify";
-import Post from "./Post";
 import uuid from "react-uuid";
+import Post from "./Post";
 
-const LikedPosts = () => {
+const PurchasedContent = () => {
   const [posts, setPosts] = useState([]);
 
   const [noPost, setNoPost] = useState(false);
@@ -19,8 +18,6 @@ const LikedPosts = () => {
 
   const { user: loggedUser } = useSelector((state) => state.auth);
 
-  const { user } = useOutletContext();
-
   const config = {
     headers: {
       Authorization: `Bearer ${loggedUser.token}`,
@@ -31,7 +28,7 @@ const LikedPosts = () => {
     //console.log("here");
     const fetchPosts = async () => {
       await axios
-        .get(`http://localhost:5000/users/${user._id}/likedPosts`, config)
+        .get("http://localhost:5000/users/purchased", config)
         .then((res) => res.data)
         .then((data) => {
           if (typeof data === "undefined" || data.length === 0) {
@@ -45,7 +42,7 @@ const LikedPosts = () => {
                 })
                 .catch((error) => {
                   setError(true);
-                  toast.error(error.response.data.message);
+                  toast.error(error.message);
                 });
             });
             //setUsers(usersAll);
@@ -56,7 +53,7 @@ const LikedPosts = () => {
         .catch((error) => {
           setError(true);
           console.log(error);
-          //toast.error(error.response.data.message);
+          toast.error(error.message);
         });
     };
 
@@ -82,6 +79,7 @@ const LikedPosts = () => {
   if (loading) {
     return <p>Loading...</p>;
   }
+
   return (
     <div className="w-full">
       {noPost ? <p>No posts found</p> : ""}
@@ -97,4 +95,4 @@ const LikedPosts = () => {
   );
 };
 
-export default LikedPosts;
+export default PurchasedContent;

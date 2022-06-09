@@ -18,6 +18,7 @@ import MyProfile from "./pages/MyProfile/MyProfile";
 import LikedPosts from "./components/LikedPosts";
 import Transaction from "./pages/Transaction";
 import MyComments from "./components/MyComments";
+import PurchasedContent from "./components/PurchasedContent";
 
 function App() {
   return (
@@ -45,6 +46,7 @@ function App() {
                 <Route path="wallet" element={<Profile />} />
                 <Route path="settings" element={<Profile />} />
                 <Route path="likedPosts" element={<LikedPosts />} />
+                <Route path="purchased" element={<PurchasedContent />} />
               </Route>
               <Route path=":userid" element={<Profile />}>
                 <Route path="posts" element={<UserPosts />} />
