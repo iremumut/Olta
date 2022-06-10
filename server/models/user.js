@@ -20,7 +20,7 @@ const UserSchema = new Schema(
     metaMaskAccount: String,
     birthday: Date,
     profilePicture: String,
-    subscriptionAmount: { type: Number, default: 0 },
+    subscriptionAmount: { type: mongoose.Decimal128, default: 0 },
     openSubscription: { type: Boolean, default: false },
     posts: [
       {

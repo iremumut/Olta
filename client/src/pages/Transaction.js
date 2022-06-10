@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
+import SimplePost from "../components/SimplePost";
 import {
   purchaseContent,
   reset as userReset,
@@ -12,7 +13,7 @@ import {
   sendTransaction,
 } from "../features/transactions/transactionSlice";
 
-const Transaction = (props) => {
+const Transaction = () => {
   const location = useLocation();
   const dispatch = useDispatch();
 
@@ -78,9 +79,15 @@ const Transaction = (props) => {
     return <p>Transaction is happening....</p>;
   }
   return (
-    <div>
-      <p>Transaction page</p>
-      <button onClick={handleBuy}>Buy</button>
+    <div className="flex flex-row justify-center">
+      <div className="bg-[#EAEEF3] p-4 px-12 rounded-xl flex flex-col justify-start">
+        <p className="bg-white text-[#4E8BFF] font-semibold text-2xl px-4 py-2 rounded-xl self-start">
+          Buy Content
+        </p>
+        <SimplePost post={post} creator={creator} />
+        <div className="bg-white my-4 "></div>
+        <button onClick={handleBuy}>Buy</button>
+      </div>
     </div>
   );
 };

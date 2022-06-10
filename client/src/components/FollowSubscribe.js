@@ -8,6 +8,12 @@ import {
   follow as followFun,
   unfollow,
 } from "../features/auth/authSlice";
+import ethereumIcon from "../assets/vectors/ethereum.svg";
+import {
+  connectWallet,
+  sendTransaction,
+  reset as transReset,
+} from "../features/transactions/transactionSlice";
 
 const FollowSubscribe = ({
   userToFollow,
@@ -19,6 +25,7 @@ const FollowSubscribe = ({
     (state) => state.auth
   );
 
+  const { account, isLoading } = useSelector((state) => state.transaction);
   const dispatch = useDispatch();
 
   const [follow, setFollow] = useState(false);
@@ -48,6 +55,7 @@ const FollowSubscribe = ({
     dispatch(subscribe(userToFollow._id));
     setSubCount((prev) => prev + 1);
     setSubscribe(true);
+    toast.success("Subscribed to the user");
   };
 
   const handleUnsubscribe = () => {
@@ -60,6 +68,7 @@ const FollowSubscribe = ({
     dispatch(followFun(userToFollow._id));
     setFollowerCount((prev) => prev + 1);
     setFollow(true);
+    toast.success("Followed user");
   };
 
   const handleUnfollow = () => {
@@ -68,22 +77,80 @@ const FollowSubscribe = ({
     setFollow(false);
   };
 
+  useEffect(() => {
+    if (!account || account.length === 0) {
+      Promise.all([dispatch(connectWallet())]).then(() => {
+        dispatch(reset());
+      });
+    }
+    // eslint-disable-next-line
+  }, []);
+
+  const handleSubscribeWithPayment = async () => {
+    const transaction = {
+      account: account,
+      addressTo: userToFollow.metaMaskAccount,
+      amount: userToFollow.subscriptionAmount.$numberDecimal.toString(),
+      postid: "-",
+      payerUserId: user._id,
+    };
+    Promise.all([dispatch(sendTransaction(transaction))]).then((res) => {
+      if (res[0].error) {
+        toast.error(res[0].payload);
+        dispatch(transReset());
+      } else {
+        dispatch(subscribe(userToFollow._id));
+        setSubCount((prev) => prev + 1);
+        setSubscribe(true);
+        dispatch(transReset());
+        toast.success("Subscribed to the user");
+      }
+    });
+  };
+
   return (
-    <div className="flex flex-row justify-center">
-      <>
-        <button
-          onClick={subscriber ? handleUnsubscribe : handleSubscribe}
-          className="px-4 py-2  m-2 text-white rounded-xl bg-[#4E8BFF] hover:bg-[#4E8BFF]/70"
-        >
-          {subscriber ? "Unsubscribe" : "Subscribe"}
-        </button>
-        <button
-          onClick={follow ? handleUnfollow : handleFollow}
-          className="px-4 py-2 w-28 border border-[#4E8BFF] rounded-xl text-[#4E8BFF] m-2 hover:bg-[#4E8BFF] hover:text-white"
-        >
-          {follow ? "Unfollow" : "Follow"}
-        </button>{" "}
-      </>
+    <div className="flex flex-col justify-center">
+      <div className="flex flex-row justify-center">
+        <>
+          <button
+            onClick={
+              subscriber
+                ? handleUnsubscribe
+                : userToFollow.openSubscription &&
+                  userToFollow.subscriptionAmount &&
+                  userToFollow.subscriptionAmount.$numberDecimal !== 0
+                ? handleSubscribeWithPayment
+                : handleSubscribe
+            }
+            className="px-4 py-2  m-2 text-[#4E8BFF] rounded-xl border border-[#4E8BFF]  hover:bg-[#4E8BFF] hover:text-white"
+          >
+            {subscriber ? (
+              "Unsubscribe"
+            ) : userToFollow.openSubscription &&
+              userToFollow.subscriptionAmount &&
+              userToFollow.subscriptionAmount.$numberDecimal !== 0 ? (
+              isLoading ? (
+                "Subscribing..."
+              ) : (
+                <>
+                  <p>Subcribe for</p>{" "}
+                  {userToFollow.subscriptionAmount.$numberDecimal}{" "}
+                  <img src={ethereumIcon} className="inline" alt="" />
+                </>
+              )
+            ) : (
+              "Subscribe"
+            )}
+          </button>
+          <button
+            onClick={follow ? handleUnfollow : handleFollow}
+            className="px-4 py-2 w-28 border border-[#4E8BFF] rounded-xl text-[#4E8BFF] m-2 hover:bg-[#4E8BFF] hover:text-white"
+          >
+            {follow ? "Unfollow" : "Follow"}
+          </button>{" "}
+        </>
+      </div>
+      {isLoading ? <p>Please wait for the payment to be done.</p> : ""}
     </div>
   );
 };

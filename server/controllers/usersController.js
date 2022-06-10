@@ -177,6 +177,7 @@ export const getAnotherUser = asyncHandler(async (req, res) => {
     followers: user.followers,
     subscribedTo: user.subscribedTo,
     subscribers: user.subscribers,
+    metaMaskAccount: user.metaMaskAccount,
   });
 });
 

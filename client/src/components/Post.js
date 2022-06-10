@@ -145,7 +145,13 @@ const Post = ({ post, creator, singlePage, comments, setComments }) => {
             </p>
           </button>
           <Link
-            to={`/transaction/${post._id}`}
+            to={
+              post.creator === user._id
+                ? "/users/me/posts"
+                : post.isFree
+                ? `/users/${creator._id}`
+                : `/transaction/${post._id}`
+            }
             state={{ post: post, creator: creator }}
             className="flex flex-row items-center"
           >

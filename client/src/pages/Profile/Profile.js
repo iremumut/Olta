@@ -28,7 +28,6 @@ const Profile = () => {
 
     const fetchUser = async () => {
       try {
-        console.log("here");
         const response = await axios
           .get(`http://localhost:5000/users/${userid}`, config)
           .then((res) => res.data);
