@@ -19,6 +19,7 @@ import LikedPosts from "./components/LikedPosts";
 import Transaction from "./pages/Transaction";
 import MyComments from "./components/MyComments";
 import PurchasedContent from "./components/PurchasedContent";
+import Wallet from "./pages/Wallet";
 
 function App() {
   return (
@@ -38,12 +39,12 @@ function App() {
               <Route path=":postid" element={<SinglePost />} />
             </Route>
             <Route path="/transaction/:postid" element={<Transaction />} />
+            <Route path="/users/me/wallet" element={<Wallet />} />
             <Route path="/users">
               <Route path="me" element={<MyProfile />}>
                 <Route path="posts" element={<UserPosts />} />
                 <Route path="comments" element={<MyComments />} />
                 <Route path="subscriptions" element={<Profile />} />
-                <Route path="wallet" element={<Profile />} />
                 <Route path="settings" element={<Profile />} />
                 <Route path="likedPosts" element={<LikedPosts />} />
                 <Route path="purchased" element={<PurchasedContent />} />
