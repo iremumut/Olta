@@ -84,6 +84,15 @@ const postSlice = createSlice({
         }
       });
     },
+    unlikePost: (state, action) => {
+      state.posts.forEach((post) => {
+        if (post._id === action.payload.postid) {
+          post.likeCount--;
+          const index = post.likes.indexOf(action.payload.userid);
+          post.likes.splice(index, 1);
+        }
+      });
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -131,5 +140,5 @@ const postSlice = createSlice({
   },
 });
 
-export const { reset, likePost } = postSlice.actions;
+export const { reset, likePost, unlikePost } = postSlice.actions;
 export default postSlice.reducer;

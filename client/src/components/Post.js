@@ -9,18 +9,26 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { likePost } from "../features/posts/postSlice";
-import { likePost as likePostAuth, reset } from "../features/auth/authSlice";
+import { likePost, unlikePost } from "../features/posts/postSlice";
+import {
+  likePost as likePostAuth,
+  unlikePost as unlikePostAuth,
+  reset,
+} from "../features/auth/authSlice";
 import uuid from "react-uuid";
 import PostComment from "./PostComment";
 import CreateComment from "./CreateComment.";
+import ethereum from "../assets/vectors/ethereum.svg";
+import heart from "../assets/vectors/heart.svg";
 
 const Post = ({ post, creator, singlePage, comments, setComments }) => {
   const timeFormat = moment(post.createdAt).startOf("hour").fromNow(); //.startOf("day").fromNow();
   const { user } = useSelector((state) => state.auth);
 
-  const [likeCount, setLikeCount] = useState(post.likeCount);
+  //const [likeCount, setLikeCount] = useState(post.likeCount);
+  const [likesCount, setLikesCount] = useState(post.likeCount);
   const [commentCount, setCommentCount] = useState(post.commentCount);
+  const [liked, setLiked] = useState(user.likedPosts.includes(post._id));
 
   if (creator && creator.constructor === Array) {
     creator = creator[0];
@@ -43,7 +51,25 @@ const Post = ({ post, creator, singlePage, comments, setComments }) => {
         } else {
           toast.success("Liked the post");
           dispatch(likePost({ postid: post._id, userid: user._id }));
-          setLikeCount((prev) => prev + 1);
+          setLikesCount((prev) => prev + 1);
+          setLiked(true);
+        }
+      })
+      .then(() => {
+        dispatch(reset());
+      });
+  };
+
+  const handleUnlikePost = async () => {
+    Promise.all([dispatch(unlikePostAuth(post._id))])
+      .then((res) => {
+        if (res[0].error) {
+          toast.error(res[0].payload);
+        } else {
+          toast.success("Unliked the post");
+          dispatch(unlikePost({ postid: post._id, userid: user._id }));
+          setLikesCount((prev) => prev - 1);
+          setLiked(false);
         }
       })
       .then(() => {
@@ -54,7 +80,7 @@ const Post = ({ post, creator, singlePage, comments, setComments }) => {
   return (
     <>
       <div className=" bg-white  md:p-4 md:px-10 p-4 my-6 flex flex-col rounded-lg">
-        <div className="flex flex-row py-4">
+        <div className="flex flex-row py-4 justify-start">
           <Link
             to={isLoggedIn ? "/users/me/posts" : `/users/${creator._id}/posts`}
           >
@@ -80,6 +106,17 @@ const Post = ({ post, creator, singlePage, comments, setComments }) => {
               <br />
               {post.isFree ? "Public" : "Subscribers only"}
             </p>
+          </div>
+          <div className="ml-auto text-[#4E8BFF] text-lg font-normal">
+            {post.price && post.price !== 0 ? (
+              <>
+                <p className="inline">{post.price}</p>
+                <img className="inline h-8 w-8" src={ethereum} alt="" />
+              </>
+            ) : (
+              ""
+            )}
+            {post.updated ? "Edited" : ""}
           </div>
         </div>
 
@@ -122,7 +159,7 @@ const Post = ({ post, creator, singlePage, comments, setComments }) => {
           </div>
 
           <div className="text-[#A2AAB8] text-sm font-normal ">
-            {commentCount} comments {likeCount} likes {post.buyers.length}{" "}
+            {commentCount} comments {likesCount} likes {post.buyers.length}{" "}
             supporters
           </div>
         </div>
@@ -131,10 +168,10 @@ const Post = ({ post, creator, singlePage, comments, setComments }) => {
 
         <div className="flex flex-row w-full justify-between py-4">
           <button
-            onClick={handleLikePost}
+            onClick={liked ? handleUnlikePost : handleLikePost}
             className="flex flex-row items-center"
           >
-            <img src={like} alt="" className="" />
+            <img src={liked ? heart : like} alt="" className="" />
             <p className="pl-2 font-medium text-lg  text-[#5C6A83]"> Like</p>
           </button>
           <button className="flex flex-row items-center">

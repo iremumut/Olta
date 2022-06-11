@@ -6,7 +6,10 @@ import { login, reset } from "../features/auth/authSlice";
 
 import FormInputLabel from "./FormInputLabel";
 import PrimaryButton from "./PrimaryButton";
-import { connectWallet } from "../features/transactions/transactionSlice";
+import {
+  connectWallet,
+  reset as tranReset,
+} from "../features/transactions/transactionSlice";
 
 const LoginForm = () => {
   const dispatch = useDispatch();
@@ -39,6 +42,15 @@ const LoginForm = () => {
     dispatch(reset());
   }, [user, isLoading, isError, isSuccess, message, navigate, dispatch]);
 
+  useEffect(() => {
+    if (!account || account.length === 0) {
+      Promise.all([dispatch(connectWallet())]).then(() => {
+        dispatch(tranReset());
+      });
+    }
+    // eslint-disable-next-line
+  }, []);
+
   const validateEmail = (email) => {
     return String(email)
       .toLowerCase()
@@ -62,21 +74,13 @@ const LoginForm = () => {
       const user = {
         ...formData,
       };
-
-      await dispatch(connectWallet());
-
-      if (transError) {
-        toast.error(transError);
-      }
-
       if (account && !transError) {
         dispatch(login(user));
+        setFormData({
+          email: "",
+          password: "",
+        });
       }
-
-      setFormData({
-        email: "",
-        password: "",
-      });
     }
   };
 

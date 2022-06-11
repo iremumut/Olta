@@ -166,6 +166,25 @@ export const likePost = createAsyncThunk(
   }
 );
 
+//unlike a post
+export const unlikePost = createAsyncThunk(
+  "auth/unlikePost",
+  async (postid, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await authService.unlikePost(postid, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 //create a comment
 export const createComment = createAsyncThunk(
   "auth/createComment",
@@ -375,6 +394,23 @@ export const authSlice = createSlice({
         localStorage.setItem("user", JSON.stringify(state.user));
       })
       .addCase(purchaseContent.rejected, (state, { payload }) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = payload;
+        state.posts = null;
+      })
+      .addCase(unlikePost.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(unlikePost.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        const index = state.user.likedPosts.indexOf(action.payload._id);
+        state.user.likedPosts.splice(index, 1);
+        localStorage.removeItem("user");
+        localStorage.setItem("user", JSON.stringify(state.user));
+      })
+      .addCase(unlikePost.rejected, (state, { payload }) => {
         state.isLoading = false;
         state.isError = true;
         state.message = payload;

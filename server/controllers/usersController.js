@@ -225,10 +225,7 @@ export const getAnotherUserLikedPosts = asyncHandler(async (req, res) => {
   const user = await Users.findById(userid);
   checkUserFound(res, user); //check if user exists
 
-  const posts = await Posts.find()
-    .where("_id")
-    .in(user.likedPosts)
-    .sort({ createdAt: -1 });
+  const posts = (await Posts.find().where("_id").in(user.likedPosts)).reverse();
   res.status(200).json(posts);
 });
 

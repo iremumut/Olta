@@ -111,6 +111,21 @@ const likePost = async (postid, token) => {
   return response.data;
 };
 
+//unlike a post
+const unlikePost = async (postid, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const response = await axios.delete(
+    `http://localhost:5000/posts/${postid}/likes`,
+    config
+  );
+  return response.data;
+};
+
 //create a comment
 const createComment = async (postid, comment, token) => {
   const config = {
@@ -156,6 +171,7 @@ const authService = {
   likePost,
   createComment,
   purchaseContent,
+  unlikePost,
 };
 
 export default authService;
