@@ -107,10 +107,10 @@ const Post = ({ post, creator, singlePage, comments, setComments }) => {
               {post.isFree ? "Public" : "Subscribers only"}
             </p>
           </div>
-          <div className="ml-auto text-[#4E8BFF] text-lg font-normal">
+          <div className="ml-auto text-[#4E8BFF] flex items-center">
             {post.price && post.price !== 0 ? (
               <>
-                <p className="inline">{post.price}</p>
+                <p className="inline font-medium text-2xl">{post.price}</p>
                 <img className="inline h-8 w-8" src={ethereum} alt="" />
               </>
             ) : (

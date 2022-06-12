@@ -14,6 +14,7 @@ import {
   getCreator,
   purchasePost,
   getFollowedPosts,
+  getSubscribedPosts,
 } from "../controllers/postsController.js";
 import { protect } from "../middleware/authMiddleware.js";
 
@@ -27,6 +28,8 @@ router.get("/", protect, getPosts);
 router.post("/", protect, upload.single("file"), validatePostData, createPost);
 
 router.get("/followed", protect, getFollowedPosts);
+
+router.get("/subscribed", protect, getSubscribedPosts);
 
 router.get("/:id", protect, getPost);
 

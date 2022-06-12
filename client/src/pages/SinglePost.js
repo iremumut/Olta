@@ -71,7 +71,7 @@ const SinglePost = () => {
 
   return (
     <div className="flex flex-row justify-center ">
-      <div className="w-1/2">
+      <div className="2xl:w-1/2 lg:w-2/3 w-full lg:mx-0 mx-4">
         {post.length !== 0 && creator.length !== 0 ? (
           <Post
             post={post}

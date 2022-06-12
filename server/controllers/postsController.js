@@ -367,6 +367,19 @@ export const getFollowedPosts = asyncHandler(async (req, res) => {
   res.status(200).json(newArr);
 });
 
+//GET /posts/subscribed , private, get the posts of the ppl you follow
+export const getSubscribedPosts = asyncHandler(async (req, res) => {
+  const user = await Users.findById(req.user.id);
+  checkUserFound(res, user); //Check if user exists
+
+  const posts = await Posts.find()
+    .where("creator")
+    .in(user.subscribedTo)
+    .sort({ createdAt: -1 });
+
+  res.status(200).json(posts);
+});
+
 export const validatePostData = (req, res, next) => {
   const { title, price, contentType } = req.body;
   //console.log(!contentTypes.includes(contentType));

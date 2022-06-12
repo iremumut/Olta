@@ -10,7 +10,6 @@ function Home() {
 
   const [noPost, setNoPost] = useState(false);
 
-  const [doneFetching, setDoneFetching] = useState(false);
   const [creators, setCreators] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -24,27 +23,23 @@ function Home() {
   };
 
   useEffect(() => {
-    //console.log("here");
     const fetchPosts = async () => {
       await axios
         .get("http://localhost:5000/posts/followed", config)
         .then((res) => res.data)
-        .then((data) => {
+        .then(async (data) => {
           if (typeof data === "undefined" || data.length === 0) {
             setNoPost(true);
           } else {
-            data.forEach(async (post) => {
-              await axios
-                .get(`http://localhost:5000/users/${post.creator}`, config)
-                .then((res) => {
-                  setCreators((prev) => [...prev, res.data]);
-                })
-                .catch((error) => {
-                  setError(true);
-                  toast.error(error.response.data.message);
-                });
-            });
-            //setUsers(usersAll);
+            await axios
+              .get(`http://localhost:5000/users/`, config)
+              .then((res) => {
+                setCreators(res.data);
+              })
+              .catch((error) => {
+                setError(true);
+                toast.error(error.response.data.message);
+              });
             setNoPost(false);
             setPosts(data);
           }
@@ -52,30 +47,20 @@ function Home() {
         .catch((error) => {
           setError(true);
           console.log(error);
-          //toast.error(error.response.data.message);
         });
     };
 
-    Promise.all([fetchPosts()]).then(() => {
-      setDoneFetching(true);
-    });
+    Promise.all([fetchPosts()]);
 
     // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
-    //console.log("here");
-    if (
-      (posts.length !== 0 &&
-        creators.length !== 0 &&
-        posts.length === creators.length) ||
-      noPost
-    ) {
+    if ((posts.length !== 0 && creators.length !== 0) || noPost) {
       setLoading(false);
     }
   }, [posts, creators, noPost]);
 
-  //console.log(loading);
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -87,7 +72,6 @@ function Home() {
           {noPost ? <p>No posts, follow other people to see posts</p> : ""}
           {!loading &&
             !noPost &&
-            doneFetching &&
             !error &&
             posts.map((post) => {
               const creator = creators.find((x) => x._id === post.creator);
