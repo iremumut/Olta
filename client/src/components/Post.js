@@ -166,17 +166,20 @@ const Post = ({ post, creator, singlePage, comments, setComments }) => {
 
         <hr />
 
-        <div className="flex flex-row w-full justify-between py-4">
+        <div className="flex flex-row w-full justify-between py-4 flex-wrap">
           <button
             onClick={liked ? handleUnlikePost : handleLikePost}
             className="flex flex-row items-center"
           >
             <img src={liked ? heart : like} alt="" className="" />
-            <p className="pl-2 font-medium text-lg  text-[#5C6A83]"> Like</p>
+            <p className="pl-2 font-medium sm:text-lg text-sm p-1 text-[#5C6A83]">
+              {" "}
+              Like
+            </p>
           </button>
           <button className="flex flex-row items-center">
             <img src={comment} alt="" className="" />
-            <p className="pl-2 font-medium text-lg  text-[#5C6A83]">
+            <p className="pl-2 font-medium sm:text-lg text-sm p-1 text-[#5C6A83]">
               {" "}
               Comments
             </p>
@@ -190,14 +193,20 @@ const Post = ({ post, creator, singlePage, comments, setComments }) => {
                 : `/transaction/${post._id}`
             }
             state={{ post: post, creator: creator }}
-            className="flex flex-row items-center"
+            className="flex flex-row items-center "
           >
             <img src={support} alt="" className="" />
-            <p className="pl-2 font-medium text-lg  text-[#5C6A83]"> Support</p>
+            <p className="pl-2 font-medium sm:text-lg text-sm p-1 text-[#5C6A83]">
+              {" "}
+              Support
+            </p>
           </Link>
           <button className="flex flex-row items-center">
             <img src={share} alt="" className="" />
-            <p className="pl-2 font-medium text-lg  text-[#5C6A83]"> Share</p>
+            <p className="pl-2 font-medium sm:text-lg text-sm p-1 text-[#5C6A83]">
+              {" "}
+              Share
+            </p>
           </button>
         </div>
 

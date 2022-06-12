@@ -20,6 +20,7 @@ import Transaction from "./pages/Transaction";
 import MyComments from "./components/MyComments";
 import PurchasedContent from "./components/PurchasedContent";
 import Wallet from "./pages/Wallet";
+import Subscriptions from "./pages/Subscriptions";
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
           <Route element={<ProtectRoute />}>
             <Route path="/" element={<Home />} />
             <Route path="/explore" element={<Explore />} />
+            <Route path="/subscriptions" element={<Subscriptions />} />
             <Route path="/posts">
               <Route path="new" element={<NewPost />} />
               <Route path=":postid" element={<SinglePost />} />

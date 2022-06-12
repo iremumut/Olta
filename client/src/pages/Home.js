@@ -83,23 +83,24 @@ function Home() {
   return (
     <div>
       <div className="flex flex-row justify-center">
-        <ul className="xl:basis-2/3">
-          <div className="xl:w-4/5  w-full">
-            {noPost ? <p>No posts, follow other people to see posts</p> : ""}
-            {!loading &&
-              !noPost &&
-              doneFetching &&
-              !error &&
-              posts.map((post) => {
-                const creator = creators.find((x) => x._id === post.creator);
-                return (
-                  <li key={uuid()}>
-                    <Post post={post} creator={creator} singlePage={false} />
-                  </li>
-                );
-              })}
-          </div>
-        </ul>
+        <div className="3xl:basis-1/3 xl:basis-2/4 lg:basis-2/3 basis-full  w-full">
+          {noPost ? <p>No posts, follow other people to see posts</p> : ""}
+          {!loading &&
+            !noPost &&
+            doneFetching &&
+            !error &&
+            posts.map((post) => {
+              const creator = creators.find((x) => x._id === post.creator);
+              return (
+                <Post
+                  post={post}
+                  creator={creator}
+                  singlePage={false}
+                  key={uuid()}
+                />
+              );
+            })}
+        </div>
       </div>
     </div>
   );

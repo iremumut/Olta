@@ -65,16 +65,16 @@ const Profile = () => {
   return (
     <div className="flex flex-row p-4 page-bg justify-center">
       {/*profile part */}
-      <div className="flex flex-col rounded-xl basis-1/2 bg-white ml-6">
+      <div className="flex flex-col rounded-xl 2xl:basis-1/2 xl:basis-2/3 basis-full bg-white xl:ml-6 ml-0">
         {/*header part */}
-        <div className="flex flex-row items-center justify-between header-bg object-fill px-10 py-8 rounded-t-lg">
+        <div className="flex flex-row items-center justify-between header-bg object-fill xl:px-10 px-4 py-8 rounded-t-lg">
           <div className="flex flex-row items-center">
             <img
-              className="h-20 w-20 rounded-full mr-3 ring ring-[#4E5D78]"
+              className="md:h-20 md:w-20 h-14 w-14 rounded-full mr-3 ring ring-[#4E5D78]"
               src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8FuEJbKwDdaz1h387130xmYkAIQbZpahhbQ&usqp=CAU"
               alt=""
             />
-            <div>
+            <div className="sm:inline hidden">
               <p className="text-[#4E5D78] font-semibold	text-xl w-12 ">
                 {user.name}
               </p>
@@ -82,13 +82,13 @@ const Profile = () => {
             </div>
           </div>
           <div className="flex flex-row ">
-            <div className="text-center font-semibold text-lg px-2">
+            <div className="text-center font-semibold md:text-lg text-sm px-2">
               {followerCount} <p className="font-normal">Followers</p>
             </div>
-            <div className="text-center font-semibold text-lg px-2">
+            <div className="text-center font-semibold md:text-lg text-sm px-2">
               {subCount} <p className="font-normal">Subs</p>
             </div>
-            <div className="text-center font-semibold text-lg px-2">
+            <div className="text-center font-semibold md:text-lg text-sm px-2">
               {followedCount} <p className="font-normal">Following</p>
             </div>
           </div>

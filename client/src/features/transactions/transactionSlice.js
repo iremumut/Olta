@@ -55,7 +55,7 @@ export const checkIfWalletConnected = createAsyncThunk(
   "transaction/checkWallet",
   async (_, thunkAPI) => {
     try {
-      console.log(ethereum);
+      //console.log(ethereum);
       if (!ethereum) return alert("Please intall metamask");
 
       const accounts = await ethereum.request({ method: "eth_accounts" });
@@ -99,13 +99,16 @@ export const sendTransaction = createAsyncThunk(
       const transactionHash = await transactionContract.addToBlockchain(
         transaction.addressTo,
         parsedAmount,
-        transaction.postid,
-        transaction.payerUserId
+        transaction.postID,
+        transaction.payerID,
+        transaction.recieverID,
+        transaction.message
       );
 
       await transactionHash.wait();
-
+      // eslint-disable-next-line
       let transactionCount = await transactionContract.getTransactionCount();
+      // eslint-disable-next-line
       transactionCount = transactionCount.toNumber();
     } catch (error) {
       console.log(error);
@@ -149,7 +152,7 @@ export const getAllTransactions = createAsyncThunk(
       const availableTransaction =
         await transactionContract.getAllTransactions();
 
-      console.log(availableTransaction);
+      //console.log(availableTransaction);
       return availableTransaction;
     } catch (error) {
       const message =

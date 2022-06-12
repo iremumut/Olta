@@ -63,7 +63,7 @@ function SideBar() {
         </li>
         <li className="py-1 w-44">
           <Link
-            to="/user/subscriptions"
+            to="/subscriptions"
             className="flex flex-row  items-center p-2 rounded-lg group hover:text-white hover:bg-[#4E5D78]"
           >
             <img

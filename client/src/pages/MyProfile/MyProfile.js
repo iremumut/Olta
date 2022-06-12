@@ -6,9 +6,9 @@ const MyProfile = () => {
   const { user } = useSelector((state) => state.auth);
 
   return (
-    <div className="flex flex-row p-4 page-bg">
+    <div className="flex flex-row xl:p-4 px-0 py-4 page-bg">
       {/*links */}
-      <div className="flex flex-col bg-white p-6 py-4 w-60 rounded-xl h-80">
+      <div className="flex flex-col bg-white xl:px-6 px-4 py-4 xl:w-60 w-48 rounded-xl lg:h-80 h-full">
         <ul>
           <li className="py-2 hover:text-black/70">
             <Link to={"/users/me/posts"}>My Posts</Link>
@@ -35,16 +35,16 @@ const MyProfile = () => {
       </div>
 
       {/*profile part */}
-      <div className="flex flex-col rounded-xl basis-1/2 bg-white ml-6">
+      <div className="flex flex-col rounded-xl 2xl:basis-1/2 xl:basis-2/3 basis-full bg-white ml-6">
         {/*header part */}
-        <div className="flex flex-row items-center justify-between header-bg object-fill px-10 py-8 rounded-t-lg">
+        <div className="flex flex-row items-center justify-between header-bg object-fill lg:px-10 px-4 py-8 rounded-t-lg">
           <div className="flex flex-row items-center">
             <img
-              className="h-20 w-20 rounded-full mr-3 ring ring-[#4E5D78]"
+              className="md:h-20 md:w-20 h-14 w-14 rounded-full md:mr-3 mr-1 ring ring-[#4E5D78]"
               src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8FuEJbKwDdaz1h387130xmYkAIQbZpahhbQ&usqp=CAU"
               alt=""
             />
-            <div>
+            <div className="md:inline hidden">
               <p className="text-[#4E5D78] font-semibold	text-xl w-12 ">
                 {user.name}
               </p>
@@ -53,16 +53,16 @@ const MyProfile = () => {
               </p>
             </div>
           </div>
-          <div className="flex flex-row ">
-            <div className="text-center font-semibold text-lg px-2">
+          <div className="flex flex-row flex-wrap justify-end">
+            <div className="text-center font-semibold lg:text-lg text-sm px-2">
               {user.followers ? user.followers.length : 0}{" "}
               <p className="font-normal">Followers</p>
             </div>
-            <div className="text-center font-semibold text-lg px-2">
+            <div className="text-center font-semibold lg:text-lg text-sm px-2">
               {user.subscribers ? user.subscribers.length : 0}{" "}
               <p className="font-normal">Subs</p>
             </div>
-            <div className="text-center font-semibold text-lg px-2">
+            <div className="text-center font-semibold lg:text-lg text-sm px-2">
               {user.followed ? user.followed.length : 0}{" "}
               <p className="font-normal">Following</p>
             </div>
@@ -81,7 +81,7 @@ const MyProfile = () => {
         </div>
 
         {/*others */}
-        <div className="bg-[#EAEEF3] px-12 py-6">
+        <div className="bg-[#EAEEF3] lg:px-12 px-4 py-6">
           <Outlet context={{ user }} />
         </div>
       </div>

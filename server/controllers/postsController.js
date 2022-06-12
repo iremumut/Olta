@@ -351,19 +351,20 @@ export const getFollowedPosts = asyncHandler(async (req, res) => {
   const user = await Users.findById(req.user.id);
   checkUserFound(res, user); //Check if user exists
 
-  const posts = await Posts.find({
-    $or: [{ id: { $in: user.followed } }, { id: { $in: user._id } }],
-  }).sort({ createdAt: -1 });
-
-  /*const usersPosts = await Posts.find()
+  const posts = await Posts.find()
     .where("creator")
-    .in(user._id)
+    .in(user.followed)
     .sort({ createdAt: -1 });
 
-  const newArray = [...posts, ...usersPosts];*/
+  const myPosts = await Posts.find({ creator: user.id }).sort({
+    createdAt: -1,
+  });
 
-  //posts = posts.sort({ createdAt: -1 });
-  res.status(200).json(posts);
+  const newArr = [...posts, ...myPosts];
+
+  newArr;
+
+  res.status(200).json(newArr);
 });
 
 export const validatePostData = (req, res, next) => {

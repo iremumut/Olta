@@ -32,11 +32,9 @@ const Transaction = () => {
   const { post = "", creator = "" } = location.state;
 
   useEffect(() => {
-    if (!account) {
-      Promise.all([dispatch(connectWallet())]).then(() => {
-        dispatch(reset());
-      });
-    }
+    Promise.all([dispatch(connectWallet())]).then(() => {
+      dispatch(reset());
+    });
     // eslint-disable-next-line
   }, []);
 
@@ -61,8 +59,10 @@ const Transaction = () => {
         account: account,
         addressTo: creator.metaMaskAccount,
         amount: post.price.toString(),
-        postid: post._id,
-        payerUserId: user._id,
+        postID: post._id,
+        payerID: user._id,
+        recieverID: creator._id,
+        message: "content",
       };
       Promise.all([dispatch(sendTransaction(transaction))])
         .then(() => {

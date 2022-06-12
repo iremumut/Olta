@@ -78,11 +78,11 @@ const FollowSubscribe = ({
   };
 
   useEffect(() => {
-    if (!account || account.length === 0) {
-      Promise.all([dispatch(connectWallet())]).then(() => {
-        dispatch(reset());
-      });
-    }
+    //if (!account || account.length === 0) {
+    Promise.all([dispatch(connectWallet())]).then(() => {
+      dispatch(reset());
+    });
+    //}
     // eslint-disable-next-line
   }, []);
 
@@ -91,8 +91,10 @@ const FollowSubscribe = ({
       account: account,
       addressTo: userToFollow.metaMaskAccount,
       amount: userToFollow.subscriptionAmount.$numberDecimal.toString(),
-      postid: "-",
-      payerUserId: user._id,
+      postID: "-",
+      payerID: user._id,
+      recieverID: userToFollow._id,
+      message: "subscription",
     };
     Promise.all([dispatch(sendTransaction(transaction))]).then((res) => {
       if (res[0].error) {
