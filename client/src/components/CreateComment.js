@@ -35,7 +35,7 @@ const CreateComment = ({
           setText("");
           toast.success("Comment posted!");
           if (singlePage) {
-            setComments((prev) => [...prev, comment]);
+            setComments((prev) => [...prev, res[0].payload]);
             setCommentCount((prev) => prev + 1);
           }
         }

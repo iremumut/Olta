@@ -17,7 +17,7 @@ import {
 } from "../features/auth/authSlice";
 import uuid from "react-uuid";
 import PostComment from "./PostComment";
-import CreateComment from "./CreateComment.";
+import CreateComment from "./CreateComment";
 import ethereum from "../assets/vectors/ethereum.svg";
 import heart from "../assets/vectors/heart.svg";
 
@@ -177,13 +177,16 @@ const Post = ({ post, creator, singlePage, comments, setComments }) => {
               Like
             </p>
           </button>
-          <button className="flex flex-row items-center">
+          <Link
+            to={`/posts/${post._id}`}
+            className="flex flex-row items-center"
+          >
             <img src={comment} alt="" className="" />
             <p className="pl-2 font-medium sm:text-lg text-sm p-1 text-[#5C6A83]">
               {" "}
               Comments
             </p>
-          </button>
+          </Link>
           <Link
             to={
               post.creator === user._id
@@ -218,7 +221,14 @@ const Post = ({ post, creator, singlePage, comments, setComments }) => {
           <div className="flex flex-col my-2">
             {comments.length !== 0 ? (
               comments.map((comment) => {
-                return <PostComment key={uuid()} comment={comment} />;
+                return (
+                  <PostComment
+                    key={uuid()}
+                    comment={comment}
+                    setComments={setComments}
+                    setCommentCount={setCommentCount}
+                  />
+                );
               })
             ) : (
               <p className="pb-2 text-[#A2AAB8]  font-light">No comments</p>

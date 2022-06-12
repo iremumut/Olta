@@ -21,18 +21,12 @@ const Wallet = () => {
 
   const { user } = useSelector((state) => state.auth);
 
+  const [loading, setLoading] = useState(true);
+
   const [balance, setBalance] = useState(0);
 
   useEffect(() => {
-    if (!account || account.length === 0) {
-      Promise.all([dispatch(connectWallet())]).then(() => {
-        dispatch(reset());
-      });
-    }
-
-    Promise.all([dispatch(getAllTransactions())]);
-
-    const getBalance = async () => {
+    const getBalance = async (account) => {
       const balance = await window.ethereum.request({
         method: "eth_getBalance",
         params: [account, "latest"],
@@ -40,7 +34,15 @@ const Wallet = () => {
       setBalance(ethers.utils.formatEther(balance));
     };
 
-    getBalance();
+    Promise.all([dispatch(connectWallet())]).then((res) => {
+      dispatch(reset());
+      Promise.all([
+        dispatch(getAllTransactions(), getBalance(res[0].payload)),
+      ]).then(() => {
+        setLoading(false);
+      });
+    });
+
     // eslint-disable-next-line
   }, []);
 
@@ -51,7 +53,7 @@ const Wallet = () => {
     // eslint-disable-next-line
   }, [isError]);
 
-  if (isLoading) {
+  if (isLoading || loading) {
     return <p>Loading...</p>;
   }
 

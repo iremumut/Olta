@@ -208,6 +208,44 @@ export const createComment = createAsyncThunk(
   }
 );
 
+//update a comment
+export const updateComment = createAsyncThunk(
+  "auth/updateComment",
+  async (comment, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await authService.updateComment(comment, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+//delete a comment
+export const deleteComment = createAsyncThunk(
+  "auth/deleteComment",
+  async (commentid, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await authService.deleteComment(commentid, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 //purchase content
 export const purchaseContent = createAsyncThunk(
   "auth/purchaseContent",
@@ -411,6 +449,41 @@ export const authSlice = createSlice({
         localStorage.setItem("user", JSON.stringify(state.user));
       })
       .addCase(unlikePost.rejected, (state, { payload }) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = payload;
+        state.posts = null;
+      })
+      .addCase(updateComment.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateComment.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        const index = state.user.comments.indexOf(action.payload._id);
+        state.user.comments.splice(index, 1);
+        state.user.comments.push(action.payload._id);
+        localStorage.removeItem("user");
+        localStorage.setItem("user", JSON.stringify(state.user));
+      })
+      .addCase(updateComment.rejected, (state, { payload }) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = payload;
+        state.posts = null;
+      })
+      .addCase(deleteComment.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteComment.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        const index = state.user.comments.indexOf(action.payload._id);
+        state.user.comments.splice(index, 1);
+        localStorage.removeItem("user");
+        localStorage.setItem("user", JSON.stringify(state.user));
+      })
+      .addCase(deleteComment.rejected, (state, { payload }) => {
         state.isLoading = false;
         state.isError = true;
         state.message = payload;

@@ -143,6 +143,39 @@ const createComment = async (postid, comment, token) => {
   return response.data;
 };
 
+//update a comment
+const updateComment = async (comment, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const response = await axios.put(
+    `http://localhost:5000/comments/${comment._id}`,
+    comment,
+    config
+  );
+  //console.log(response);
+  return response.data;
+};
+
+//delete a comment
+const deleteComment = async (commentid, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const response = await axios.delete(
+    `http://localhost:5000/comments/${commentid}`,
+    config
+  );
+
+  return response.data;
+};
+
 //purchased content
 const purchaseContent = async (postid, token) => {
   const config = {
@@ -170,8 +203,10 @@ const authService = {
   unfollow,
   likePost,
   createComment,
+  updateComment,
   purchaseContent,
   unlikePost,
+  deleteComment,
 };
 
 export default authService;
