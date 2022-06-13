@@ -39,6 +39,8 @@ const ShowUsers = ({ url }) => {
     };
 
     fetchUsers(url);
+
+    // eslint-disable-next-line
   }, []);
 
   if (loading) {

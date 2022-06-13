@@ -25,10 +25,11 @@ const Post = ({ post, creator, singlePage, comments, setComments }) => {
   const timeFormat = moment(post.createdAt).startOf("hour").fromNow(); //.startOf("day").fromNow();
   const { user } = useSelector((state) => state.auth);
 
-  //const [likeCount, setLikeCount] = useState(post.likeCount);
   const [likesCount, setLikesCount] = useState(post.likeCount);
   const [commentCount, setCommentCount] = useState(post.commentCount);
   const [liked, setLiked] = useState(user.likedPosts.includes(post._id));
+
+  const [avaliable, setAvaliable] = useState(false);
 
   if (creator && creator.constructor === Array) {
     creator = creator[0];
@@ -42,6 +43,19 @@ const Post = ({ post, creator, singlePage, comments, setComments }) => {
       setIsLoggedIn(true);
     }
   }, [creator._id, user._id]);
+
+  useEffect(() => {
+    if (post.isFree || post.price === 0) {
+      setAvaliable(true);
+    } else {
+      if (
+        user.purchasedContent.includes(post._id) ||
+        user.posts.includes(post._id)
+      ) {
+        setAvaliable(true);
+      }
+    }
+  }, [post]);
 
   const handleLikePost = async () => {
     Promise.all([dispatch(likePostAuth(post._id))])
@@ -127,6 +141,7 @@ const Post = ({ post, creator, singlePage, comments, setComments }) => {
           description={post.description}
           tags={post.tags}
           id={post._id}
+          avaliable={avaliable}
         />
 
         <div className="sm:flex hidden flex-row w-full justify-between py-4 items-end">
