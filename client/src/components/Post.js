@@ -20,6 +20,8 @@ import PostComment from "./PostComment";
 import CreateComment from "./CreateComment";
 import ethereum from "../assets/vectors/ethereum.svg";
 import heart from "../assets/vectors/heart.svg";
+import edit from "../assets/vectors/edit.svg";
+import deleteIcon from "../assets/vectors/delete.svg";
 
 const Post = ({ post, creator, singlePage, comments, setComments }) => {
   const timeFormat = moment(post.createdAt).startOf("hour").fromNow(); //.startOf("day").fromNow();
@@ -55,6 +57,7 @@ const Post = ({ post, creator, singlePage, comments, setComments }) => {
         setAvaliable(true);
       }
     }
+    // eslint-disable-next-line
   }, [post]);
 
   const handleLikePost = async () => {
@@ -126,6 +129,18 @@ const Post = ({ post, creator, singlePage, comments, setComments }) => {
               <>
                 <p className="inline font-medium text-2xl">{post.price}</p>
                 <img className="inline h-8 w-8" src={ethereum} alt="" />
+              </>
+            ) : (
+              ""
+            )}
+            {creator._id === user._id ? (
+              <>
+                <button>
+                  <img src={edit} alt="" className="px-1 w-5 h-5" />
+                </button>
+                <button>
+                  <img src={deleteIcon} alt="" className="px-1 w-5 h-5" />
+                </button>
               </>
             ) : (
               ""

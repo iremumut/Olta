@@ -82,8 +82,6 @@ export const createPost = asyncHandler(async (req, res) => {
     contentURL: result ? result.Location : " ",
   });
 
-  console.log(post);
-
   user.posts.push(post._id);
   await user.save();
 

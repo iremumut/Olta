@@ -426,8 +426,7 @@ export const authSlice = createSlice({
       .addCase(purchaseContent.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        console.log(action.payload);
-        state.user.purchasedContent = action.payload._id;
+        state.user.purchasedContent.push(action.payload._id);
         localStorage.removeItem("user");
         localStorage.setItem("user", JSON.stringify(state.user));
       })

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import SimplePost from "../components/SimplePost";
 import {
@@ -30,6 +30,8 @@ const Transaction = () => {
   );
 
   const { post = "", creator = "" } = location.state;
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     Promise.all([dispatch(connectWallet())]).then(() => {
@@ -64,21 +66,28 @@ const Transaction = () => {
         recieverID: creator._id,
         message: "content",
       };
-      Promise.all([dispatch(sendTransaction(transaction))])
-        .then(() => {
-          dispatch(purchaseContent(post._id));
-        })
-        .then(() => {
-          toast.success("Purchased successfully");
-          dispatch(userReset());
-          dispatch(reset());
-        });
+
+      Promise.all([dispatch(sendTransaction(transaction))]).then((res) => {
+        if (res[0].error) {
+          toast.error(res[0].error);
+        } else {
+          Promise.all([
+            dispatch(purchaseContent(post._id)),
+            dispatch(userReset()),
+            dispatch(reset()),
+          ]).then(() => {
+            toast.success("Purchased successfully");
+            navigate(`/posts/${post._id}`);
+          });
+        }
+      });
     }
   };
 
   if (isLoading || userLoading) {
     return <p>Transaction is happening....</p>;
   }
+
   return (
     <div className="flex justify-center">
       <div className="flex flex-row justify-center w-2/3">

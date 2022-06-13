@@ -1,7 +1,6 @@
 import uuid from "react-uuid";
 import Tag from "./Tag";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
 
 function Content({
   contentURL,
@@ -13,27 +12,40 @@ function Content({
   avaliable,
 }) {
   return (
-    <div className="flex flex-col">
-      <div className="self-center w-full">
+    <div className="flex flex-col items-start">
+      <div className="self-center w-full ">
         {contentType === "image" ? (
           avaliable ? (
-            <img src={contentURL} alt="" className="rounded-xl object-cover" />
-          ) : (
-            <>
+            <div className="flex justify-center">
               <img
                 src={contentURL}
                 alt=""
-                className="rounded-xl object-cover blur-md"
+                className="rounded-xl object-cover "
               />
-            </>
+            </div>
+          ) : (
+            <div className="flex justify-center">
+              <img
+                src={contentURL}
+                alt=""
+                className="rounded-xl object-cover blur-md "
+              />
+            </div>
           )
         ) : (
           ""
         )}
 
         {contentType === "video" ? (
-          <video width="750" height="500" controls className="rounded-xl ">
-            <source src={avaliable ? contentURL : ""} type="video/mp4" />
+          <video
+            width="750"
+            height="500"
+            controls
+            className={`rounded-xl ${
+              avaliable ? "" : "blur-md pointer-events-none"
+            } `}
+          >
+            <source src={contentURL} type="video/mp4" />
           </video>
         ) : (
           ""
@@ -41,8 +53,11 @@ function Content({
 
         {contentType === "sound" ? (
           <figure className="">
-            <audio controls className="w-full">
-              <source src={avaliable ? contentURL : ""} type="audio/mpeg" />
+            <audio
+              controls
+              className={`w-full ${avaliable ? "" : "pointer-events-none"}`}
+            >
+              <source src={contentURL} type="audio/mpeg" />
               Your browser does not support the
               <code>audio</code> element.
             </audio>
