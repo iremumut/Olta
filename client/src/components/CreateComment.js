@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import send from "../assets/vectors/send.svg";
 import { createComment, reset } from "../features/auth/authSlice";
@@ -12,7 +12,7 @@ const CreateComment = ({
 }) => {
   const [text, setText] = useState("");
 
-  const { comment } = useSelector((state) => state.auth);
+  //const { comment } = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
 

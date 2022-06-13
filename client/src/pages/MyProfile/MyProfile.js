@@ -8,7 +8,7 @@ const MyProfile = () => {
   return (
     <div className="flex flex-row xl:p-4 px-0 py-4 page-bg">
       {/*links */}
-      <div className="flex flex-col bg-white xl:px-6 px-4 py-4 xl:w-60 w-48 rounded-xl lg:h-80 h-full">
+      <div className="flex flex-col bg-white xl:px-6 px-4 py-4 xl:w-60 w-48 rounded-xl  h-full">
         <ul>
           <li className="py-2 hover:text-black/70">
             <Link to={"/users/me/posts"}>My Posts</Link>
@@ -29,6 +29,9 @@ const MyProfile = () => {
             <Link to={"/users/me/following"}>Followings</Link>
           </li>
           <li className="py-2 hover:text-black/70">
+            <Link to={"/users/me/subscribed"}>Subscribed To</Link>
+          </li>
+          <li className="py-2 hover:text-black/70">
             <Link to={"/users/me/transactions"}>Earnings</Link>
           </li>
         </ul>
@@ -45,7 +48,7 @@ const MyProfile = () => {
               alt=""
             />
             <div className="md:inline hidden">
-              <p className="text-[#4E5D78] font-semibold	text-xl w-12 ">
+              <p className="text-[#4E5D78] font-semibold	text-xl w-12 uppercase ">
                 {user.name}
               </p>
               <p className=" font-semibold">
@@ -54,18 +57,27 @@ const MyProfile = () => {
             </div>
           </div>
           <div className="flex flex-row flex-wrap justify-end">
-            <div className="text-center font-semibold lg:text-lg text-sm px-2">
+            <Link
+              className="text-center font-semibold lg:text-lg text-sm px-2 hover:text-black/50"
+              to="/users/me/followers"
+            >
               {user.followers ? user.followers.length : 0}{" "}
-              <p className="font-normal">Followers</p>
-            </div>
-            <div className="text-center font-semibold lg:text-lg text-sm px-2">
+              <p className="font-light">Followers</p>
+            </Link>
+            <Link
+              className="text-center font-semibold lg:text-lg text-sm px-2 hover:text-black/50"
+              to="/users/me/subscribers"
+            >
               {user.subscribers ? user.subscribers.length : 0}{" "}
-              <p className="font-normal">Subs</p>
-            </div>
-            <div className="text-center font-semibold lg:text-lg text-sm px-2">
+              <p className="font-light">Subs</p>
+            </Link>
+            <Link
+              className="text-center font-semibold lg:text-lg text-sm px-2 hover:text-black/50"
+              to="/users/me/following"
+            >
               {user.followed ? user.followed.length : 0}{" "}
-              <p className="font-normal">Following</p>
-            </div>
+              <p className="font-light">Following</p>
+            </Link>
           </div>
         </div>
         {/*description part */}

@@ -32,25 +32,24 @@ const LikedPosts = () => {
     const fetchPosts = async () => {
       await axios
         .get(`http://localhost:5000/users/${user._id}/likedPosts`, config)
-        .then((res) => res.data)
-        .then((data) => {
-          if (typeof data === "undefined" || data.length === 0) {
+        .then(async (res) => {
+          if (typeof res.data === "undefined" || res.data.length === 0) {
             setNoPost(true);
+            setLoading(false);
           } else {
-            data.forEach(async (post) => {
-              await axios
-                .get(`http://localhost:5000/users/${post.creator}`, config)
-                .then((res) => {
-                  setCreators((prev) => [...prev, res.data]);
-                })
-                .catch((error) => {
-                  setError(true);
-                  toast.error(error.response.data.message);
-                });
-            });
+            await axios
+              .get(`http://localhost:5000/users`, config)
+              .then((res) => {
+                setCreators(res.data);
+              })
+              .catch((error) => {
+                setError(true);
+                toast.error(error.response.data.message);
+              });
             //setUsers(usersAll);
             setNoPost(false);
-            setPosts(data);
+            setPosts(res.data);
+            setLoading(false);
           }
         })
         .catch((error) => {
@@ -67,18 +66,6 @@ const LikedPosts = () => {
     // eslint-disable-next-line
   }, []);
 
-  useEffect(() => {
-    //console.log("here");
-    if (
-      posts.length !== 0 &&
-      creators.length !== 0 &&
-      posts.length === creators.length
-    ) {
-      setLoading(false);
-    }
-  }, [posts, creators]);
-
-  //console.log(loading);
   if (loading) {
     return <p>Loading...</p>;
   }

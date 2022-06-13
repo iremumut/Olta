@@ -90,7 +90,7 @@ const NavBar = () => {
       </div>
       <div className="xl:basis-5/12 md:basis-3/12 flex flex-row ml-auto justify-end items-center items-end xsm:flex hidden ">
         <Link to={"/users/me/posts"}>
-          <p className="mx-2 text-[#4E5D78] cursor-pointer lg:text-xl text-base lg:font-semibold	font-normal hidden lg:inline hover:text-[#4A5567]/70">
+          <p className="mx-2 text-[#4E5D78] cursor-pointer lg:text-xl text-base lg:font-semibold	font-normal hidden lg:inline hover:text-[#4A5567]/70 capitalize">
             {user && user.name ? user.name : "user name"}
           </p>
         </Link>

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Outlet, useParams } from "react-router-dom";
+import { Link, Outlet, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import FollowSubscribe from "../../components/FollowSubscribe";
 import "./Profile.css";
@@ -46,7 +46,7 @@ const Profile = () => {
       fetchUser();
     }
     // eslint-disable-next-line
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     if (user.length !== 0) {
@@ -55,7 +55,7 @@ const Profile = () => {
       setSubCount(user.subscribers.length);
     }
     // eslint-disable-next-line
-  }, [user.length]);
+  }, [user.length, user]);
 
   if (isLoading) {
     return <p>Loading...</p>;
@@ -75,27 +75,36 @@ const Profile = () => {
               alt=""
             />
             <div className="sm:inline hidden">
-              <p className="text-[#4E5D78] font-semibold	text-xl w-12 ">
+              <p className="text-[#4E5D78] font-semibold	text-xl w-12 capitalize ">
                 {user.name}
               </p>
               <p>@{user.userName ? user.userName : ""}</p>
             </div>
           </div>
           <div className="flex flex-row ">
-            <div className="text-center font-semibold md:text-lg text-sm px-2">
-              {followerCount} <p className="font-normal">Followers</p>
-            </div>
-            <div className="text-center font-semibold md:text-lg text-sm px-2">
-              {subCount} <p className="font-normal">Subs</p>
-            </div>
-            <div className="text-center font-semibold md:text-lg text-sm px-2">
-              {followedCount} <p className="font-normal">Following</p>
-            </div>
+            <Link
+              className="text-center font-semibold lg:text-lg text-sm px-2 hover:text-black/50"
+              to={`/users/${user._id}/followers`}
+            >
+              {followerCount} <p className="font-light ">Followers</p>
+            </Link>
+            <Link
+              className="text-center font-semibold lg:text-lg text-sm px-2 hover:text-black/50"
+              to={`/users/${user._id}/subscribers`}
+            >
+              {subCount} <p className="font-light">Subs</p>
+            </Link>
+            <Link
+              className="text-center font-semibold lg:text-lg text-sm px-2 hover:text-black/50"
+              to={`/users/${user._id}/following`}
+            >
+              {followedCount} <p className="font-light">Following</p>
+            </Link>
           </div>
         </div>
         {/*description part */}
         <div className="px-12 py-4 flex flex-col justify-center items-center">
-          {user.description ? (
+          {user.descriptioLinkn ? (
             <div className="text-center py-4"> {user.description} </div>
           ) : (
             ""

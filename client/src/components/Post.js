@@ -96,7 +96,7 @@ const Post = ({ post, creator, singlePage, comments, setComments }) => {
                 isLoggedIn ? "/users/me/posts" : `/users/${creator._id}/posts`
               }
             >
-              <p className="text-[#4E5D78] text-base font-medium">
+              <p className="text-[#4E5D78] text-base font-medium capitalize">
                 {creator && creator.name ? creator.name : "User"}
               </p>{" "}
             </Link>

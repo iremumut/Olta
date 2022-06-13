@@ -21,6 +21,10 @@ import MyComments from "./components/MyComments";
 import PurchasedContent from "./components/PurchasedContent";
 import Wallet from "./pages/Wallet";
 import Subscriptions from "./pages/Subscriptions";
+import Followers from "./components/Followers";
+import Followed from "./components/Followed";
+import Subscribed from "./components/Subscribed";
+import Subscribers from "./components/Subscribers";
 
 function App() {
   return (
@@ -46,13 +50,21 @@ function App() {
               <Route path="me" element={<MyProfile />}>
                 <Route path="posts" element={<UserPosts />} />
                 <Route path="comments" element={<MyComments />} />
-                <Route path="subscriptions" element={<Profile />} />
-                <Route path="settings" element={<Profile />} />
+                <Route path="followers" element={<Followers />} />
+                <Route path="following" element={<Followed />} />
+                <Route path="subscribers" element={<Subscribers />} />
+                <Route path="subscribed" element={<Subscribed />} />
                 <Route path="likedPosts" element={<LikedPosts />} />
                 <Route path="purchased" element={<PurchasedContent />} />
+                <Route path="subscriptions" element={<Profile />} />
+                <Route path="settings" element={<Profile />} />
               </Route>
               <Route path=":userid" element={<Profile />}>
                 <Route path="posts" element={<UserPosts />} />
+                <Route path="followers" element={<Followers />} />
+                <Route path="following" element={<Followed />} />
+                <Route path="subscribers" element={<Subscribers />} />
+                <Route path="subscribed" element={<Subscribed />} />
               </Route>
             </Route>
           </Route>
