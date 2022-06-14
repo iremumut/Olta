@@ -105,7 +105,7 @@ export const updatePost = asyncHandler(async (req, res) => {
     throw new Error("User not authorized");
   }
 
-  const { price, title } = req.body;
+  const { price, title, description, isFree, tags } = req.body;
 
   if (typeof title !== "undefined" && title.length === 0) {
     res.status(404);
@@ -124,7 +124,11 @@ export const updatePost = asyncHandler(async (req, res) => {
   }
 
   req.body = {
-    ...req.body,
+    title: title ? title : post.title,
+    description: description ? description : post.description,
+    price: price ? price : post.price,
+    isFree: isFree ? isFree : post.isFree,
+    tags: tags ? tags : post.tags,
     _id: post._id,
     creator: post.creator,
     contentType: post.contentType,

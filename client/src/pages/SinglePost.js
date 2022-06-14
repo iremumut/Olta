@@ -48,14 +48,18 @@ const SinglePost = () => {
 
     if (postFound) {
       setPost(postFound);
-
       const creator = users.filter((user) => {
         return user._id === post.creator;
       });
-      if (creator) {
+
+      if (creator.length !== 0) {
         setCreator(creator);
         fetchComments();
         setIsLoading(false);
+      } else {
+        Promise.all([fetchCreator(), fetchComments()]).then(() =>
+          setIsLoading(false)
+        );
       }
     } else {
       setIsLoading(true);

@@ -25,6 +25,7 @@ import Followers from "./components/Followers";
 import Followed from "./components/Followed";
 import Subscribed from "./components/Subscribed";
 import Subscribers from "./components/Subscribers";
+import PostEdit from "./components/PostEdit";
 
 function App() {
   return (
@@ -43,6 +44,7 @@ function App() {
             <Route path="/posts">
               <Route path="new" element={<NewPost />} />
               <Route path=":postid" element={<SinglePost />} />
+              <Route path=":postid/edit" element={<PostEdit />} />
             </Route>
             <Route path="/transaction/:postid" element={<Transaction />} />
             <Route path="/users/me/wallet" element={<Wallet />} />

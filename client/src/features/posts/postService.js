@@ -43,10 +43,23 @@ const deletePost = async (id, token) => {
   return response.data;
 };
 
+const updatePost = async (post, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const response = await axios.put(`${API_URL}/${post.id}`, post, config);
+
+  return response.data;
+};
+
 const postService = {
   createPost,
   getAllPosts,
   deletePost,
+  updatePost,
 };
 
 export default postService;

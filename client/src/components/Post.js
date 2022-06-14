@@ -125,7 +125,7 @@ const Post = ({ post, creator, singlePage, comments, setComments }) => {
             </p>
           </div>
           <div className="ml-auto text-[#4E8BFF] flex items-center">
-            {post.price && post.price !== 0 ? (
+            {post.price && !post.isFree && post.price !== 0 ? (
               <>
                 <p className="inline font-medium text-2xl">{post.price}</p>
                 <img className="inline h-8 w-8" src={ethereum} alt="" />
@@ -135,9 +135,9 @@ const Post = ({ post, creator, singlePage, comments, setComments }) => {
             )}
             {creator._id === user._id ? (
               <>
-                <button>
+                <Link to={`/posts/${post._id}/edit`}>
                   <img src={edit} alt="" className="px-1 w-5 h-5" />
-                </button>
+                </Link>
                 <button>
                   <img src={deleteIcon} alt="" className="px-1 w-5 h-5" />
                 </button>
