@@ -46,7 +46,7 @@ const Profile = () => {
       fetchUser();
     }
     // eslint-disable-next-line
-  }, [user]);
+  }, []);
 
   useEffect(() => {
     if (user.length !== 0) {
