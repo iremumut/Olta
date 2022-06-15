@@ -123,7 +123,9 @@ const NewPost = () => {
     formdata.append("price", JSON.stringify(post.price));
     formdata.append("isFree", JSON.stringify(isFree));
 
-    dispatch(createPost(formdata));
+    dispatch(createPost(formdata)).then(() => {
+      dispatch(reset());
+    });
   };
 
   useEffect(() => {

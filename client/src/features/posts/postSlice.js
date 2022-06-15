@@ -162,7 +162,13 @@ const postSlice = createSlice({
       .addCase(updatePost.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.posts.push(action.payload);
+        state.posts = state.posts.map((post) => {
+          if (post._id === action.payload._id) {
+            return action.payload;
+          } else {
+            return post;
+          }
+        });
       })
       .addCase(updatePost.rejected, (state, action) => {
         state.isLoading = false;

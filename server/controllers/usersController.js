@@ -186,7 +186,7 @@ export const getUserPosts = asyncHandler(async (req, res) => {
   const user = await Users.findById(req.user.id);
   checkUserFound(res, user); //check if the user is found
 
-  const posts = await Posts.find({ creator: req.user.id });
+  const posts = await Posts.find({ creator: req.user.id, deleted: false });
   checkPostFound(res, posts); //check if the post is found
 
   res.status(200).json(posts);
@@ -200,7 +200,7 @@ export const getAnotherUserPosts = asyncHandler(async (req, res) => {
   const user = await Users.findById(userid);
   checkUserFound(res, user); //check if the user is found
 
-  const posts = await Posts.find()
+  const posts = await Posts.find({ deleted: false })
     .where("_id")
     .in(user.posts)
     .sort({ createdAt: -1 });
@@ -213,7 +213,9 @@ export const getLikedPosts = asyncHandler(async (req, res) => {
   const user = await Users.findById(req.user.id);
   checkUserFound(res, user); //check if user exists
 
-  const posts = await Posts.find().where("_id").in(user.likedPosts);
+  const posts = await Posts.find({ deleted: false })
+    .where("_id")
+    .in(user.likedPosts);
   res.status(200).json(posts);
 });
 
@@ -225,7 +227,9 @@ export const getAnotherUserLikedPosts = asyncHandler(async (req, res) => {
   const user = await Users.findById(userid);
   checkUserFound(res, user); //check if user exists
 
-  const posts = (await Posts.find().where("_id").in(user.likedPosts)).reverse();
+  const posts = (
+    await Posts.find({ deleted: false }).where("_id").in(user.likedPosts)
+  ).reverse();
   res.status(200).json(posts);
 });
 

@@ -68,6 +68,7 @@ const PostEdit = () => {
       isFree: isFree,
       tags: [...tags],
     };
+    console.log(newPost);
     Promise.all([dispatch(updatePost(newPost))]).then((res) => {
       if (res[0].error) {
         toast.error(res[0].payload);

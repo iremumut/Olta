@@ -5,11 +5,11 @@ import share from "../assets/vectors/share.svg";
 import comment from "../assets/vectors/comment.svg";
 import like from "../assets/vectors/like.svg";
 import support from "../assets/vectors/support.svg";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { likePost, unlikePost } from "../features/posts/postSlice";
+import { deletePost, likePost, unlikePost } from "../features/posts/postSlice";
 import {
   likePost as likePostAuth,
   unlikePost as unlikePostAuth,
@@ -38,6 +38,7 @@ const Post = ({ post, creator, singlePage, comments, setComments }) => {
   }
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
@@ -94,6 +95,17 @@ const Post = ({ post, creator, singlePage, comments, setComments }) => {
       });
   };
 
+  const handleDelete = async () => {
+    Promise.all([dispatch(deletePost(post._id))]).then((res) => {
+      if (res[0].error) {
+        toast.error(res[0].payload);
+      } else {
+        toast.success("Post deleted");
+        navigate("/");
+      }
+    });
+  };
+
   return (
     <>
       <div className=" bg-white  md:p-4 md:px-10 p-4 my-6 flex flex-col rounded-lg">
@@ -124,28 +136,32 @@ const Post = ({ post, creator, singlePage, comments, setComments }) => {
               {post.isFree ? "Public" : "Subscribers only"}
             </p>
           </div>
-          <div className="ml-auto text-[#4E8BFF] flex items-center">
-            {post.price && !post.isFree && post.price !== 0 ? (
-              <>
-                <p className="inline font-medium text-2xl">{post.price}</p>
-                <img className="inline h-8 w-8" src={ethereum} alt="" />
-              </>
-            ) : (
-              ""
-            )}
-            {creator._id === user._id ? (
-              <>
-                <Link to={`/posts/${post._id}/edit`}>
-                  <img src={edit} alt="" className="px-1 w-5 h-5" />
-                </Link>
-                <button>
-                  <img src={deleteIcon} alt="" className="px-1 w-5 h-5" />
-                </button>
-              </>
-            ) : (
-              ""
-            )}
-            {post.updated ? "Edited" : ""}
+          <div className="ml-auto flex flex-col text-[#4E8BFF] flex items-center justify-end flex-wrap">
+            <div className="flex flex-row">
+              {post.updated ? <p>Edited</p> : ""}
+              {creator._id === user._id ? (
+                <div className="px-4 flex flex-row">
+                  <Link to={`/posts/${post._id}/edit`}>
+                    <img src={edit} alt="" className="px-1 w-5 h-5" />
+                  </Link>
+                  <button onClick={handleDelete}>
+                    <img src={deleteIcon} alt="" className="px-1 w-5 h-5" />
+                  </button>
+                </div>
+              ) : (
+                ""
+              )}
+            </div>
+            <div className="my-3">
+              {post.price && !post.isFree && post.price !== 0 ? (
+                <>
+                  <p className="inline font-medium text-2xl">{post.price}</p>
+                  <img className="inline h-8 w-8" src={ethereum} alt="" />
+                </>
+              ) : (
+                ""
+              )}
+            </div>
           </div>
         </div>
 

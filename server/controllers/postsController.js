@@ -19,7 +19,7 @@ export const getPosts = asyncHandler(async (req, res) => {
   const user = await Users.findById(req.user.id);
   checkUserFound(res, user); //Check if user exists
 
-  const allPosts = await Posts.find().sort({ createdAt: -1 });
+  const allPosts = await Posts.find({ deleted: false }).sort({ createdAt: -1 });
   if (!allPosts) {
     res.status(404);
     throw new Error("Resource could not be found");
@@ -96,6 +96,11 @@ export const updatePost = asyncHandler(async (req, res) => {
   const post = await Posts.findById(id);
   checkPostFound(res, post); //check if the post is found
 
+  if (post.deleted) {
+    res.status(404);
+    throw new Error("Cannot update a deleted post.");
+  }
+
   const user = await Users.findById(req.user.id);
   checkUserFound(res, user); //Check if user exists
 
@@ -127,7 +132,7 @@ export const updatePost = asyncHandler(async (req, res) => {
     title: title ? title : post.title,
     description: description ? description : post.description,
     price: price ? price : post.price,
-    isFree: isFree ? isFree : post.isFree,
+    isFree: typeof isFree !== "undefined" ? isFree : true,
     tags: tags ? tags : post.tags,
     _id: post._id,
     creator: post.creator,
@@ -141,11 +146,14 @@ export const updatePost = asyncHandler(async (req, res) => {
     scores: post.scores,
     createdAt: post.createdAt,
     updatedAt: post.updatedAt,
+    updated: true,
+    deleted: post.deleted,
   };
 
   const updatedPost = await Posts.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
   });
+
   res.status(200).json(updatedPost);
 });
 
@@ -165,6 +173,22 @@ export const deletePost = asyncHandler(async (req, res) => {
     res.status(401);
     throw new Error("User not authorized");
   }
+
+  const comments = await Comments.find().where("_id").in(post.comments);
+
+  comments.forEach(async (comment) => {
+    const userComment = await Users.findById(comment.userID);
+    userComment.comments.remove(comment._id);
+    await userComment.save();
+    comment.remove();
+  });
+
+  const likes = await Users.find().where("_id").in(post.likes);
+
+  likes.forEach(async (user) => {
+    user.likedPosts.remove(post._id);
+    await user.save();
+  });
 
   user.posts.remove(post._id);
   await user.save();
@@ -193,6 +217,11 @@ export const likePost = asyncHandler(async (req, res) => {
 
   const user = await Users.findById(req.user.id);
   checkUserFound(res, user); //Check if user exists
+
+  if (post.deleted) {
+    res.status(404);
+    throw new Error("Cannot like a deleted post.");
+  }
 
   if (user._id.toString() === post.creator.toString()) {
     res.status(400);
@@ -231,6 +260,11 @@ export const unlikePost = asyncHandler(async (req, res) => {
 
   const user = await Users.findById(req.user.id);
   checkUserFound(res, user); //Check if user exists
+
+  if (post.deleted) {
+    res.status(404);
+    throw new Error("Cannot unline a deleted post.");
+  }
 
   if (user._id.toString() === post.creator.toString()) {
     res.status(400);
@@ -332,6 +366,11 @@ export const purchasePost = asyncHandler(async (req, res) => {
   const user = await Users.findById(req.user.id);
   checkUserFound(res, user); //Check if user exists
 
+  if (post.deleted) {
+    res.status(404);
+    throw new Error("Cannot purchase a deleted post.");
+  }
+
   if (user.purchasedContent.includes(post._id)) {
     res.status(404);
     throw new Error("Already purchased the content");
@@ -353,12 +392,12 @@ export const getFollowedPosts = asyncHandler(async (req, res) => {
   const user = await Users.findById(req.user.id);
   checkUserFound(res, user); //Check if user exists
 
-  const posts = await Posts.find()
+  const posts = await Posts.find({ deleted: false })
     .where("creator")
     .in(user.followed)
     .sort({ createdAt: -1 });
 
-  const myPosts = await Posts.find({ creator: user.id }).sort({
+  const myPosts = await Posts.find({ creator: user.id, deleted: false }).sort({
     createdAt: -1,
   });
 
@@ -369,12 +408,12 @@ export const getFollowedPosts = asyncHandler(async (req, res) => {
   res.status(200).json(newArr);
 });
 
-//GET /posts/subscribed , private, get the posts of the ppl you follow
+//GET /posts/subscribed , private, get the posts of the ppl you're subscribe to
 export const getSubscribedPosts = asyncHandler(async (req, res) => {
   const user = await Users.findById(req.user.id);
   checkUserFound(res, user); //Check if user exists
 
-  const posts = await Posts.find()
+  const posts = await Posts.find({ deleted: false })
     .where("creator")
     .in(user.subscribedTo)
     .sort({ createdAt: -1 });
@@ -384,8 +423,6 @@ export const getSubscribedPosts = asyncHandler(async (req, res) => {
 
 export const validatePostData = (req, res, next) => {
   const { title, price, contentType } = req.body;
-  //console.log(!contentTypes.includes(contentType));
-  //console.log(!title || !contentType || !contentTypes.includes(contentType));
 
   if (!title || !contentType || !contentTypes.includes(contentType)) {
     res.status(400);

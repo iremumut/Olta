@@ -37,6 +37,11 @@ export const createComment = asyncHandler(async (req, res) => {
   const post = await Posts.findById(postid);
   checkPostFound(res, post); //check if post is found
 
+  if (post.deleted) {
+    res.status(404);
+    throw new Error("Cannot comment on a deleted post.");
+  }
+
   const user = await Users.findById(req.user.id);
   checkUserFound(res, user); // check if user exists
 
